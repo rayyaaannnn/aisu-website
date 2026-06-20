@@ -1,0 +1,35 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# PHP backend data & uploads (do not commit user data)
+backend-php/data/*.json
+backend-php/uploads/govtid/*
+backend-php/uploads/payment/*
+backend-php/uploads/photo/*
+backend-php/uploads/sign/*
+backend-php/uploads/complaint/*
+backend-php/uploads/cert_templates/*
+backend-php/uploads/certificates/*
+backend-php/uploads/resume/*
+backend-php/uploads/submissions/*
+backend-php/uploads/innovations/*
+backend-php/uploads/press/*
+backend-php/uploads/gallery/*
+
+# Maintain empty directories in git
+!backend-php/uploads/**/.gitkeep
+!backend-php/data/.gitkeep
+
+# Sensitive config (contains SMTP credentials)
+backend-php/config.php
+
+# PHPMailer vendor
+backend-php/vendor/
+backend-php/composer.lock
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db

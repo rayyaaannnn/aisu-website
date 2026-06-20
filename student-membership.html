@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Student Membership | AISU – All India Students Union</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Join AISU as a Student Member and get free access to all competitions, complaint filing, and other opportunities for one year.">
+    <link href="img/favicon.svg" rel="icon" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Saira:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/aisu-custom.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg aisu-navbar sticky-top">
+        <div class="container-fluid px-4 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <div class="brand-text"><span class="orange">AISU</span><span class="white">4India</span></div>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarMain">
+                <i class="bi bi-list text-white fs-2"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <div class="navbar-nav ms-auto align-items-lg-center gap-1">
+                    <a href="index.html" class="nav-link-custom">Home</a>
+                    <a href="about.html" class="nav-link-custom">About Us</a>
+                    <a href="team.html" class="nav-link-custom">Our Team</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle active" data-bs-toggle="dropdown">Join Us</a>
+                        <div class="dropdown-menu">
+                            <a href="primary-membership.html" class="dropdown-item"><i class="bi bi-person-badge me-2" style="color:var(--primary)"></i>Primary Membership</a>
+                            <a href="student-membership.html" class="dropdown-item active"><i class="bi bi-mortarboard me-2" style="color:var(--primary)"></i>Student Membership</a>
+                            <a href="affiliation.html" class="dropdown-item"><i class="bi bi-building me-2" style="color:var(--primary)"></i>Organization Affiliation</a>
+                        </div>
+                    </div>
+                    <a href="competition.html" class="nav-link-custom">Competitions</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle" data-bs-toggle="dropdown">Initiatives</a>
+                        <div class="dropdown-menu">
+                            <a href="internship.html" class="dropdown-item"><i class="bi bi-briefcase me-2" style="color:var(--primary)"></i>Internship</a>
+                            <a href="innovations.html" class="dropdown-item"><i class="bi bi-lightbulb me-2" style="color:var(--primary)"></i>Innovation Cell (ICell)</a>
+                        </div>
+                    </div>
+                    <a href="complaint.html" class="nav-link-custom">Complaints</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle" data-bs-toggle="dropdown">More</a>
+                        <div class="dropdown-menu">
+                            <a href="press.html" class="dropdown-item"><i class="bi bi-newspaper me-2" style="color:var(--primary)"></i>Updates &amp; Press</a>
+                            <a href="gallery.html" class="dropdown-item"><i class="bi bi-images me-2" style="color:var(--primary)"></i>Gallery &amp; Results</a>
+                            <a href="cert-verify.html" class="dropdown-item"><i class="bi bi-patch-check me-2" style="color:var(--primary)"></i>Verify Certificate</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="contact.html" class="dropdown-item"><i class="bi bi-envelope me-2" style="color:var(--primary)"></i>Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex ms-3 gap-2 mt-3 mt-lg-0">
+                    <a href="login.html" class="btn-nav-login nav-link-custom"><i class="bi bi-person-circle me-1"></i>Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <div class="page-hero">
+        <div class="container text-center position-relative" style="z-index:1;">
+            <h1 class="display-5 fw-800 text-white mb-3" style="font-family:'Saira',sans-serif;">Student <span
+                    style="color:var(--primary)">Membership</span></h1>
+            <p class="text-white-50 mb-3" style="max-width:500px; margin:0 auto;">Register as a student member and
+                unlock free access to all competitions and programs</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center mb-0" style="--bs-breadcrumb-divider:'›';">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item">Join Us</li>
+                    <li class="breadcrumb-item active">Student Membership</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Student Membership Section -->
+    <section class="py-5 py-lg-6" id="student-form-top">
+        <div class="container">
+            <!-- Info Banners -->
+            <div class="row g-3 mb-5 reveal">
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3 h-100 text-center" style="background:var(--primary-light);border:1px solid rgba(255,111,15,0.2);">
+                        <i class="bi bi-mortarboard-fill fs-3 mb-2" style="color:var(--primary);display:block;"></i>
+                        <div class="fw-700 small" style="font-family:'Saira',sans-serif;">Eligibility</div>
+                        <div class="small text-muted mt-1">Exclusively for <strong>students</strong>. Open to all students across India.</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3 h-100 text-center" style="background:#eff6ff;border:1px solid rgba(59,130,246,0.2);">
+                        <i class="bi bi-trophy-fill fs-3 mb-2" style="color:#3b82f6;display:block;"></i>
+                        <div class="fw-700 small" style="font-family:'Saira',sans-serif;">Benefits</div>
+                        <div class="small text-muted mt-1">Free access to all AISU competitions. Report concerns to the organization as a Student Representative.</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 rounded-3 h-100 text-center" style="background:#f0fdf4;border:1px solid rgba(34,197,94,0.2);">
+                        <i class="bi bi-calendar-check-fill fs-3 mb-2" style="color:#22c55e;display:block;"></i>
+                        <div class="fw-700 small" style="font-family:'Saira',sans-serif;">Validity</div>
+                        <div class="small text-muted mt-1">Student Membership is valid for <strong>1 year</strong> from the date of approval.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success State -->
+            <div id="student-success" style="display:none;" class="text-center p-5 rounded-4 mb-5" style="background:var(--light);">
+                <div style="font-size:4rem;margin-bottom:16px;">🎓</div>
+                <h3 style="font-family:'Saira',sans-serif;">Registration Successful!</h3>
+                <p class="text-muted">Your Student Membership application has been submitted!</p>
+                <div class="p-3 rounded-3 my-3 text-start mx-auto" style="background:#f0fdf4;border:1px solid #bbf7d0;max-width:500px;">
+                    <div class="small fw-600 mb-2" style="color:#15803d;"><i class="bi bi-check-circle-fill me-2"></i>What happens next:</div>
+                    <div class="small text-muted mb-1">• Your application is being reviewed</div>
+                    <div class="small text-muted mb-1">• Your AISU Student Member ID will be emailed to you post-approval</div>
+                    <div class="small text-muted">• You can then access free competitions using your Student ID</div>
+                </div>
+                <a href="index.html" class="btn-primary-custom mt-3">Back to Home <i class="bi bi-arrow-right"></i></a>
+            </div>
+
+            <!-- Form -->
+            <div id="student-form-container">
+                <div class="row g-5">
+                    <!-- Left: Info -->
+                    <div class="col-lg-4 reveal">
+                        <div class="p-4 rounded-4 sticky-top" style="top:100px;background:linear-gradient(135deg,var(--dark),var(--dark2));border:1px solid var(--glass-border);">
+                            <div class="section-badge mb-3">Student Membership</div>
+                            <h4 class="fw-700 text-white mb-3" style="font-family:'Saira',sans-serif;">Join as a Student Member</h4>
+                            <p class="small" style="color:rgba(255,255,255,0.65);line-height:1.8;">Student members are designated as official AISU Student Representatives. Their main role is to report concerns to the organization and participate in all AISU programs and competitions free of cost.</p>
+                            <div class="mt-4 p-3 rounded-3" style="background:rgba(255,111,15,0.12);border:1px solid rgba(255,111,15,0.25);">
+                                <div class="small fw-600 mb-2" style="color:var(--primary);">Note on Student ID</div>
+                                <div class="small" style="color:rgba(255,255,255,0.6);">Your unique AISU Student Member ID will be assigned by the National Office and emailed to you after approval. IDs are not displayed publicly.</div>
+                            </div>
+                            <div class="mt-3 p-3 rounded-3" style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);">
+                                <div class="small fw-600 mb-1" style="color:#4ade80;">Membership Fee</div>
+                                <div class="fw-700 text-white" style="font-size:1.4rem;">₹10 <span class="small fw-400" style="color:rgba(255,255,255,0.5);">one-time</span></div>
+                                <div class="small" style="color:rgba(255,255,255,0.5);">Valid for 1 year</div>
+                            </div>
+                            <a href="primary-membership.html" class="d-block text-center mt-4 py-2 px-3 rounded-3 small fw-600" style="background:rgba(255,111,15,0.15);color:var(--primary);text-decoration:none;border:1px solid rgba(255,111,15,0.3);">
+                                Want a leadership role? Apply for <strong>Primary Membership</strong> →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: Form -->
+                    <div class="col-lg-8 reveal">
+                        <div class="form-section">
+                            <div class="row g-3">
+                                <!-- Personal -->
+                                <div class="col-12"><div class="small fw-700 text-uppercase" style="color:var(--primary);letter-spacing:1px;border-bottom:2px solid var(--primary-light);padding-bottom:6px;margin-bottom:4px;">Personal Information</div></div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Full Name (in BLOCK letters) *</label>
+                                    <input type="text" class="form-control" id="sm-fullname" placeholder="YOUR FULL NAME" required style="text-transform:uppercase;">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Parent Name *</label>
+                                    <input type="text" class="form-control" id="sm-parent" placeholder="Father's / Mother's name" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Date of Birth *</label>
+                                    <input type="date" class="form-control" id="sm-dob" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Age *</label>
+                                    <input type="number" class="form-control" id="sm-age" min="10" max="35" placeholder="Age" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Gender *</label>
+                                    <select class="form-select" id="sm-gender" required>
+                                        <option value="">Select</option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                        <option>Prefer not to say</option>
+                                        <option>Others</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Full Residential Address *</label>
+                                    <textarea class="form-control" id="sm-address" rows="2" placeholder="House No., Street, Village/Town, District, State" required></textarea>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">PIN Code *</label>
+                                    <input type="text" class="form-control" id="sm-pin" maxlength="6" placeholder="6-digit PIN" required>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label">Current Institution / University *</label>
+                                    <input type="text" class="form-control" id="sm-institution" placeholder="Name of your school/college/university" required>
+                                </div>
+
+                                <!-- Contact -->
+                                <div class="col-12 mt-2"><div class="small fw-700 text-uppercase" style="color:var(--primary);letter-spacing:1px;border-bottom:2px solid var(--primary-light);padding-bottom:6px;margin-bottom:4px;">Contact Information</div></div>
+                                <div class="col-md-4">
+                                    <label class="form-label">State *</label>
+                                    <select class="form-select" id="sm-state" required>
+                                        <option value="">Select State</option>
+                                        <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option><option>Bihar</option><option>Chhattisgarh</option><option>Delhi</option><option>Goa</option><option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option><option>Jammu &amp; Kashmir</option><option>Jharkhand</option><option>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option><option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option><option>Odisha</option><option>Punjab</option><option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option><option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">District *</label>
+                                    <input type="text" class="form-control" id="sm-district" placeholder="Your district" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">City *</label>
+                                    <input type="text" class="form-control" id="sm-city" placeholder="City / Town" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Mobile Number *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+91</span>
+                                        <input type="tel" class="form-control" id="sm-mobile" maxlength="10" placeholder="10-digit mobile" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email ID *</label>
+                                    <input type="email" class="form-control" id="sm-email" placeholder="Your email address" required>
+                                </div>
+
+                                <!-- How did you hear -->
+                                <div class="col-12">
+                                    <label class="form-label">How did you hear about us? *</label>
+                                    <select class="form-select" id="sm-heard" required>
+                                        <option value="">Select</option>
+                                        <option>Social media (Facebook, Twitter, Instagram, etc.)</option>
+                                        <option>Word of mouth</option>
+                                        <option>Internet search</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
+
+                                <!-- Payment -->
+                                <div class="col-12 mt-2"><div class="small fw-700 text-uppercase" style="color:var(--primary);letter-spacing:1px;border-bottom:2px solid var(--primary-light);padding-bottom:6px;margin-bottom:4px;">Membership Payment — ₹10</div></div>
+                                <div class="col-12" id="sm-qr-section">
+                                    <div class="p-4 rounded-3 text-center" style="background:var(--primary-light);border:1px solid rgba(255,111,15,0.2);">
+                                        <p class="small text-muted mb-3">Choose your payment method below. Pay online via Razorpay or scan the QR code to pay ₹10.</p>
+                                        
+                                        <!-- Razorpay Button -->
+                                        <button type="button" class="btn-primary-custom py-2 px-4 mb-3" id="sm-pay-btn" onclick="initRazorpayPayment('student', 'sm')">
+                                            <i class="bi bi-credit-card-fill me-2"></i>Pay ₹10 via Razorpay
+                                        </button>
+                                        
+                                        <div class="small text-muted mb-3"><em>— OR —</em></div>
+                                        
+                                        <div class="mx-auto mb-3 rounded-3 d-flex align-items-center justify-content-center" style="width:160px;height:160px;background:#fff;border:2px dashed var(--primary);">
+                                            <div class="text-center">
+                                                <i class="bi bi-qr-code fs-1" style="color:var(--primary);"></i>
+                                                <div class="small text-muted mt-1">QR Code</div>
+                                                <div class="small text-muted">UPI: aisu4india@upi</div>
+                                            </div>
+                                        </div>
+                                        <label class="form-label">Upload Payment Screenshot (if paying via QR)</label>
+                                        <input type="file" class="form-control mx-auto" style="max-width:400px;" id="sm-payment-proof" accept="image/*">
+                                        
+                                        <!-- Hidden field to store Razorpay payment ID -->
+                                        <input type="hidden" id="sm-razorpay-payment-id" name="razorpay_payment_id" value="">
+                                    </div>
+                                </div>
+
+                                <!-- Mode of Submission -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Mode of Submission *</label>
+                                    <select class="form-select" id="sm-mode" required>
+                                        <option value="">Select</option>
+                                        <option>Electronic</option>
+                                        <option>Physical</option>
+                                    </select>
+                                </div>
+
+                                <!-- Declaration -->
+                                <div class="col-12 mt-2">
+                                    <div class="small fw-700 text-uppercase" style="color:var(--primary);letter-spacing:1px;border-bottom:2px solid var(--primary-light);padding-bottom:6px;margin-bottom:12px;">Declaration (All must be checked)</div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="sm-decl1" required>
+                                        <label class="form-check-label small" for="sm-decl1">I hereby declare that all the information provided above is true and accurate to the best of my knowledge. I understand that providing false information may result in the cancellation of my membership.</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="sm-decl2" required>
+                                        <label class="form-check-label small" for="sm-decl2">I agree to abide by the rules and regulations of AISU and its Constitution and Orders, and understand that my membership can be terminated / Disciplinary Proceedings will be initiated if I engage in activities contrary to the objectives of the organization.</label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="sm-decl3" required>
+                                        <label class="form-check-label small" for="sm-decl3">I agree to pay the required fee upon submitting this form.</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <button type="button" id="sm-submit-btn" class="btn-primary-custom w-100 py-3" onclick="submitStudentMembership()">
+                                        <i class="bi bi-send-fill me-2"></i>Submit Student Membership Application
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="aisu-footer">
+        <div class="container py-4">
+            <div class="row g-5">
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand mb-3"><span class="orange">AISU</span><span class="white">4India</span></div>
+                    <p style="font-size:0.9rem;line-height:1.7;">An initiative of Federation of Indian Youth Association, registered under the Indian Trust Act, 1882.</p>
+                    <div class="footer-social mt-3">
+                        <a href="https://twitter.com/Official_AISU" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com/aisu4india" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100092878216816" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Quick Links</h5>
+                    <a href="index.html" class="footer-link">Home</a>
+                    <a href="about.html" class="footer-link">About Us</a>
+                    <a href="team.html" class="footer-link">Our Team</a>
+                    <a href="competition.html" class="footer-link">Competitions</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Membership</h5>
+                    <a href="primary-membership.html" class="footer-link">Primary Member</a>
+                    <a href="student-membership.html" class="footer-link">Student Member</a>
+                    <a href="internship.html" class="footer-link">Internship</a>
+                    <a href="login.html" class="footer-link">Login</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Contact</h5>
+                    <p class="small mb-2"><i class="bi bi-geo-alt-fill me-2" style="color:var(--primary)"></i>Dubwaliya Yadavchapra, Chanpatia, Bihar – 845450</p>
+                    <p class="small mb-2"><i class="bi bi-telephone-fill me-2" style="color:var(--primary)"></i>+91 80748 53717</p>
+                    <p class="small mb-4"><i class="bi bi-envelope-fill me-2" style="color:var(--primary)"></i>aisu4india@gmail.com</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start">&copy; 2026 <a href="index.html"
+                            style="color:var(--primary); text-decoration:none;">FIYA</a>. All Rights Reserved.
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">All India Students Union &ndash; Arise &bull; Awake &bull; Empower
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+    </footer>
+
+    <a href="#" class="scroll-top" id="scrollTop"><i class="bi bi-arrow-up"></i></a>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/aisu-main.js"></script>
+    <script src="js/aisu-forms.js"></script>
+    <script>
+        document.getElementById('sm-dob').addEventListener('change', function() {
+            const dob = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+            document.getElementById('sm-age').value = age;
+        });
+    </script>
+</body>
+</html>

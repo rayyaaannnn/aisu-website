@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Certificate Verification | AISU – All India Students Union</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Verify the authenticity of certificates issued by AISU. Enter the certificate number, mobile number, or email ID to verify.">
+    <link href="img/favicon.svg" rel="icon" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Saira:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/aisu-custom.css" rel="stylesheet">
+    <style>
+        .verify-card {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 100%);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+        }
+        .verify-option {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.12);
+            cursor: pointer;
+            transition: all 0.3s;
+            color: rgba(255,255,255,0.75);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: rgba(255,255,255,0.05);
+        }
+        .verify-option.active, .verify-option:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(255,111,15,0.1);
+        }
+        .verify-option i { font-size: 1.1rem; }
+        .result-card {
+            background: #fff;
+            border-radius: 16px;
+            border: 2px solid #22c55e;
+            padding: 28px;
+            animation: fadeInUp 0.5s ease;
+        }
+        .result-card.invalid {
+            border-color: #ef4444;
+            background: #fff;
+        }
+        .cert-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+        }
+        .cert-detail-row:last-child { border-bottom: none; }
+        .cert-detail-row .label { color: var(--text-muted); font-weight: 500; }
+        .cert-detail-row .value { color: var(--dark); font-weight: 600; text-align: right; max-width: 60%; }
+        .how-card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #eef0f5;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.35s;
+            height: 100%;
+        }
+        .how-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.08); transform: translateY(-4px); }
+        .how-step {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-family: 'Saira', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg aisu-navbar sticky-top">
+        <div class="container-fluid px-4 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <div class="brand-text"><span class="orange">AISU</span><span class="white">4India</span></div>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarMain">
+                <i class="bi bi-list text-white fs-2"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <div class="navbar-nav ms-auto align-items-lg-center gap-1">
+                    <a href="index.html" class="nav-link-custom">Home</a>
+                    <a href="about.html" class="nav-link-custom">About Us</a>
+                    <a href="team.html" class="nav-link-custom">Our Team</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle" data-bs-toggle="dropdown">Join Us</a>
+                        <div class="dropdown-menu">
+                            <a href="primary-membership.html" class="dropdown-item"><i class="bi bi-person-badge me-2"
+                                    style="color:var(--primary)"></i>Primary Membership</a>
+                            <a href="student-membership.html" class="dropdown-item"><i class="bi bi-mortarboard me-2"
+                                    style="color:var(--primary)"></i>Student Membership</a>
+                            <a href="affiliation.html" class="dropdown-item"><i class="bi bi-building me-2"
+                                    style="color:var(--primary)"></i>Organization Affiliation</a>
+                        </div>
+                    </div>
+                    <a href="competition.html" class="nav-link-custom">Competitions</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle" data-bs-toggle="dropdown">Initiatives</a>
+                        <div class="dropdown-menu">
+                            <a href="internship.html" class="dropdown-item"><i class="bi bi-briefcase me-2"
+                                    style="color:var(--primary)"></i>Internship</a>
+                            <a href="innovations.html" class="dropdown-item"><i class="bi bi-lightbulb me-2"
+                                    style="color:var(--primary)"></i>Innovation Cell (ICell)</a>
+                        </div>
+                    </div>
+                    <a href="complaint.html" class="nav-link-custom">Complaints</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle active" data-bs-toggle="dropdown">More</a>
+                        <div class="dropdown-menu">
+                            <a href="press.html" class="dropdown-item"><i class="bi bi-newspaper me-2" style="color:var(--primary)"></i>Updates &amp; Press</a>
+                            <a href="gallery.html" class="dropdown-item"><i class="bi bi-images me-2" style="color:var(--primary)"></i>Gallery &amp; Results</a>
+                            <a href="cert-verify.html" class="dropdown-item"><i class="bi bi-patch-check me-2" style="color:var(--primary)"></i>Verify Certificate</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="contact.html" class="dropdown-item"><i class="bi bi-envelope me-2" style="color:var(--primary)"></i>Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex ms-3 gap-2 mt-3 mt-lg-0">
+                    <a href="login.html" class="btn-nav-login nav-link-custom"><i
+                            class="bi bi-person-circle me-1"></i>Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <div class="page-hero">
+        <div class="container text-center position-relative" style="z-index:1;">
+            <h1 class="display-5 fw-800 text-white mb-3" style="font-family:'Saira',sans-serif;">Certificate
+                <span style="color:var(--primary)">Verification</span>
+            </h1>
+            <p class="text-white-50 mb-3" style="max-width:580px; margin:0 auto;">Verify the authenticity of any
+                certificate issued by AISU using the certificate number, mobile number, or email ID.</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center mb-0" style="--bs-breadcrumb-divider:'›';">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">Certificate Verification</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Verification Section -->
+    <section class="py-5 py-lg-6">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="verify-card reveal">
+                        <div class="text-center mb-4">
+                            <div style="width:72px;height:72px;background:rgba(255,111,15,0.15);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:2.2rem;">🏅</div>
+                            <h3 class="text-white fw-700" style="font-family:'Saira',sans-serif;">Verify Your Certificate</h3>
+                            <p class="small" style="color:rgba(255,255,255,0.55);">Choose a verification method and enter your details below</p>
+                        </div>
+
+                        <!-- Verification type tabs -->
+                        <div class="d-flex gap-3 mb-4 flex-wrap" id="verifyTypeTabs">
+                            <button class="verify-option active" id="tab-cert-no" onclick="switchVerifyType('cert-no')">
+                                <i class="bi bi-upc-scan"></i> Certificate Number
+                            </button>
+                            <button class="verify-option" id="tab-mobile" onclick="switchVerifyType('mobile')">
+                                <i class="bi bi-phone"></i> Mobile Number
+                            </button>
+                            <button class="verify-option" id="tab-email" onclick="switchVerifyType('email')">
+                                <i class="bi bi-envelope"></i> Email ID
+                            </button>
+                        </div>
+
+                        <!-- Input fields -->
+                        <div id="verifyInputSection">
+                            <div id="input-cert-no">
+                                <label class="form-label small fw-600" style="color:rgba(255,255,255,0.7);">Certificate Number</label>
+                                <input type="text" class="form-control mb-1" id="certNoInput" placeholder="e.g. AISUCERTCOMP2026000145" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:10px;padding:12px 16px;">
+                                <div class="small mt-1 mb-3" style="color:rgba(255,255,255,0.4);">Enter the full certificate number as printed on the certificate</div>
+                            </div>
+                            <div id="input-mobile" style="display:none;">
+                                <label class="form-label small fw-600" style="color:rgba(255,255,255,0.7);">Mobile Number</label>
+                                <input type="tel" class="form-control mb-1" id="mobileInput" placeholder="Enter 10-digit mobile number" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:10px;padding:12px 16px;">
+                                <div class="small mt-1 mb-3" style="color:rgba(255,255,255,0.4);">Enter the mobile number used at the time of participation</div>
+                            </div>
+                            <div id="input-email" style="display:none;">
+                                <label class="form-label small fw-600" style="color:rgba(255,255,255,0.7);">Email Address</label>
+                                <input type="email" class="form-control mb-1" id="emailInput" placeholder="Enter your email address" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:10px;padding:12px 16px;">
+                                <div class="small mt-1 mb-3" style="color:rgba(255,255,255,0.4);">Enter the email address used at the time of participation</div>
+                            </div>
+                        </div>
+
+                        <button class="btn-hero-primary w-100 justify-content-center py-3" id="verifyBtn" onclick="verifyCertificate()" style="font-size:1rem;">
+                            <i class="bi bi-shield-check"></i> Verify Certificate
+                        </button>
+
+                        <!-- Result Section -->
+                        <div id="verifyResult" class="mt-4" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="py-5" style="background:var(--light);">
+        <div class="container">
+            <div class="text-center mb-5 reveal">
+                <div class="section-badge">Verification Guide</div>
+                <h2 class="section-title">How to <span class="accent">Verify</span></h2>
+                <div class="section-divider mx-auto"></div>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-3 col-md-6 reveal">
+                    <div class="how-card">
+                        <div class="how-step">1</div>
+                        <h6 class="fw-700 mb-2">Open Verification Page</h6>
+                        <p class="small text-muted mb-0">Visit the Certificate Verification page on the AISU website.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 reveal">
+                    <div class="how-card">
+                        <div class="how-step">2</div>
+                        <h6 class="fw-700 mb-2">Choose Method</h6>
+                        <p class="small text-muted mb-0">Select verification by Certificate Number, Mobile Number, or Email ID.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 reveal">
+                    <div class="how-card">
+                        <div class="how-step">3</div>
+                        <h6 class="fw-700 mb-2">Enter Details</h6>
+                        <p class="small text-muted mb-0">Enter the required information and click Verify Certificate.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 reveal">
+                    <div class="how-card">
+                        <div class="how-step">4</div>
+                        <h6 class="fw-700 mb-2">View Result</h6>
+                        <p class="small text-muted mb-0">The system retrieves and displays the certificate details from the database.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificate Number Format -->
+    <section class="py-5 py-lg-6">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center mb-5 reveal">
+                        <div class="section-badge">Certificate Format</div>
+                        <h2 class="section-title">Certificate <span class="accent">Number Format</span></h2>
+                        <div class="section-divider mx-auto"></div>
+                    </div>
+                    <div class="p-4 p-lg-5 rounded-4 reveal"
+                        style="background:linear-gradient(135deg,var(--dark),var(--dark2)); border:1px solid var(--glass-border);">
+                        <h5 class="text-white fw-700 mb-4" style="font-family:'Saira',sans-serif;"><i class="bi bi-award-fill me-2" style="color:var(--primary)"></i>How Certificate Numbers Are Structured</h5>
+                        <div class="p-4 rounded-3 mb-4 text-center" style="background:rgba(255,111,15,0.08); border:1px solid rgba(255,111,15,0.2);">
+                            <div style="font-family:monospace; font-size:1.4rem; letter-spacing:2px; color:#fff; word-break:break-all;">
+                                <span style="color:var(--primary);">AISU</span><span style="color:#FFD700;">CERT</span><span style="color:#22c55e;">[ProgramCode]</span><span style="color:#3b82f6;">[Year]</span><span style="color:rgba(255,255,255,0.6);">[SerialNo]</span>
+                            </div>
+                            <div class="mt-3 p-3 rounded-3" style="background:rgba(255,255,255,0.06); font-family:monospace; font-size:1.1rem; color:rgba(255,255,255,0.85);">
+                                Example: AISUCERTCOMP2026000145
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start gap-3">
+                                    <span style="background:rgba(255,111,15,0.2);color:var(--primary);padding:3px 10px;border-radius:6px;font-size:0.8rem;font-family:monospace;font-weight:700;flex-shrink:0;">AISU</span>
+                                    <div class="small" style="color:rgba(255,255,255,0.65);">Organization Prefix – All India Students Union</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start gap-3">
+                                    <span style="background:rgba(255,215,0,0.15);color:#FFD700;padding:3px 10px;border-radius:6px;font-size:0.8rem;font-family:monospace;font-weight:700;flex-shrink:0;">CERT</span>
+                                    <div class="small" style="color:rgba(255,255,255,0.65);">Certificate Identifier – denotes this is a certificate</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start gap-3">
+                                    <span style="background:rgba(34,197,94,0.15);color:#22c55e;padding:3px 10px;border-radius:6px;font-size:0.8rem;font-family:monospace;font-weight:700;flex-shrink:0;">COMP</span>
+                                    <div class="small" style="color:rgba(255,255,255,0.65);">Program Code – Competition / Internship / Innovation etc.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start gap-3">
+                                    <span style="background:rgba(59,130,246,0.15);color:#3b82f6;padding:3px 10px;border-radius:6px;font-size:0.8rem;font-family:monospace;font-weight:700;flex-shrink:0;">2026</span>
+                                    <div class="small" style="color:rgba(255,255,255,0.65);">Year – Year when the certificate was issued</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start gap-3">
+                                    <span style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);padding:3px 10px;border-radius:6px;font-size:0.8rem;font-family:monospace;font-weight:700;flex-shrink:0;">000145</span>
+                                    <div class="small" style="color:rgba(255,255,255,0.65);">Serial Number – Unique incremental number per certificate</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 rounded-3" style="background:rgba(255,111,15,0.08); border:1px solid rgba(255,111,15,0.2);">
+                            <div class="small" style="color:rgba(255,255,255,0.65);"><i class="bi bi-info-circle-fill me-2" style="color:var(--primary)"></i>Every certificate issued by AISU carries a unique certificate number. No two certificates share the same number, ensuring secure and reliable verification.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="aisu-footer">
+        <div class="container py-4">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-brand mb-3"><span class="orange">AISU</span><span class="white">4India</span></div>
+                    <p style="font-size:0.9rem; line-height:1.7;">An initiative of Federation of Indian Youth
+                        Association, registered under the Indian Trust Act, 1882.</p>
+                    <div class="footer-social mt-3">
+                        <a href="https://twitter.com/Official_AISU" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com/aisu4india" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100092878216816" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://youtube.com/@official_AISU" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.linkedin.com/company/officialaisu/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Quick Links</h5>
+                    <a href="index.html" class="footer-link">Home</a>
+                    <a href="about.html" class="footer-link">About Us</a>
+                    <a href="team.html" class="footer-link">Our Team</a>
+                    <a href="competition.html" class="footer-link">Competitions</a>
+                    <a href="complaint.html" class="footer-link">Complaints</a>
+                    <a href="contact.html" class="footer-link">Contact Us</a>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Initiatives</h5>
+                    <a href="primary-membership.html" class="footer-link">Primary Member</a>
+                    <a href="student-membership.html" class="footer-link">Student Member</a>
+                    <a href="internship.html" class="footer-link">Internship</a>
+                    <a href="innovations.html" class="footer-link">Innovation Cell</a>
+                    <a href="affiliation.html" class="footer-link">Affiliation</a>
+                    <a href="login.html" class="footer-link">Login</a>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Resources</h5>
+                    <a href="press.html" class="footer-link">Press & Updates</a>
+                    <a href="gallery.html" class="footer-link">Gallery & Results</a>
+                    <a href="cert-verify.html" class="footer-link">Verify Certificate</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Contact</h5>
+                    <p class="small mb-2"><i class="bi bi-geo-alt-fill me-2" style="color:var(--primary)"></i>Dubwaliya
+                        Yadavchapra, Chanpatia, West Champaran, Bihar – 845450</p>
+                    <p class="small mb-2"><i class="bi bi-telephone-fill me-2" style="color:var(--primary)"></i>+91 80748 53717</p>
+                    <p class="small mb-2"><i class="bi bi-envelope-fill me-2" style="color:var(--primary)"></i>aisu4india@gmail.com</p>
+                    <p class="small"><i class="bi bi-envelope-fill me-2" style="color:var(--primary)"></i>vicepresident.aisu@gmail.com</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start">&copy; 2026 <a href="index.html"
+                            style="color:var(--primary); text-decoration:none;">FIYA</a>. All Rights Reserved.
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">All India Students Union &ndash; Arise &bull; Awake &bull; Empower
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+    </footer>
+
+    <a href="#" class="scroll-top" id="scrollTop"><i class="bi bi-arrow-up"></i></a>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/aisu-main.js"></script>
+    <script>
+        let currentType = 'cert-no';
+
+        function switchVerifyType(type) {
+            currentType = type;
+            document.querySelectorAll('.verify-option').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + type).classList.add('active');
+            document.querySelectorAll('#verifyInputSection > div').forEach(el => el.style.display = 'none');
+            document.getElementById('input-' + type).style.display = 'block';
+            document.getElementById('verifyResult').style.display = 'none';
+        }
+
+        function verifyCertificate() {
+            let value = '';
+            if (currentType === 'cert-no') value = document.getElementById('certNoInput').value.trim();
+            else if (currentType === 'mobile') value = document.getElementById('mobileInput').value.trim();
+            else value = document.getElementById('emailInput').value.trim();
+
+            if (!value) {
+                showResult('error', 'Please enter a valid ' + (currentType === 'cert-no' ? 'certificate number' : currentType === 'mobile' ? 'mobile number' : 'email address') + '.');
+                return;
+            }
+
+            const btn = document.getElementById('verifyBtn');
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Verifying...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="bi bi-shield-check"></i> Verify Certificate';
+                btn.disabled = false;
+
+                // Demo verification logic
+                if (currentType === 'cert-no') {
+                    if (value.toUpperCase().startsWith('AISUCERT')) {
+                        showCertResult(value.toUpperCase());
+                    } else {
+                        showResult('invalid', 'Certificate record not found. Please check the certificate number and try again.');
+                    }
+                } else if (currentType === 'mobile' && value.length === 10 && /^\d+$/.test(value)) {
+                    showMultipleCertResult(value);
+                } else if (currentType === 'email' && value.includes('@')) {
+                    showMultipleCertResult(value);
+                } else {
+                    showResult('invalid', 'Certificate record not found. Please verify the information entered and try again.');
+                }
+            }, 1800);
+        }
+
+        function showResult(type, message) {
+            const resultDiv = document.getElementById('verifyResult');
+            resultDiv.style.display = 'block';
+            if (type === 'error') {
+                resultDiv.innerHTML = `<div class="p-3 rounded-3" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);">
+                    <div class="d-flex align-items-center gap-3"><i class="bi bi-x-circle-fill fs-4" style="color:#ef4444;"></i><span style="color:#fca5a5;">${message}</span></div>
+                </div>`;
+            } else {
+                resultDiv.innerHTML = `<div class="result-card invalid">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div style="width:48px;height:48px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">❌</div>
+                        <div><div class="fw-700" style="color:#991b1b;">Certificate Not Found</div><div class="small text-muted">${message}</div></div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8000/api' : '/backend-php/api';
+
+        function statusBadge(status) {
+            const s = (status||'valid').toLowerCase();
+            const map = {valid:'#15803d:#f0fdf4', active:'#15803d:#f0fdf4', revoked:'#991b1b:#fef2f2', expired:'#92400e:#fffbeb'};
+            const [fg,bg] = (map[s]||'#15803d:#f0fdf4').split(':');
+            return `<span style="background:${bg};color:${fg};padding:3px 10px;border-radius:20px;font-size:0.8rem;font-weight:700;">● ${status||'Valid'}</span>`;
+        }
+
+        async function showCertResult(certNo) {
+            const resultDiv = document.getElementById('verifyResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-success" role="status"></div><div class="mt-2 text-muted small">Verifying certificate...</div></div>';
+            try {
+                const res = await fetch(`${API}/certs/verify/${encodeURIComponent(certNo)}`);
+                const data = await res.json();
+                if (!res.ok || data.error) {
+                    resultDiv.innerHTML = `<div class="result-card invalid"><div class="d-flex align-items-center gap-3 mb-3"><div style="width:48px;height:48px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">❌</div><div><div class="fw-700" style="color:#991b1b;">Certificate Not Found</div><div class="small text-muted">No certificate record matches the number entered. Please check and try again.</div></div></div></div>`;
+                    return;
+                }
+                const c = data.data || data;
+                const issued = c.issued_at ? new Date(c.issued_at).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) : 'N/A';
+                resultDiv.innerHTML = `<div class="result-card">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div style="width:56px;height:56px;border-radius:14px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:2rem;">✅</div>
+                        <div><div class="fw-700 fs-5" style="color:#15803d;">Certificate Verified</div><div class="small text-muted">Authentic certificate issued by AISU</div></div>
+                    </div>
+                    <div class="cert-detail-row"><span class="label">Certificate Number</span><span class="value" style="font-family:monospace;color:var(--primary);">${c.cert_number||certNo}</span></div>
+                    <div class="cert-detail-row"><span class="label">Participant Name</span><span class="value">${c.participant_name||'—'}</span></div>
+                    <div class="cert-detail-row"><span class="label">Program / Event Name</span><span class="value">${c.program||c.event||'—'}</span></div>
+                    <div class="cert-detail-row"><span class="label">Certificate Type</span><span class="value">${c.cert_type||c.type||'Participation'}</span></div>
+                    <div class="cert-detail-row"><span class="label">Date of Issue</span><span class="value">${issued}</span></div>
+                    <div class="cert-detail-row"><span class="label">Certificate Status</span><span class="value">${statusBadge(c.status||'Valid')}</span></div>
+                    <div class="mt-4 p-3 rounded-3" style="background:#f0fdf4;border:1px solid #bbf7d0;">
+                        <div class="small" style="color:#15803d;"><i class="bi bi-shield-check-fill me-2"></i>Verified against AISU central database. This certificate is authentic.</div>
+                    </div>
+                </div>`;
+            } catch(e) {
+                resultDiv.innerHTML = '<div class="alert alert-warning mt-3">Unable to connect to verification server. Please try again later.</div>';
+            }
+        }
+
+        async function showMultipleCertResult(identifier) {
+            const resultDiv = document.getElementById('verifyResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-success" role="status"></div><div class="mt-2 text-muted small">Searching records...</div></div>';
+            try {
+                const res = await fetch(`${API}/certs?identifier=${encodeURIComponent(identifier)}`);
+                const data = await res.json();
+                const certs = Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : []);
+                if (!certs.length) {
+                    resultDiv.innerHTML = `<div class="result-card invalid"><div class="d-flex align-items-center gap-3"><div style="width:48px;height:48px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">❌</div><div><div class="fw-700" style="color:#991b1b;">No Records Found</div><div class="small text-muted">No certificates found for <strong>${identifier}</strong>. Please verify the information entered.</div></div></div></div>`;
+                    return;
+                }
+                const rows = certs.map((c,i) => {
+                    const issued = c.issued_at ? new Date(c.issued_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : 'N/A';
+                    return `<tr>
+                        <td>${i+1}</td>
+                        <td><code style="font-size:0.78rem;color:var(--primary);">${c.cert_number||'—'}</code></td>
+                        <td>${c.program||c.event||'—'}</td>
+                        <td>${c.cert_type||c.type||'Participation'}</td>
+                        <td>${issued}</td>
+                        <td>${statusBadge(c.status||'Valid')}</td>
+                        <td>${c.download_url ? `<a href="${API}${c.download_url}" target="_blank" class="btn btn-sm btn-outline-primary">Download</a>` : '<span class="text-muted small">N/A</span>'}</td>
+                    </tr>`;
+                }).join('');
+
+                resultDiv.innerHTML = `<div class="result-card">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div style="width:56px;height:56px;border-radius:14px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:2rem;">✅</div>
+                        <div><div class="fw-700 fs-5" style="color:#15803d;">${certs.length} Certificate(s) Found</div><div class="small text-muted">Showing all certificates in tabular form for: <strong>${identifier}</strong></div></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered align-middle mb-0" style="font-size:0.88rem;">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Certificate No.</th>
+                                    <th>Program / Competition</th>
+                                    <th>Certificate Type</th>
+                                    <th>Date of Issue</th>
+                                    <th>Status</th>
+                                    <th>Download</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3 p-3 rounded-3" style="background:#f0fdf4;border:1px solid #bbf7d0;">
+                        <div class="small" style="color:#15803d;"><i class="bi bi-shield-check-fill me-2"></i>All certificates above are verified as authentic and issued by AISU.</div>
+                    </div>
+                </div>`;
+            } catch(e) {
+                resultDiv.innerHTML = '<div class="alert alert-warning mt-3">Unable to connect to verification server. Please try again later.</div>';
+            }
+        }
+    </script>
+</body>
+
+</html>

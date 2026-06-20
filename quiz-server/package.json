@@ -1,0 +1,13 @@
+{
+  "name": "aisu-quiz-server",
+  "version": "1.0.0",
+  "description": "AISU Live Quiz Room WebSocket Server",
+  "main": "quiz-server.js",
+  "scripts": {
+    "start": "node quiz-server.js"
+  },
+  "dependencies": {
+    "socket.io": "^4.7.4",
+    "cors": "^2.8.5"
+  }
+}

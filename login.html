@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Login | AISU – All India Students Union</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Login to your AISU account – for administrators, primary members, student members, and users.">
+    <link href="img/favicon.svg" rel="icon" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Saira:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/aisu-custom.css" rel="stylesheet">
+    <style>
+        .login-page-bg {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--dark) 0%, #1a2d42 50%, #0a2040 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-page-bg::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 111, 15, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: bgOrb1 8s ease-in-out infinite;
+        }
+
+        .login-page-bg::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            left: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 51, 102, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: bgOrb2 10s ease-in-out infinite;
+        }
+
+        @keyframes bgOrb1 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(-30px, 20px) scale(1.1);
+            }
+        }
+
+        @keyframes bgOrb2 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(20px, -30px) scale(1.08);
+            }
+        }
+
+        .login-card {
+            position: relative;
+            z-index: 1;
+        }
+
+        .role-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 8px 12px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--primary);
+            animation: fadeInAnim 0.3s ease;
+        }
+
+        @keyframes fadeInAnim {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal */
+        .aisu-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .aisu-modal-overlay.show {
+            display: flex;
+        }
+
+        .aisu-modal-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 36px 32px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .aisu-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .aisu-modal-close:hover {
+            color: var(--dark);
+        }
+
+        /* Admin Panel */
+        .admin-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .admin-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 111, 15, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .admin-stat {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff !important;
+            padding: 10px 24px;
+            border-radius: 10px;
+            cursor: pointer !important;
+            font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .home-btn {
+            background: rgba(255, 111, 15, 0.2);
+            border: 1px solid rgba(255, 111, 15, 0.4);
+            color: #ff6f0f !important;
+            padding: 10px 24px;
+            border-radius: 10px;
+            cursor: pointer !important;
+            font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .home-btn:hover {
+            background: rgba(255, 111, 15, 0.35);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Small Navbar -->
+    <nav class="navbar navbar-expand-lg aisu-navbar" style="position:fixed; top:0; left:0; right:0; z-index:1000;">
+        <div class="container-fluid px-4 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <div class="brand-text"><span class="orange">AISU</span><span class="white">4India</span></div>
+            </a>
+            <div class="ms-auto">
+                <a href="index.html" class="nav-link-custom">← Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="login-page-bg" style="padding-top:80px;">
+<div class="w-100" style="max-width:700px; position:relative; z-index:1;">
+            <!-- Card -->
+            <div class="login-card">
+
+                <div class="login-logo">
+                    <div
+                        style="font-family:'Saira',sans-serif; font-size:2.2rem; font-weight:900; line-height:1; margin-bottom:4px;">
+                        <span style="color:var(--primary)">AISU</span><span style="color:var(--dark)">4India</span>
+                   </div>
+                                       <div style="font-size:0.85rem; color:var(--text-muted); letter-spacing:0.5px;">All India Students
+                        Union – A Division of FIYA</div>
+               </div>
+
+
+                <h5 class="fw-700 text-center mb-4" style="color:var(--dark);">Sign in to your account</h5>
+
+
+                <!-- Unified role description -->
+                <div class="role-desc" id="role-desc">
+                    <i class="bi bi-key me-1"></i>
+                    <strong>Unified Login:</strong> Enter your Email, Mobile, Member ID (AISU...), or Student ID (AISUSM...).
+                    You'll be redirected to your assigned portal automatically.
+                </div>
+
+
+                <!-- Login Form -->
+                <form id="login-form">
+
+                    <div class="mb-3">
+                        <label class="form-label" id="username-label">Email / Username / Member ID / Student ID</label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="background:var(--light); border-right:none;"><i
+                                    class="bi bi-person-fill text-muted"></i></span>
+                            <input type="text" class="form-control" id="login-username"
+                                placeholder="e.g. email@domain.com, +919876543210, AISUBR2024000001, AISUSM2024BR000001" style="border-left:none;" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="background:var(--light); border-right:none;"><i
+                                    class="bi bi-lock-fill text-muted"></i></span>
+                            <input type="password" class="form-control" placeholder="Enter your password"
+                                style="border-left:none;" id="password-input" required>
+                            <button class="btn" type="button"
+                                style="border:1px solid #e2e8f0; border-left:none; background:var(--light);"
+                                onclick="togglePwd()">
+                                <i class="bi bi-eye-fill text-muted" id="pwd-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check mb-0">
+                            <input class="form-check-input" type="checkbox" id="remember-me">
+                            <label class="form-check-label small" for="remember-me">Remember me</label>
+                        </div>
+                        <a href="#" onclick="openForgotModal(); return false;" style="font-size:0.85rem; color:var(--primary); text-decoration:none;">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="btn-primary-custom w-100 justify-content-center py-3 mb-3"
+                        onclick="handleLogin(event)">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </button>
+                </form>
+
+
+                <!-- Fixed register section -->
+                <div id="register-section" class="text-center" style="color:var(--text-muted); font-size:0.88rem;">
+                    New to AISU? Apply for 
+                    <a href="student-membership.html" style="color:var(--primary); font-weight:600; text-decoration:none;">Student</a>
+                    or 
+                    <a href="primary-membership.html" style="color:var(--primary); font-weight:600; text-decoration:none;">Primary Membership</a>
+                </div>
+
+
+                <hr style="margin:24px 0; border-color:#eef0f5;">
+
+                <!-- Quick Links -->
+                <div class="row g-2 text-center" style="font-size:0.82rem;">
+                    <div class="col-4">
+                        <a href="primary-membership.html" class="text-decoration-none" style="color:var(--text-muted);">
+                            <i class="bi bi-person-badge d-block mb-1"
+                                style="color:var(--primary); font-size:1.3rem;"></i>
+                            Primary Member
+                        </a>
+                    </div>
+                    <div class="col-4">
+                        <a href="student-membership.html" class="text-decoration-none" style="color:var(--text-muted);">
+                            <i class="bi bi-mortarboard d-block mb-1"
+                                style="color:var(--secondary); font-size:1.3rem;"></i>
+                            Student Member
+                        </a>
+                    </div>
+                    <div class="col-4">
+                        <a href="contact.html" class="text-decoration-none" style="color:var(--text-muted);">
+                            <i class="bi bi-headset d-block mb-1" style="color:#22c55e; font-size:1.3rem;"></i>
+                            Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Portal Note -->
+            <div class="text-center mt-4" style="color:rgba(255,255,255,0.5); font-size:0.82rem;">
+                <i class="bi bi-shield-lock me-1"></i>
+                Admin Portal access is role-restricted and monitored.
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/aisu-main.js"></script>
+    <script>
+
+
+
+        function togglePwd() {
+            const input = document.getElementById('password-input');
+            const icon = document.getElementById('pwd-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash-fill text-muted';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye-fill text-muted';
+            }
+        }
+
+        function toggleField(inputId, iconId) {
+            const inp = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                icon.className = 'bi bi-eye-slash-fill text-muted';
+            } else {
+                inp.type = 'password';
+                icon.className = 'bi bi-eye-fill text-muted';
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('password-input').value;
+            const role = 'auto';
+
+
+            if (!username || !password) {
+                showLoginError('Please enter your credentials.');
+                return;
+            }
+
+            const loginBtn = document.querySelector('#login-form button[type="submit"]');
+            const origHTML = loginBtn ? loginBtn.innerHTML : '';
+            if (loginBtn) { loginBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Signing in...'; loginBtn.disabled = true; }
+
+            const authApi = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8000/api' : '/backend-php/api';
+            fetch(`${authApi}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: username, password, role })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (loginBtn) { loginBtn.innerHTML = origHTML; loginBtn.disabled = false; }
+                if (data.success) {
+                    localStorage.setItem('aisu_token', data.data.access_token);
+                    if (data.data.refresh_token) localStorage.setItem('aisu_refresh', data.data.refresh_token);
+                    localStorage.setItem('aisu_user', JSON.stringify(data.data.user));
+
+                    // Role-based redirect: any role with dashboard.view goes to admin
+                    const userRole = data.data.user?.role || 'user';
+                    const adminRoles = ['national','vp','secretary','treasurer','state','district','mandal','institutional'];
+                    if (adminRoles.includes(userRole)) {
+                        window.location.href = 'admin.html';
+                    } else if (userRole === 'member') {
+                        window.location.href = 'admin.html'; // Members see limited dashboard
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                } else {
+                    showLoginError(data.message || 'Invalid credentials. Please check and try again.');
+                }
+            })
+            .catch(() => {
+                if (loginBtn) { loginBtn.innerHTML = origHTML; loginBtn.disabled = false; }
+                showLoginError('Unable to connect to server. Please ensure the backend is running.');
+            });
+        }
+
+        function showLoginError(msg) {
+            let errDiv = document.getElementById('login-error-msg');
+            if (!errDiv) {
+                errDiv = document.createElement('div');
+                errDiv.id = 'login-error-msg';
+                errDiv.style.cssText = 'background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 16px;font-size:0.88rem;color:#991b1b;margin-bottom:16px;display:flex;align-items:center;gap:8px;';
+                document.getElementById('login-form').prepend(errDiv);
+            }
+            errDiv.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> ' + msg;
+            errDiv.style.display = 'flex';
+        }
+
+
+
+
+
+    </script>
+
+    <!-- ============================================= -->
+    <!-- Forgot Password OTP Modal -->
+    <!-- ============================================= -->
+    <div class="aisu-modal-overlay" id="forgot-modal">
+        <div class="aisu-modal-box" style="max-width:440px;">
+            <button class="aisu-modal-close" onclick="closeForgotModal()" title="Close">&times;</button>
+
+            <!-- Step 1: Choose delivery method -->
+            <div id="forgot-step1">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <div style="font-size:2.5rem; margin-bottom:10px;">🔐</div>
+                    <div style="font-family:'Saira',sans-serif; font-size:1.4rem; font-weight:800; color:var(--dark);">Forgot Password?</div>
+                    <div style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;">We'll send a One-Time Password (OTP) to verify your identity.</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-600">Registered Email or Mobile Number</label>
+                    <input type="text" class="form-control" id="fp-identifier" placeholder="Enter your email or +91 mobile number">
+                </div>
+                <div class="mb-1" style="font-size:0.78rem; color:var(--text-muted);"><i class="bi bi-info-circle me-1"></i>OTP will be sent to your registered email address.</div>
+                <div id="fp-step1-error" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:10px 14px; font-size:0.85rem; color:#991b1b; margin-bottom:12px;"></div>
+                <button type="button" class="btn-primary-custom w-100 justify-content-center py-3" onclick="fpSendOtp()">
+                    <i class="bi bi-send-fill"></i> Send OTP
+                </button>
+            </div>
+
+            <!-- Step 2: Enter OTP -->
+            <div id="forgot-step2" style="display:none;">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <div style="font-size:2.5rem; margin-bottom:10px;">📨</div>
+                    <div style="font-family:'Saira',sans-serif; font-size:1.4rem; font-weight:800; color:var(--dark);">Verify OTP</div>
+                    <div id="fp-sent-to-msg" style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-600">Enter 6-digit OTP</label>
+                    <input type="text" class="form-control text-center" id="fp-otp" maxlength="6" placeholder="● ● ● ● ● ●" style="letter-spacing:10px; font-size:1.3rem; font-weight:700;">
+                </div>
+                <div id="fp-countdown" style="text-align:center; font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">OTP expires in <span id="fp-timer" style="color:var(--primary); font-weight:700;">02:00</span></div>
+                <div id="fp-step2-error" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:10px 14px; font-size:0.85rem; color:#991b1b; margin-bottom:12px;"></div>
+                <button type="button" class="btn-primary-custom w-100 justify-content-center py-3 mb-2" onclick="fpVerifyOtp()">
+                    <i class="bi bi-check-circle-fill"></i> Verify OTP
+                </button>
+                <div style="text-align:center; font-size:0.82rem; color:var(--text-muted);">
+                    Didn't receive? <a href="#" onclick="fpResendOtp(); return false;" style="color:var(--primary); font-weight:600;">Resend OTP</a>
+                </div>
+            </div>
+
+            <!-- Step 3: Reset Password -->
+            <div id="forgot-step3" style="display:none;">
+                <div style="text-align:center; margin-bottom:20px;">
+                    <div style="font-size:2.5rem; margin-bottom:10px;">🔑</div>
+                    <div style="font-family:'Saira',sans-serif; font-size:1.4rem; font-weight:800; color:var(--dark);">Set New Password</div>
+                    <div style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;">Create a strong new password for your account.</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-600">New Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="fp-newpwd" placeholder="Minimum 6 characters">
+                        <button class="btn" type="button" style="border:1px solid #e2e8f0; border-left:none; background:var(--light);" onclick="toggleField('fp-newpwd','fp-new-icon')"><i class="bi bi-eye-fill text-muted" id="fp-new-icon"></i></button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-600">Confirm New Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="fp-confpwd" placeholder="Repeat new password">
+                        <button class="btn" type="button" style="border:1px solid #e2e8f0; border-left:none; background:var(--light);" onclick="toggleField('fp-confpwd','fp-conf-icon')"><i class="bi bi-eye-fill text-muted" id="fp-conf-icon"></i></button>
+                    </div>
+                </div>
+                <div id="fp-step3-error" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:10px 14px; font-size:0.85rem; color:#991b1b; margin-bottom:12px;"></div>
+                <button type="button" class="btn-primary-custom w-100 justify-content-center py-3" onclick="fpResetPassword()">
+                    <i class="bi bi-shield-lock-fill"></i> Reset Password
+                </button>
+            </div>
+
+            <!-- Step 4: Success -->
+            <div id="forgot-step4" style="display:none; text-align:center; padding:20px 0;">
+                <div style="font-size:3.5rem; margin-bottom:14px;">✅</div>
+                <h5 style="font-family:'Saira',sans-serif; color:var(--dark);">Password Reset Successful!</h5>
+                <p class="text-muted small">Your password has been updated. You can now sign in with your new password.</p>
+                <button class="btn-primary-custom mt-2" onclick="closeForgotModal()" style="display:inline-flex;"><i class="bi bi-box-arrow-in-right"></i> Back to Login</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ============= Forgot Password OTP Logic ============= */
+        let fpTimerInterval = null;
+        let fpOtpCode = null;   // In production this is server-validated; here simulated
+
+        function openForgotModal() {
+            // Reset to step 1
+            ['forgot-step1','forgot-step2','forgot-step3','forgot-step4'].forEach(id => {
+                document.getElementById(id).style.display = id === 'forgot-step1' ? 'block' : 'none';
+            });
+            document.getElementById('fp-identifier').value = '';
+            document.getElementById('fp-step1-error').style.display = 'none';
+            document.getElementById('forgot-modal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeForgotModal() {
+            document.getElementById('forgot-modal').classList.remove('show');
+            document.body.style.overflow = '';
+            if (fpTimerInterval) clearInterval(fpTimerInterval);
+        }
+
+        document.getElementById('forgot-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeForgotModal();
+        });
+
+        function fpSendOtp() {
+            const identifier = document.getElementById('fp-identifier').value.trim();
+            const errDiv = document.getElementById('fp-step1-error');
+
+            if (!identifier) {
+                errDiv.textContent = 'Please enter your registered email or mobile number.';
+                errDiv.style.display = 'block';
+                return;
+            }
+            errDiv.style.display = 'none';
+
+            // Call backend to send OTP
+            const authApi = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8000/api' : '/backend-php/api';
+            fetch(`${authApi}/auth/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identifier })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('forgot-step1').style.display = 'none';
+                    document.getElementById('forgot-step2').style.display = 'block';
+                    const maskedEmail = data.data?.masked_email || identifier;
+                    document.getElementById('fp-sent-to-msg').innerHTML =
+                        'An OTP has been sent to your email: <strong>' + maskedEmail + '</strong>';
+                    fpStartTimer(120);
+                } else {
+                    errDiv.textContent = data.message || 'Account not found.';
+                    errDiv.style.display = 'block';
+                }
+            })
+            .catch(() => {
+                errDiv.textContent = 'Unable to connect to server. Please try again.';
+                errDiv.style.display = 'block';
+            });
+        }
+
+        function fpResendOtp() {
+            if (fpTimerInterval) clearInterval(fpTimerInterval);
+            document.getElementById('fp-step2-error').style.display = 'none';
+            document.getElementById('fp-otp').value = '';
+            const identifier = document.getElementById('fp-identifier').value.trim();
+            const authApi = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8000/api' : '/backend-php/api';
+            fetch(`${authApi}/auth/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identifier })
+            }).then(r => r.json()).then(data => {
+                if (data.success) fpStartTimer(120);
+            }).catch(() => {});
+        }
+
+        function fpStartTimer(seconds) {
+            const timerEl = document.getElementById('fp-timer');
+            let rem = seconds;
+            if (fpTimerInterval) clearInterval(fpTimerInterval);
+            timerEl.style.color = 'var(--primary)';
+            fpTimerInterval = setInterval(() => {
+                rem--;
+                const m = String(Math.floor(rem / 60)).padStart(2, '0');
+                const s = String(rem % 60).padStart(2, '0');
+                timerEl.textContent = m + ':' + s;
+                if (rem <= 0) {
+                    clearInterval(fpTimerInterval);
+                    timerEl.textContent = 'Expired';
+                    timerEl.style.color = '#dc2626';
+                }
+            }, 1000);
+        }
+
+        function fpVerifyOtp() {
+            const entered = document.getElementById('fp-otp').value.trim();
+            const errDiv = document.getElementById('fp-step2-error');
+            const identifier = document.getElementById('fp-identifier').value.trim();
+
+            if (!entered || entered.length !== 6) {
+                errDiv.textContent = 'Please enter the 6-digit OTP sent to you.';
+                errDiv.style.display = 'block';
+                return;
+            }
+
+            const authApi = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8000/api' : '/backend-php/api';
+            fetch(`${authApi}/auth/verify-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identifier, otp: entered })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    if (fpTimerInterval) clearInterval(fpTimerInterval);
+                    document.getElementById('forgot-step2').style.display = 'none';
+                    document.getElementById('forgot-step3').style.display = 'block';
+                } else {
+                    errDiv.textContent = data.message || 'Incorrect OTP.';
+                    errDiv.style.display = 'block';
+                }
+            })
+            .catch(() => {
+                errDiv.textContent = 'Unable to connect to server.';
+                errDiv.style.display = 'block';
+            });
+        }
+
+        function fpResetPassword() {
+            const pwd = document.getElementById('fp-newpwd').value;
+            const conf = document.getElementById('fp-confpwd').value;
+            const errDiv = document.getElementById('fp-step3-error');
+            const identifier = document.getElementById('fp-identifier').value.trim();
+
+            if (pwd.length < 6) {
+                errDiv.textContent = 'Password must be at least 6 characters.';
+                errDiv.style.display = 'block';
+                return;
+            }
+            if (pwd !== conf) {
+                errDiv.textContent = 'Passwords do not match. Please re-enter.';
+                errDiv.style.display = 'block';
+                return;
+            }
+            errDiv.style.display = 'none';
+
+            const authApi = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8000/api' : '/backend-php/api';
+            fetch(`${authApi}/auth/reset-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identifier, new_password: pwd })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('forgot-step3').style.display = 'none';
+                    document.getElementById('forgot-step4').style.display = 'block';
+                } else {
+                    errDiv.textContent = data.message || 'Failed to reset password.';
+                    errDiv.style.display = 'block';
+                }
+            })
+            .catch(() => {
+                errDiv.textContent = 'Unable to connect to server.';
+                errDiv.style.display = 'block';
+            });
+        }
+    </script>
+</body>
+
+</html>

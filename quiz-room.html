@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quiz Room | AISU4India</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Saira:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+<script src="js/quiz-webrtc.js" defer></script>
+<style>
+:root{--primary:#FF6F0F;--dark:#0d1b2a;--dark2:#1a2d42;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--dark) 0%,var(--dark2) 100%);min-height:100vh;color:#fff;}
+
+/* Join Screen */
+#join-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:60px 24px 24px;}
+.join-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(20px);border-radius:20px;padding:40px;width:100%;max-width:460px;}
+.join-card h2{font-family:'Saira',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:4px;}
+.join-card .brand{font-family:'Saira',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:20px;color:rgba(255,255,255,.7);}
+.join-card .brand span{color:var(--primary);}
+.form-control{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:12px 14px;}
+.form-control:focus{background:rgba(255,255,255,.12);border-color:var(--primary);color:#fff;box-shadow:none;}
+.form-control::placeholder{color:rgba(255,255,255,.4);}
+.btn-join{background:var(--primary);border:0;color:#fff;font-weight:700;padding:14px;border-radius:10px;font-size:1rem;width:100%;transition:.2s;}
+.btn-join:hover{background:#e05c00;color:#fff;}
+
+/* Lobby */
+#lobby-screen{min-height:100vh;display:flex;flex-direction:column;}
+.quiz-header{background:rgba(0,0,0,.3);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(10px);}
+.room-code{font-family:'Saira',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:.1em;color:var(--primary);}
+.quiz-content{flex:1;display:flex;gap:0;}
+.sidebar-p{width:280px;background:rgba(0,0,0,.25);padding:20px;border-right:1px solid rgba(255,255,255,.08);overflow-y:auto;}
+.main-area{flex:1;padding:24px;display:flex;flex-direction:column;}
+
+/* Waiting */
+#waiting-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.pulse-ring{width:100px;height:100px;border-radius:50%;border:3px solid var(--primary);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;animation:pulse-ring 2s ease infinite;}
+@keyframes pulse-ring{0%,100%{box-shadow:0 0 0 0 rgba(255,111,15,.4);}50%{box-shadow:0 0 0 16px rgba(255,111,15,0);}}
+
+/* Question */
+#question-area{display:none;flex:1;flex-direction:column;}
+.q-progress{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.q-progress-bar{flex:1;height:6px;background:rgba(255,255,255,.15);border-radius:3px;}
+.q-progress-fill{height:100%;background:var(--primary);border-radius:3px;transition:width .3s;}
+.q-timer{font-family:'Saira',sans-serif;font-size:1.6rem;font-weight:800;color:var(--primary);min-width:42px;text-align:center;}
+.q-text{font-family:'Saira',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:24px;line-height:1.4;}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.option-btn{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);color:#fff;border-radius:12px;padding:16px 20px;font-size:1rem;font-weight:500;cursor:pointer;text-align:left;transition:.2s;display:flex;align-items:center;gap:10px;}
+.option-btn:hover:not(:disabled){background:rgba(255,111,15,.15);border-color:var(--primary);}
+.option-btn.selected{background:rgba(255,111,15,.25);border-color:var(--primary);}
+.option-btn.correct{background:rgba(22,163,74,.3);border-color:#16a34a;}
+.option-btn.wrong{background:rgba(220,38,38,.25);border-color:#dc2626;}
+.option-btn:disabled{cursor:default;opacity:.7;}
+.opt-letter{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;}
+
+/* Leaderboard */
+#leaderboard-area{display:none;}
+.lb-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;background:rgba(255,255,255,.06);margin-bottom:8px;}
+.lb-rank{font-family:'Saira',sans-serif;font-size:1.3rem;font-weight:800;width:36px;}
+.lb-score{margin-left:auto;font-family:'Saira',sans-serif;font-size:1.1rem;font-weight:700;color:var(--primary);}
+
+/* Chat */
+#chat-panel{height:260px;display:flex;flex-direction:column;margin-top:20px;}
+.chat-msgs{flex:1;overflow-y:auto;padding-right:4px;}
+.chat-msg{margin-bottom:6px;font-size:.8rem;line-height:1.4;}
+.chat-msg .from{font-weight:600;color:var(--primary);}
+.chat-input-row{display:flex;gap:6px;margin-top:8px;}
+.chat-input{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:8px;padding:8px 10px;font-size:.8rem;}
+.chat-input::placeholder{color:rgba(255,255,255,.35);}
+
+/* Participant list */
+.p-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.82rem;}
+.p-avatar{width:28px;height:28px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;flex-shrink:0;}
+
+/* Moderator Controls */
+#mod-controls{background:rgba(255,111,15,.1);border:1px solid rgba(255,111,15,.3);border-radius:12px;padding:16px;margin-bottom:16px;}
+
+/* Status overlay */
+#status-toast{position:fixed;top:20px;right:20px;background:var(--primary);color:#fff;padding:10px 18px;border-radius:10px;font-weight:600;font-size:.875rem;z-index:999;display:none;box-shadow:0 4px 20px rgba(255,111,15,.4);}
+
+@media(max-width:640px){.options-grid{grid-template-columns:1fr;}.sidebar-p{display:none;}}
+</style>
+</head>
+<body>
+<style>
+#conn-banner{position:fixed;top:0;left:0;right:0;z-index:10000;padding:9px 20px;font-size:0.82rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.4s;pointer-events:none;}
+#conn-banner.connecting{background:rgba(245,158,11,0.95);color:#fff;}
+#conn-banner.connected{background:rgba(22,163,74,0.92);color:#fff;}
+#conn-banner.offline{background:rgba(220,38,38,0.95);color:#fff;pointer-events:all;}
+#conn-banner .cdot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block;}
+#conn-banner.connecting .cdot{animation:cpulse 1s ease infinite;}
+@keyframes cpulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+</style>
+<div id="conn-banner" class="connecting">
+  <span class="cdot"></span>
+  <span id="conn-text">Connecting to server…</span>
+</div>
+
+<div id="status-toast"></div>
+
+<!-- JOIN SCREEN -->
+<div id="join-screen">
+  <div class="join-card">
+    <div class="brand"><span>AISU</span>4India</div>
+    <h2>Join Quiz Room</h2>
+    <p style="color:rgba(255,255,255,.55);font-size:.9rem;margin-bottom:24px;">Enter your details to join the live quiz</p>
+    <div class="mb-3">
+      <label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:rgba(255,255,255,.7);">Room Code *</label>
+      <input type="text" id="inp-code" class="form-control" placeholder="e.g. A3B7C2" style="text-transform:uppercase;letter-spacing:.1em;font-size:1.2rem;">
+    </div>
+    <div class="mb-3">
+      <label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:rgba(255,255,255,.7);">Your Name *</label>
+      <input type="text" id="inp-name" class="form-control" placeholder="Full name">
+    </div>
+    <div class="mb-4">
+      <label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:6px;color:rgba(255,255,255,.7);">Team Name</label>
+      <input type="text" id="inp-team" class="form-control" placeholder="Solo or team name">
+    </div>
+    <button class="btn-join" id="join-btn">Join Room <i class="bi bi-arrow-right-short"></i></button>
+    <div id="join-err" class="mt-3" style="color:#f87171;font-size:.82rem;display:none;"></div>
+  </div>
+</div>
+
+<!-- LOBBY / QUIZ SCREEN -->
+<div id="lobby-screen" style="display:none;">
+  <div class="quiz-header">
+    <div>
+      <div style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:2px;">Room Code</div>
+      <div class="room-code" id="disp-code">——</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-family:'Saira',sans-serif;font-size:1.1rem;font-weight:700;" id="disp-room-name">Quiz Room</div>
+      <div style="font-size:.75rem;color:rgba(255,255,255,.5);" id="disp-status">Waiting for moderator</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:.75rem;color:rgba(255,255,255,.5);">Your Score</div>
+      <div style="font-family:'Saira',sans-serif;font-size:1.3rem;font-weight:800;color:var(--primary);" id="my-score">0</div>
+    </div>
+  </div>
+
+  <div class="quiz-content">
+    <!-- Sidebar -->
+    <div class="sidebar-p">
+      <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:10px;">Participants <span id="p-count"></span></div>
+      <div id="p-list"></div>
+      <div id="chat-panel">
+        <div style="font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);">Live Chat</div>
+        <div class="chat-msgs" id="chat-msgs"></div>
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" id="chat-input" placeholder="Type a message...">
+          <button onclick="sendChat()" style="background:var(--primary);border:0;color:#fff;border-radius:8px;padding:0 12px;font-size:.8rem;">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main-area">
+
+      <!-- Moderator Controls -->
+      <div id="mod-controls" style="display:none;">
+        <div style="font-size:.82rem;font-weight:600;color:var(--primary);margin-bottom:10px;"><i class="bi bi-shield-fill me-1"></i>Moderator Controls</div>
+        <div class="d-flex gap-2 flex-wrap">
+          <button id="mod-start-btn" class="btn btn-sm" style="background:var(--primary);color:#fff;border:0;">Start Quiz</button>
+          <button id="mod-next-btn" class="btn btn-sm" style="background:#374151;color:#fff;border:0;" disabled>Next Question</button>
+        </div>
+      </div>
+
+      <!-- Video Grid -->
+      <div id="video-controls" style="display:none;margin-bottom:16px;padding:12px 16px;background:rgba(255,111,15,.1);border:1px solid rgba(255,111,15,.3);border-radius:10px;display:flex;gap:8px;align-items:center;">
+        <button id="toggle-video-btn" class="btn btn-sm" style="background:var(--primary);color:#fff;border:0;padding:8px 14px;border-radius:6px;"><i class="bi bi-camera-video"></i> Video ON</button>
+        <button id="toggle-audio-btn" class="btn btn-sm" style="background:var(--primary);color:#fff;border:0;padding:8px 14px;border-radius:6px;"><i class="bi bi-mic"></i> Audio ON</button>
+        <button id="recording-btn" class="btn btn-sm" style="display:none;background:#7f1d1d;color:#fff;border:0;padding:8px 14px;border-radius:6px;"><i class="bi bi-circle-fill" style="color:#dc2626;"></i> Recording...</button>
+      </div>
+
+      <div id="video-grid-container" style="position:relative;width:100%;height:400px;background:rgba(0,0,0,.3);border-radius:10px;margin-bottom:16px;overflow:hidden;border:1px solid rgba(255,255,255,.1);">
+        <video id="local-video" style="position:absolute;bottom:10px;right:10px;width:150px;height:150px;background:#000;border-radius:8px;border:2px solid var(--primary);object-fit:cover;"></video>
+      </div>
+
+      <!-- Waiting -->
+      <div id="waiting-area">
+        <div class="pulse-ring"><i class="bi bi-wifi" style="font-size:2rem;color:var(--primary);"></i></div>
+        <h3 style="font-family:'Saira',sans-serif;font-weight:800;margin-bottom:8px;">Waiting for Quiz to Start</h3>
+        <p style="color:rgba(255,255,255,.55);font-size:.9rem;">Share the room code with participants. The moderator will start the quiz.</p>
+        <div id="team-list" style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
+      </div>
+
+      <!-- Active Question -->
+      <div id="question-area" style="display:none;flex-direction:column;">
+        <div class="q-progress">
+          <div style="font-size:.8rem;color:rgba(255,255,255,.55);">Q <span id="q-num">1</span> of <span id="q-total">?</span></div>
+          <div class="q-progress-bar"><div class="q-progress-fill" id="q-progress-fill" style="width:0%"></div></div>
+          <div class="q-timer" id="q-timer">30</div>
+        </div>
+        <div id="q-image-wrap" style="display:none;margin-bottom:16px;"><img id="q-image" src="" style="max-height:200px;border-radius:10px;object-fit:cover;"></div>
+        <div class="q-text" id="q-text">Question text here</div>
+        <div class="options-grid" id="options-grid"></div>
+        <div id="answer-feedback" style="margin-top:16px;display:none;padding:12px 16px;border-radius:10px;font-weight:600;"></div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div id="leaderboard-area" style="display:none;">
+        <h3 style="font-family:'Saira',sans-serif;font-weight:800;margin-bottom:20px;"><i class="bi bi-trophy-fill me-2" style="color:#FFD700;"></i>Final Leaderboard</h3>
+        <div id="lb-list"></div>
+        <div class="mt-4 text-center">
+          <a href="index.html" class="btn" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:10px;padding:12px 28px;">Back to Website</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const SOCKET_URL = 'http://localhost:3001';
+let socket, roomCode, myName, myTeam, isModerator=false;
+let timerInterval, timeLeft=30;
+
+// Parse URL params
+const params = new URLSearchParams(location.search);
+if(params.get('code')){ document.getElementById('inp-code').value = params.get('code').toUpperCase(); }
+if(params.get('mod')==='1'){ isModerator = true; }
+
+// ── JOIN ──────────────────────────────────────────────────────
+document.getElementById('join-btn').onclick = ()=>{
+  roomCode = document.getElementById('inp-code').value.trim().toUpperCase();
+  myName   = document.getElementById('inp-name').value.trim();
+  myTeam   = document.getElementById('inp-team').value.trim() || 'Solo';
+  if(!roomCode||!myName){showJoinErr('Room code and name are required.');return;}
+  connectSocket();
+};
+document.getElementById('chat-input').addEventListener('keypress',e=>{if(e.key==='Enter')sendChat();});
+
+function setBanner(state, msg, retry) {
+  const b = document.getElementById('conn-banner');
+  const t = document.getElementById('conn-text');
+  b.className = state;
+  t.innerHTML = msg + (retry ? ' &nbsp;<button onclick="connectSocket()" style="background:#fff;color:#dc2626;border:0;border-radius:6px;padding:2px 10px;font-size:0.78rem;font-weight:700;cursor:pointer;">Retry</button>' : '');
+  b.style.display = 'flex';
+  if (state === 'connected') {
+    setTimeout(() => { b.style.display = 'none'; }, 2500);
+  }
+}
+
+function connectSocket(){
+  setBanner('connecting', '<span class="cdot"></span> Connecting to server…', false);
+  socket = io(SOCKET_URL, {transports:['websocket','polling']});
+  socket.on('connect',()=>{
+    setBanner('connected', '✓ Connected to AISU server', false);
+    socket.emit('join_quiz_room',{room_code:roomCode,name:myName,team:myTeam,is_moderator:isModerator});
+  });
+  socket.on('connect_error',()=>{
+    setBanner('offline', '⚠ Cannot connect to server — make sure the backend is running.', true);
+    showJoinErr('Cannot connect to server. Make sure the quiz server is running on port 3001.');
+  });
+  socket.on('disconnect',()=>setBanner('connecting','<span class="cdot"></span> Reconnecting…',false));
+  socket.on('error', d=>{ showJoinErr(d.msg||'Error'); });
+  socket.on('room_state', onRoomState);
+  socket.on('participant_joined', onParticipantJoined);
+  socket.on('participant_left', onParticipantLeft);
+  socket.on('quiz_started', onQuizStarted);
+  socket.on('question', onQuestion);
+  socket.on('answer_received', onAnswerReceived);
+  socket.on('team_answered', onTeamAnswered);
+  socket.on('quiz_ended', onQuizEnded);
+  socket.on('chat_message', onChatMessage);
+  
+  // WebRTC Events
+  socket.on('webrtc_offer', handleWebRTCOffer);
+  socket.on('webrtc_answer', handleWebRTCAnswer);
+  socket.on('webrtc_ice_candidate', handleICECandidate);
+  socket.on('participant_media_status', handleMediaStatus);
+  socket.on('admin_audio_disabled', handleAdminMute);
+  socket.on('team_audio_disabled', handleTeamMute);
+  socket.on('audio_enabled', handleAudioEnabled);
+  socket.on('recording_started', handleRecordingStarted);
+  socket.on('recording_stopped', handleRecordingStopped);
+  socket.on('final_results', handleFinalResults);
+}
+
+function onRoomState(d){
+  document.getElementById('join-screen').style.display='none';
+  document.getElementById('lobby-screen').style.display='flex';
+  document.getElementById('disp-code').textContent = d.room_code;
+  document.getElementById('disp-room-name').textContent = d.room_name;
+  document.getElementById('disp-status').textContent = d.status==='waiting'?'Waiting for moderator':'In Progress';
+  renderParticipants(d.participants||[]);
+  renderTeams(d.teams||{});
+  if(d.is_moderator||isModerator) document.getElementById('mod-controls').style.display='block';
+}
+
+function onParticipantJoined(d){
+  const pl = document.getElementById('p-list');
+  pl.insertAdjacentHTML('beforeend',`<div class="p-item"><div class="p-avatar">${d.name[0].toUpperCase()}</div><div><div style="font-weight:600;font-size:.82rem;">${esc(d.name)}</div><div style="font-size:.72rem;color:rgba(255,255,255,.4);">${esc(d.team)}</div></div></div>`);
+  document.getElementById('p-count').textContent='('+d.total+')';
+  showToast(d.name+' joined!');
+}
+function onParticipantLeft(d){ showToast(d.name+' left.'); }
+
+function renderParticipants(list){
+  document.getElementById('p-list').innerHTML=list.map(p=>`<div class="p-item"><div class="p-avatar">${p.name[0].toUpperCase()}</div><div><div style="font-weight:600;font-size:.82rem;">${esc(p.name)}</div><div style="font-size:.72rem;color:rgba(255,255,255,.4);">${esc(p.team)}</div></div></div>`).join('');
+  document.getElementById('p-count').textContent='('+list.length+')';
+}
+
+function renderTeams(teams){
+  document.getElementById('team-list').innerHTML = Object.entries(teams).map(([t,v])=>`<div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 14px;font-size:.8rem;"><div style="font-weight:700;color:var(--primary);">${esc(t)}</div><div style="color:rgba(255,255,255,.5);">${v.members.length} member(s)</div></div>`).join('');
+}
+
+function onQuizStarted(){
+  document.getElementById('disp-status').textContent='Quiz in Progress';
+  document.getElementById('mod-start-btn').disabled=true;
+  document.getElementById('mod-next-btn').disabled=false;
+  document.getElementById('waiting-area').style.display='none';
+}
+
+function onQuestion(q){
+  document.getElementById('waiting-area').style.display='none';
+  document.getElementById('leaderboard-area').style.display='none';
+  const qa = document.getElementById('question-area');
+  qa.style.display='flex';
+  document.getElementById('q-num').textContent = q.index+1;
+  document.getElementById('q-total').textContent = q.total;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('answer-feedback').style.display='none';
+  // Progress
+  document.getElementById('q-progress-fill').style.width=((q.index/q.total)*100)+'%';
+  // Image
+  if(q.image){document.getElementById('q-image').src=q.image;document.getElementById('q-image-wrap').style.display='block';}
+  else document.getElementById('q-image-wrap').style.display='none';
+  // Options
+  const letters=['A','B','C','D','E'];
+  document.getElementById('options-grid').innerHTML=(q.options||[]).map((opt,i)=>`<button class="option-btn" id="opt-${i}" onclick="submitAnswer('${opt.replace(/'/g,"\\'")}',${i})">\
+    <span class="opt-letter">${letters[i]}</span>${esc(opt)}</button>`).join('');
+  // Timer
+  startTimer(q.time_limit||30);
+  // Mod next btn
+  document.getElementById('mod-next-btn').disabled=false;
+}
+
+function startTimer(t){
+  clearInterval(timerInterval);
+  timeLeft=t;
+  document.getElementById('q-timer').textContent=timeLeft;
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    document.getElementById('q-timer').textContent=timeLeft;
+    if(timeLeft<=5) document.getElementById('q-timer').style.color='#f87171';
+    else document.getElementById('q-timer').style.color='var(--primary)';
+    if(timeLeft<=0){clearInterval(timerInterval);disableOptions();}
+  },1000);
+}
+
+function submitAnswer(answer,idx){
+  disableOptions();
+  document.getElementById('opt-'+idx)?.classList.add('selected');
+  socket.emit('submit_answer',{room_code:roomCode,answer});
+}
+
+function disableOptions(){
+  document.querySelectorAll('.option-btn').forEach(b=>b.disabled=true);
+}
+
+function onAnswerReceived(d){
+  const fb=document.getElementById('answer-feedback');
+  fb.style.display='block';
+  if(d.correct){fb.style.background='rgba(22,163,74,.25)';fb.style.border='1px solid #16a34a';fb.textContent='Correct! +10 pts';}
+  else{fb.style.background='rgba(220,38,38,.2)';fb.style.border='1px solid #dc2626';fb.textContent='Wrong answer.';}
+  document.getElementById('my-score').textContent=d.team_score||0;
+}
+
+function onTeamAnswered(d){
+  // Show in moderator view which team answered and if correct
+  showToast((d.correct?'✓ ':'✗ ')+d.team+': '+d.answer);
+}
+
+function onQuizEnded(d){
+  clearInterval(timerInterval);
+  document.getElementById('question-area').style.display='none';
+  document.getElementById('waiting-area').style.display='none';
+  const lb=document.getElementById('leaderboard-area');
+  lb.style.display='block';
+  const medals=['🥇','🥈','🥉'];
+  document.getElementById('lb-list').innerHTML=(d.leaderboard||[]).map((r,i)=>`
+    <div class="lb-row" style="${i===0?'background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);':''}">
+      <div class="lb-rank">${medals[i]||('#'+(i+1))}</div>
+      <div style="font-weight:600;">${esc(r.team)}</div>
+      <div class="lb-score">${r.score} pts</div>
+    </div>`).join('');
+}
+
+function onChatMessage(d){
+  const msgs=document.getElementById('chat-msgs');
+  msgs.insertAdjacentHTML('beforeend',`<div class="chat-msg"><span class="from">${esc(d.name)}: </span>${esc(d.message)}</div>`);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function sendChat(){
+  const inp=document.getElementById('chat-input');
+  const msg=inp.value.trim();
+  if(!msg||!socket) return;
+  socket.emit('quiz_chat',{room_code:roomCode,message:msg});
+  inp.value='';
+}
+
+// Moderator buttons
+document.getElementById('mod-start-btn').onclick=()=>{
+  const qs = parseQuestions();
+  socket.emit('moderator_start_quiz',{room_code:roomCode,questions:qs});
+  document.getElementById('mod-start-btn').disabled=true;
+};
+document.getElementById('mod-next-btn').onclick=()=>{
+  clearInterval(timerInterval);
+  disableOptions();
+  socket.emit('moderator_next_question',{room_code:roomCode});
+};
+
+function parseQuestions(){
+  // Try to load from URL or use default sample
+  try{ return JSON.parse(sessionStorage.getItem('quiz_questions')||'[]'); }catch{return [];}
+}
+
+function showJoinErr(msg){ const e=document.getElementById('join-err'); e.textContent=msg; e.style.display='block'; }
+function showToast(msg){ const t=document.getElementById('status-toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2500); }
+
+// ── WebRTC FUNCTIONALITY ──────────────────────────────────────
+let webrtc = null;
+let localStreamInitialized = false;
+
+function initializeWebRTC() {
+  // Dynamically load WebRTC library
+  const script = document.createElement('script');
+  script.src = 'js/quiz-webrtc.js';
+  script.onload = async () => {
+    webrtc = new QuizWebRTC(socket);
+    
+    // Request microphone/camera
+    try {
+      const stream = await webrtc.initializeMedia(true, true);
+      webrtc.displayLocalVideo(document.getElementById('local-video'));
+      localStreamInitialized = true;
+      document.getElementById('video-controls').style.display = 'flex';
+      showToast('Video & Audio initialized. You can now toggle them.');
+    } catch (err) {
+      console.error('Media initialization failed:', err);
+      showToast('Camera/Microphone access denied. Check browser permissions.');
+    }
+  };
+  document.head.appendChild(script);
+}
+
+// Video toggle
+document.getElementById('toggle-video-btn').onclick = function() {
+  if (!webrtc) return;
+  const btn = this;
+  const isOn = btn.textContent.includes('ON');
+  webrtc.toggleVideo(!isOn);
+  btn.textContent = isOn ? '📹 Video OFF' : '📹 Video ON';
+  btn.style.background = isOn ? '#7f1d1d' : 'var(--primary)';
+};
+
+// Audio toggle
+document.getElementById('toggle-audio-btn').onclick = function() {
+  if (!webrtc) return;
+  const btn = this;
+  const isOn = btn.textContent.includes('ON');
+  webrtc.toggleAudio(!isOn);
+  btn.textContent = isOn ? '🔇 Audio OFF' : '🔇 Audio ON';
+  btn.style.background = isOn ? '#7f1d1d' : 'var(--primary)';
+};
+
+// WebRTC Event Handlers
+async function handleWebRTCOffer(data) {
+  if (!webrtc) return;
+  await webrtc.handleOffer(data.from, data.offer);
+}
+
+async function handleWebRTCAnswer(data) {
+  if (!webrtc) return;
+  await webrtc.handleAnswer(data.from, data.answer);
+}
+
+async function handleICECandidate(data) {
+  if (!webrtc) return;
+  await webrtc.handleIceCandidate(data.from, data.candidate);
+}
+
+function handleMediaStatus(data) {
+  showToast(`${data.participant_name}: ${data.video_enabled ? '📹' : '❌'} ${data.audio_enabled ? '🎤' : '🔇'}`);
+}
+
+function handleAdminMute(data) {
+  if (webrtc) {
+    webrtc.toggleAudio(false);
+    const btn = document.getElementById('toggle-audio-btn');
+    if (btn) {
+      btn.textContent = '🔇 Audio OFF';
+      btn.style.background = '#7f1d1d';
+      btn.disabled = true;
+    }
+    showToast('⚠️ You have been muted by the administrator');
+  }
+}
+
+function handleTeamMute(data) {
+  if (webrtc) {
+    webrtc.toggleAudio(false);
+    showToast('⚠️ Your team has been muted by the administrator');
+  }
+}
+
+function handleAudioEnabled(data) {
+  if (webrtc) {
+    webrtc.toggleAudio(true);
+    const btn = document.getElementById('toggle-audio-btn');
+    if (btn) {
+      btn.textContent = '🎤 Audio ON';
+      btn.style.background = 'var(--primary)';
+      btn.disabled = false;
+    }
+    showToast('✓ You have been unmuted');
+  }
+}
+
+function handleRecordingStarted(data) {
+  document.getElementById('recording-btn').style.display = 'inline-flex';
+  showToast('Recording started by administrator');
+}
+
+function handleRecordingStopped(data) {
+  document.getElementById('recording-btn').style.display = 'none';
+  showToast('Recording stopped. Duration: ' + Math.round(data.duration) + 's');
+}
+
+function handleFinalResults(data) {
+  console.log('Final results:', data.results);
+  showToast('Final scores announced! Check the leaderboard.');
+}
+
+// Moderator Recording Button (if admin)
+if (isModerator) {
+  const modControls = document.getElementById('mod-controls');
+  if (modControls) {
+    modControls.innerHTML += `
+      <div style="margin-top:10px;border-top:1px solid rgba(255,111,15,.3);padding-top:10px;">
+        <button id="rec-start-btn" class="btn btn-sm" style="background:#dc2626;color:#fff;border:0;padding:8px 14px;border-radius:6px;margin-right:8px;">
+          <i class="bi bi-circle-fill"></i> Start Recording
+        </button>
+        <button id="rec-stop-btn" class="btn btn-sm" style="background:#7f1d1d;color:#fff;border:0;padding:8px 14px;border-radius:6px;display:none;">
+          <i class="bi bi-stop-fill"></i> Stop Recording
+        </button>
+        <button id="finalize-scores-btn" class="btn btn-sm" style="background:#059669;color:#fff;border:0;padding:8px 14px;border-radius:6px;">
+          <i class="bi bi-check2-circle"></i> Finalize Scores
+        </button>
+      </div>
+    `;
+    
+    document.getElementById('rec-start-btn').onclick = () => {
+      socket.emit('admin_start_recording', { room_code: roomCode });
+      document.getElementById('rec-start-btn').style.display = 'none';
+      document.getElementById('rec-stop-btn').style.display = 'inline-block';
+    };
+    
+    document.getElementById('rec-stop-btn').onclick = () => {
+      socket.emit('admin_stop_recording', { room_code: roomCode });
+      document.getElementById('rec-start-btn').style.display = 'inline-block';
+      document.getElementById('rec-stop-btn').style.display = 'none';
+    };
+    
+    document.getElementById('finalize-scores-btn').onclick = () => {
+      socket.emit('admin_finalize_scores', { room_code: roomCode });
+    };
+  }
+}
+
+// Initialize WebRTC when joining
+const originalOnRoomState = onRoomState;
+onRoomState = function(d) {
+  originalOnRoomState.call(this, d);
+  // Initialize WebRTC after joining room
+  setTimeout(() => {
+    if (!localStreamInitialized) {
+      initializeWebRTC();
+    }
+  }, 500);
+};
+function esc(s){ const d=document.createElement('div');d.textContent=String(s||'');return d.innerHTML; }
+</script>
+</body>
+</html>

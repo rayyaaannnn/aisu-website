@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Gallery, Results & Publications | AISU – All India Students Union</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Browse the AISU gallery, view competition results, winners, and read selected publications from our national-level competitions and events.">
+    <link href="img/favicon.svg" rel="icon" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Saira:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/aisu-custom.css" rel="stylesheet">
+    <style>
+        .gallery-img {
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+        .gallery-img img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+            display: block;
+        }
+        .gallery-img:hover img { transform: scale(1.07); }
+        .gallery-img .img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.35s;
+            display: flex;
+            align-items: flex-end;
+            padding: 14px;
+        }
+        .gallery-img:hover .img-overlay { opacity: 1; }
+        .gallery-img .img-overlay span {
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        .winner-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #eef0f5;
+            transition: all 0.35s;
+            text-align: center;
+        }
+        .winner-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
+        .winner-card .rank-badge {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 1.5rem;
+        }
+        .tab-nav { border-bottom: 2px solid #eef0f5; margin-bottom: 32px; }
+        .tab-nav .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s;
+        }
+        .tab-nav .tab-btn.active, .tab-nav .tab-btn:hover {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+        .pub-card {
+            background: linear-gradient(135deg, var(--dark), var(--dark2));
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            padding: 24px;
+            transition: all 0.35s;
+            height: 100%;
+        }
+        .pub-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); border-color: rgba(255,111,15,0.3); }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg aisu-navbar sticky-top">
+        <div class="container-fluid px-4 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <div class="brand-text"><span class="orange">AISU</span><span class="white">4India</span></div>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarMain">
+                <i class="bi bi-list text-white fs-2"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <div class="navbar-nav ms-auto align-items-lg-center gap-1">
+                    <a href="index.html" class="nav-link-custom">Home</a>
+                    <a href="about.html" class="nav-link-custom">About Us</a>
+                    <a href="team.html" class="nav-link-custom">Our Team</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle" data-bs-toggle="dropdown">Join Us</a>
+                        <div class="dropdown-menu">
+                            <a href="primary-membership.html" class="dropdown-item"><i class="bi bi-person-badge me-2"
+                                    style="color:var(--primary)"></i>Primary Membership</a>
+                            <a href="student-membership.html" class="dropdown-item"><i class="bi bi-mortarboard me-2"
+                                    style="color:var(--primary)"></i>Student Membership</a>
+                            <a href="affiliation.html" class="dropdown-item"><i class="bi bi-building me-2"
+                                    style="color:var(--primary)"></i>Organization Affiliation</a>
+                        </div>
+                    </div>
+                    <a href="competition.html" class="nav-link-custom">Competitions</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle" data-bs-toggle="dropdown">Initiatives</a>
+                        <div class="dropdown-menu">
+                            <a href="internship.html" class="dropdown-item"><i class="bi bi-briefcase me-2"
+                                    style="color:var(--primary)"></i>Internship</a>
+                            <a href="innovations.html" class="dropdown-item"><i class="bi bi-lightbulb me-2"
+                                    style="color:var(--primary)"></i>Innovation Cell (ICell)</a>
+                        </div>
+                    </div>
+                    <a href="complaint.html" class="nav-link-custom">Complaints</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle active" data-bs-toggle="dropdown">More</a>
+                        <div class="dropdown-menu">
+                            <a href="press.html" class="dropdown-item"><i class="bi bi-newspaper me-2" style="color:var(--primary)"></i>Updates &amp; Press</a>
+                            <a href="gallery.html" class="dropdown-item"><i class="bi bi-images me-2" style="color:var(--primary)"></i>Gallery &amp; Results</a>
+                            <a href="cert-verify.html" class="dropdown-item"><i class="bi bi-patch-check me-2" style="color:var(--primary)"></i>Verify Certificate</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="contact.html" class="dropdown-item"><i class="bi bi-envelope me-2" style="color:var(--primary)"></i>Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex ms-3 gap-2 mt-3 mt-lg-0">
+                    <a href="login.html" class="btn-nav-login nav-link-custom"><i
+                            class="bi bi-person-circle me-1"></i>Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <div class="page-hero">
+        <div class="container text-center position-relative" style="z-index:1;">
+            <h1 class="display-5 fw-800 text-white mb-3" style="font-family:'Saira',sans-serif;">Gallery, Results &
+                <span style="color:var(--primary)">Publications</span>
+            </h1>
+            <p class="text-white-50 mb-3" style="max-width:600px; margin:0 auto;">Browse photographs from AISU events, view competition results and winners, and read selected student publications.</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center mb-0" style="--bs-breadcrumb-divider:'›';">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">Gallery & Results</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <section class="py-5 py-lg-6">
+        <div class="container">
+            <div class="tab-nav reveal">
+                <button class="tab-btn active" onclick="showTab('gallery')"><i class="bi bi-images me-2"></i>Gallery</button>
+                <button class="tab-btn" onclick="showTab('results')"><i class="bi bi-trophy me-2"></i>Competition Results</button>
+                <button class="tab-btn" onclick="showTab('publications')"><i class="bi bi-journal-richtext me-2"></i>Publications</button>
+            </div>
+
+            <!-- Gallery Tab -->
+            <div id="tab-gallery" class="tab-pane active">
+                <div class="row g-4 mb-4">
+                    <div class="col-12">
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="filter-btn active" onclick="filterGallery('all', this)">All</button>
+                            <button class="filter-btn" onclick="filterGallery('competition', this)">Competitions</button>
+                            <button class="filter-btn" onclick="filterGallery('event', this)">Events</button>
+                            <button class="filter-btn" onclick="filterGallery('workshop', this)">Workshops</button>
+                            <button class="filter-btn" onclick="filterGallery('activity', this)">Organizational Activities</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3" id="galleryGrid">
+                    <div class="col-lg-3 col-md-4 col-6 gallery-item" data-gcat="competition">
+                        <div class="gallery-img">
+                            <img src="imgnew/Aisu (7).png" alt="AISU Competition">
+                            <div class="img-overlay"><span>National Essay Competition 2025</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-6 gallery-item" data-gcat="event">
+                        <div class="gallery-img">
+                            <img src="imgnew/joinaisu.png" alt="AISU Event">
+                            <div class="img-overlay"><span>Leadership Webinar 2025</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-6 gallery-item" data-gcat="competition">
+                        <div class="gallery-img">
+                            <img src="imgnew/aisu_hero_students.png" alt="AISU Students">
+                            <div class="img-overlay"><span>National Art Competition 2025</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-6 gallery-item" data-gcat="activity">
+                        <div class="gallery-img">
+                            <img src="imgnew/aisu_india_network.png" alt="AISU Network">
+                            <div class="img-overlay"><span>National Organizational Meeting</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-6 gallery-item" data-gcat="event">
+                        <div class="gallery-img">
+                            <img src="imgnew/Aisu (7).png" alt="AISU Workshop">
+                            <div class="img-overlay"><span>Student Leadership Workshop</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-6 gallery-item" data-gcat="workshop">
+                        <div class="gallery-img">
+                            <img src="imgnew/joinaisu.png" alt="AISU Workshop">
+                            <div class="img-overlay"><span>Innovation Workshop 2025</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-6 gallery-item" data-gcat="activity">
+                        <div class="gallery-img">
+                            <img src="imgnew/aisu_hero_students.png" alt="AISU Members">
+                            <div class="img-overlay"><span>State Team Meeting – Andhra Pradesh</span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-6 gallery-item" data-gcat="competition">
+                        <div class="gallery-img">
+                            <img src="imgnew/aisu_india_network.png" alt="AISU Quiz">
+                            <div class="img-overlay"><span>National Quiz Competition Finals</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Competition Results Tab -->
+            <div id="tab-results" class="tab-pane">
+                <div class="text-center mb-5">
+                    <div class="section-badge">Latest Results</div>
+                    <h2 class="section-title">Competition <span class="accent">Winners</span></h2>
+                    <div class="section-divider mx-auto"></div>
+                </div>
+
+                <!-- Competition 1 Results -->
+                <div class="mb-5">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#fef3c7,#fde68a);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">✍️</div>
+                        <div>
+                            <h4 class="fw-700 mb-1" style="font-family:'Saira',sans-serif;">National Essay Competition 2025</h4>
+                            <div class="small text-muted">Theme: "The Future of Education in India" | National Level</div>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="winner-card">
+                                <!-- Photo Section -->
+                                <div style="background:linear-gradient(135deg,#ffd700,#ffb300);padding:28px 20px 16px;position:relative;">
+                                    <div style="width:90px;height:90px;border-radius:50%;margin:0 auto;border:4px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,0.2);overflow:hidden;background:#f5f5f5;">
+                                        <img src="imgnew/aisu_hero_students.png" alt="Riya Sharma" style="width:100%;height:100%;object-fit:cover;object-position:top center;">
+                                    </div>
+                                    <div style="position:absolute;top:12px;right:12px;background:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);">🥇</div>
+                                </div>
+                                <div class="p-4">
+                                    <h6 class="fw-700 mb-1">First Place</h6>
+                                    <div class="fw-600 mb-1" style="color:var(--primary);font-size:1.05rem;">Riya Sharma</div>
+                                    <div class="small text-muted mb-3">Delhi University, New Delhi</div>
+                                    <div>
+                                        <span class="badge" style="background:var(--primary-light);color:var(--primary);font-size:0.72rem;">Essay Writing</span>
+                                        <span class="badge ms-1" style="background:#f0fdf4;color:#22c55e;font-size:0.72rem;">National</span>
+                                        <span class="badge ms-1" style="background:#fef9c3;color:#b45309;font-size:0.72rem;">🥇 Winner</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="winner-card">
+                                <div style="background:linear-gradient(135deg,#e5e7eb,#d1d5db);padding:28px 20px 16px;position:relative;">
+                                    <div style="width:90px;height:90px;border-radius:50%;margin:0 auto;border:4px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,0.2);overflow:hidden;background:#f5f5f5;">
+                                        <img src="imgnew/joinaisu.png" alt="Arjun Patel" style="width:100%;height:100%;object-fit:cover;object-position:top center;">
+                                    </div>
+                                    <div style="position:absolute;top:12px;right:12px;background:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);">🥈</div>
+                                </div>
+                                <div class="p-4">
+                                    <h6 class="fw-700 mb-1">Second Place</h6>
+                                    <div class="fw-600 mb-1" style="color:var(--primary);font-size:1.05rem;">Arjun Patel</div>
+                                    <div class="small text-muted mb-3">Gujarat University, Ahmedabad</div>
+                                    <div>
+                                        <span class="badge" style="background:var(--primary-light);color:var(--primary);font-size:0.72rem;">Essay Writing</span>
+                                        <span class="badge ms-1" style="background:#f0fdf4;color:#22c55e;font-size:0.72rem;">National</span>
+                                        <span class="badge ms-1" style="background:#f3f4f6;color:#6b7280;font-size:0.72rem;">🥈 Runner-up</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="winner-card">
+                                <div style="background:linear-gradient(135deg,#fed7aa,#fdba74);padding:28px 20px 16px;position:relative;">
+                                    <div style="width:90px;height:90px;border-radius:50%;margin:0 auto;border:4px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,0.2);overflow:hidden;background:#f5f5f5;">
+                                        <img src="imgnew/aisu_india_network.png" alt="Priya Desai" style="width:100%;height:100%;object-fit:cover;object-position:top center;">
+                                    </div>
+                                    <div style="position:absolute;top:12px;right:12px;background:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);">🥉</div>
+                                </div>
+                                <div class="p-4">
+                                    <h6 class="fw-700 mb-1">Third Place</h6>
+                                    <div class="fw-600 mb-1" style="color:var(--primary);font-size:1.05rem;">Priya Desai</div>
+                                    <div class="small text-muted mb-3">Osmania University, Hyderabad</div>
+                                    <div>
+                                        <span class="badge" style="background:var(--primary-light);color:var(--primary);font-size:0.72rem;">Essay Writing</span>
+                                        <span class="badge ms-1" style="background:#f0fdf4;color:#22c55e;font-size:0.72rem;">National</span>
+                                        <span class="badge ms-1" style="background:#fff7ed;color:#c2410c;font-size:0.72rem;">🥉 2nd Runner-up</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Competition 2 Results -->
+                <div class="mb-5">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">🎨</div>
+                        <div>
+                            <h4 class="fw-700 mb-1" style="font-family:'Saira',sans-serif;">National Art Competition 2025</h4>
+                            <div class="small text-muted">Theme: "Unity in Diversity" | National Level</div>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="winner-card">
+                                <div style="background:linear-gradient(135deg,#ffd700,#ffb300);padding:28px 20px 16px;position:relative;">
+                                    <div style="width:90px;height:90px;border-radius:50%;margin:0 auto;border:4px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,0.2);overflow:hidden;background:#f5f5f5;">
+                                        <img src="imgnew/Aisu (7).png" alt="Kavya Menon" style="width:100%;height:100%;object-fit:cover;object-position:top center;">
+                                    </div>
+                                    <div style="position:absolute;top:12px;right:12px;background:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);">🥇</div>
+                                </div>
+                                <div class="p-4">
+                                    <h6 class="fw-700 mb-1">First Place</h6>
+                                    <div class="fw-600 mb-1" style="color:var(--primary);font-size:1.05rem;">Kavya Menon</div>
+                                    <div class="small text-muted mb-3">Kerala University, Thiruvananthapuram</div>
+                                    <div>
+                                        <span class="badge" style="background:var(--primary-light);color:var(--primary);font-size:0.72rem;">Painting</span>
+                                        <span class="badge ms-1" style="background:#f0fdf4;color:#22c55e;font-size:0.72rem;">National</span>
+                                        <span class="badge ms-1" style="background:#fef9c3;color:#b45309;font-size:0.72rem;">🥇 Winner</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="winner-card">
+                                <div style="background:linear-gradient(135deg,#e5e7eb,#d1d5db);padding:28px 20px 16px;position:relative;">
+                                    <div style="width:90px;height:90px;border-radius:50%;margin:0 auto;border:4px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,0.2);overflow:hidden;background:#f5f5f5;">
+                                        <img src="imgnew/aisu_hero_students.png" alt="Rahul Singh" style="width:100%;height:100%;object-fit:cover;object-position:top center;">
+                                    </div>
+                                    <div style="position:absolute;top:12px;right:12px;background:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);">🥈</div>
+                                </div>
+                                <div class="p-4">
+                                    <h6 class="fw-700 mb-1">Second Place</h6>
+                                    <div class="fw-600 mb-1" style="color:var(--primary);font-size:1.05rem;">Rahul Singh</div>
+                                    <div class="small text-muted mb-3">BHU, Varanasi</div>
+                                    <div>
+                                        <span class="badge" style="background:var(--primary-light);color:var(--primary);font-size:0.72rem;">Painting</span>
+                                        <span class="badge ms-1" style="background:#f0fdf4;color:#22c55e;font-size:0.72rem;">National</span>
+                                        <span class="badge ms-1" style="background:#f3f4f6;color:#6b7280;font-size:0.72rem;">🥈 Runner-up</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="winner-card">
+                                <div style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);padding:28px 20px 16px;position:relative;">
+                                    <div style="width:90px;height:90px;border-radius:50%;margin:0 auto;border:4px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,0.2);overflow:hidden;background:#f5f5f5;">
+                                        <img src="imgnew/joinaisu.png" alt="Aditya Kumar" style="width:100%;height:100%;object-fit:cover;object-position:top center;">
+                                    </div>
+                                    <div style="position:absolute;top:12px;right:12px;background:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 12px rgba(0,0,0,0.15);">⭐</div>
+                                </div>
+                                <div class="p-4">
+                                    <h6 class="fw-700 mb-1">Special Recognition</h6>
+                                    <div class="fw-600 mb-1" style="color:var(--primary);font-size:1.05rem;">Aditya Kumar</div>
+                                    <div class="small text-muted mb-3">Patna University, Bihar</div>
+                                    <div>
+                                        <span class="badge" style="background:var(--primary-light);color:var(--primary);font-size:0.72rem;">Painting</span>
+                                        <span class="badge ms-1" style="background:#eff6ff;color:#3b82f6;font-size:0.72rem;">⭐ Special Award</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note about candidate photos -->
+                <div class="p-4 rounded-3 mt-4" style="background:var(--light); border:1px dashed #d1d5db;">
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-info-circle-fill fs-5 mt-1" style="color:var(--primary);flex-shrink:0;"></i>
+                        <div>
+                            <div class="fw-600 small mb-1">About Candidate Photos</div>
+                            <p class="small text-muted mb-0">Candidate photos displayed here are representative placeholders. Actual participant photographs will be uploaded by AISU administration through the admin dashboard once results are officially published. All photos are uploaded only with participant consent.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Publications Tab -->
+            <div id="tab-publications" class="tab-pane">
+                <div class="text-center mb-5">
+                    <div class="section-badge">Featured Works</div>
+                    <h2 class="section-title">Selected <span class="accent">Publications</span></h2>
+                    <div class="section-divider mx-auto"></div>
+                    <p class="text-muted mt-3">Selected essays, artwork, and creative submissions recognized for their quality and social impact.</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="pub-card">
+                            <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,111,15,0.2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;">✍️</div>
+                            <div class="small mb-2" style="color:var(--primary);font-weight:600;">FEATURED ESSAY</div>
+                            <h5 class="text-white fw-700 mb-2" style="font-family:'Saira',sans-serif;">"Education as the Great Equalizer"</h5>
+                            <div class="small mb-3" style="color:rgba(255,255,255,0.55);">By Riya Sharma • National Essay Competition 2025 – 1st Place</div>
+                            <p class="small mb-3" style="color:rgba(255,255,255,0.7); line-height:1.6;">An insightful exploration of how quality education can bridge social and economic divides across India, drawing from personal experiences and national data...</p>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge" style="background:rgba(255,111,15,0.2);color:var(--primary);font-size:0.72rem;">Essay Writing</span>
+                                <span class="badge" style="background:rgba(34,197,94,0.15);color:#22c55e;font-size:0.72rem;">1st Place</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="pub-card">
+                            <div style="width:48px;height:48px;border-radius:12px;background:rgba(139,92,246,0.2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;">🎨</div>
+                            <div class="small mb-2" style="color:#a78bfa;font-weight:600;">FEATURED ARTWORK</div>
+                            <h5 class="text-white fw-700 mb-2" style="font-family:'Saira',sans-serif;">"Colors of Unity" – Watercolor Series</h5>
+                            <div class="small mb-3" style="color:rgba(255,255,255,0.55);">By Kavya Menon • National Art Competition 2025 – 1st Place</div>
+                            <p class="small mb-3" style="color:rgba(255,255,255,0.7); line-height:1.6;">A stunning watercolor series depicting India's rich cultural diversity through vibrant motifs and traditional art forms from different states...</p>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge" style="background:rgba(139,92,246,0.2);color:#a78bfa;font-size:0.72rem;">Artwork</span>
+                                <span class="badge" style="background:rgba(34,197,94,0.15);color:#22c55e;font-size:0.72rem;">1st Place</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="pub-card">
+                            <div style="width:48px;height:48px;border-radius:12px;background:rgba(245,158,11,0.2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;">📋</div>
+                            <div class="small mb-2" style="color:#fbbf24;font-weight:600;">FEATURED POSTER</div>
+                            <h5 class="text-white fw-700 mb-2" style="font-family:'Saira',sans-serif;">"Save Our Schools" – Awareness Campaign</h5>
+                            <div class="small mb-3" style="color:rgba(255,255,255,0.55);">By Arjun Patel • Poster Making Competition 2025</div>
+                            <p class="small mb-3" style="color:rgba(255,255,255,0.7); line-height:1.6;">A powerful awareness poster highlighting the challenges faced by rural schools in India and calling for immediate policy intervention...</p>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge" style="background:rgba(245,158,11,0.2);color:#fbbf24;font-size:0.72rem;">Poster</span>
+                                <span class="badge" style="background:rgba(59,130,246,0.15);color:#3b82f6;font-size:0.72rem;">Special Recognition</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-4" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));">
+        <div class="container text-center reveal">
+            <h3 class="text-white fw-700 mb-3" style="font-family:'Saira',sans-serif;">Want to See Your Work Here?</h3>
+            <p class="text-white-50 mb-4 small">Participate in AISU competitions. Winners and special recognition recipients are featured in our gallery and publications.</p>
+            <a href="competition.html" class="btn-hero-outline me-3"
+                style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;"><i
+                    class="bi bi-trophy"></i>View Competitions</a>
+            <a href="student-membership.html"
+                style="background:#fff; color:var(--primary); border:none; padding:12px 24px; border-radius:10px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:8px;"><i
+                    class="bi bi-mortarboard-fill"></i>Student Membership</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="aisu-footer">
+        <div class="container py-4">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-brand mb-3"><span class="orange">AISU</span><span class="white">4India</span></div>
+                    <p style="font-size:0.9rem; line-height:1.7;">An initiative of Federation of Indian Youth
+                        Association, registered under the Indian Trust Act, 1882.</p>
+                    <div class="footer-social mt-3">
+                        <a href="https://twitter.com/Official_AISU" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com/aisu4india" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100092878216816" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://youtube.com/@official_AISU" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.linkedin.com/company/officialaisu/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Quick Links</h5>
+                    <a href="index.html" class="footer-link">Home</a>
+                    <a href="about.html" class="footer-link">About Us</a>
+                    <a href="team.html" class="footer-link">Our Team</a>
+                    <a href="competition.html" class="footer-link">Competitions</a>
+                    <a href="complaint.html" class="footer-link">Complaints</a>
+                    <a href="contact.html" class="footer-link">Contact Us</a>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Initiatives</h5>
+                    <a href="primary-membership.html" class="footer-link">Primary Member</a>
+                    <a href="student-membership.html" class="footer-link">Student Member</a>
+                    <a href="internship.html" class="footer-link">Internship</a>
+                    <a href="innovations.html" class="footer-link">Innovation Cell</a>
+                    <a href="affiliation.html" class="footer-link">Affiliation</a>
+                    <a href="login.html" class="footer-link">Login</a>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Resources</h5>
+                    <a href="press.html" class="footer-link">Press & Updates</a>
+                    <a href="gallery.html" class="footer-link">Gallery & Results</a>
+                    <a href="cert-verify.html" class="footer-link">Verify Certificate</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Contact</h5>
+                    <p class="small mb-2"><i class="bi bi-geo-alt-fill me-2" style="color:var(--primary)"></i>Dubwaliya
+                        Yadavchapra, Chanpatia, West Champaran, Bihar – 845450</p>
+                    <p class="small mb-2"><i class="bi bi-telephone-fill me-2" style="color:var(--primary)"></i>+91 80748 53717</p>
+                    <p class="small mb-2"><i class="bi bi-envelope-fill me-2" style="color:var(--primary)"></i>aisu4india@gmail.com</p>
+                    <p class="small"><i class="bi bi-envelope-fill me-2" style="color:var(--primary)"></i>vicepresident.aisu@gmail.com</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start">&copy; 2026 <a href="index.html"
+                            style="color:var(--primary); text-decoration:none;">FIYA</a>. All Rights Reserved.
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">All India Students Union &ndash; Arise &bull; Awake &bull; Empower
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+    </footer>
+
+    <a href="#" class="scroll-top" id="scrollTop"><i class="bi bi-arrow-up"></i></a>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/aisu-main.js"></script>
+    <script>
+        function showTab(tab) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+        function filterGallery(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.gallery-item').forEach(item => {
+                item.style.display = (cat === 'all' || item.dataset.gcat === cat) ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+
+</html>

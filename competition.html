@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Competition Portal | AISU – All India Students Union</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Participate in AISU competitions – essays, paintings, posters, videos, and quizzes. Register online and win auto-generated certificates.">
+    <link href="img/favicon.svg" rel="icon" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Saira:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/aisu-custom.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg aisu-navbar sticky-top">
+        <div class="container-fluid px-4 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <div class="brand-text"><span class="orange">AISU</span><span class="white">4India</span></div>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarMain">
+                <i class="bi bi-list text-white fs-2"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <div class="navbar-nav ms-auto align-items-lg-center gap-1">
+                    <a href="index.html" class="nav-link-custom">Home</a>
+                    <a href="about.html" class="nav-link-custom">About Us</a>
+                    <a href="team.html" class="nav-link-custom">Our Team</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle" data-bs-toggle="dropdown">Join Us</a>
+                        <div class="dropdown-menu">
+                            <a href="primary-membership.html" class="dropdown-item"><i class="bi bi-person-badge me-2" style="color:var(--primary)"></i>Primary Membership</a>
+                            <a href="student-membership.html" class="dropdown-item"><i class="bi bi-mortarboard me-2" style="color:var(--primary)"></i>Student Membership</a>
+                            <a href="affiliation.html" class="dropdown-item"><i class="bi bi-building me-2" style="color:var(--primary)"></i>Organization Affiliation</a>
+                        </div>
+                    </div>
+                    <a href="competition.html" class="nav-link-custom active">Competitions</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle" data-bs-toggle="dropdown">Initiatives</a>
+                        <div class="dropdown-menu">
+                            <a href="internship.html" class="dropdown-item"><i class="bi bi-briefcase me-2" style="color:var(--primary)"></i>Internship</a>
+                            <a href="innovations.html" class="dropdown-item"><i class="bi bi-lightbulb me-2" style="color:var(--primary)"></i>Innovation Cell (ICell)</a>
+                        </div>
+                    </div>
+                    <a href="complaint.html" class="nav-link-custom">Complaints</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link-custom dropdown-toggle" data-bs-toggle="dropdown">More</a>
+                        <div class="dropdown-menu">
+                            <a href="press.html" class="dropdown-item"><i class="bi bi-newspaper me-2" style="color:var(--primary)"></i>Updates &amp; Press</a>
+                            <a href="gallery.html" class="dropdown-item"><i class="bi bi-images me-2" style="color:var(--primary)"></i>Gallery &amp; Results</a>
+                            <a href="cert-verify.html" class="dropdown-item"><i class="bi bi-patch-check me-2" style="color:var(--primary)"></i>Verify Certificate</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="contact.html" class="dropdown-item"><i class="bi bi-envelope me-2" style="color:var(--primary)"></i>Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex ms-3 gap-2 mt-3 mt-lg-0">
+                    <a href="login.html" class="btn-nav-login nav-link-custom"><i class="bi bi-person-circle me-1"></i>Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <div class="page-hero">
+        <div class="container text-center position-relative" style="z-index:1;">
+            <h1 class="display-5 fw-800 text-white mb-3" style="font-family:'Saira',sans-serif;">Competition <span
+                    style="color:var(--primary)">Portal</span></h1>
+            <p class="text-white-50 mb-3" style="max-width:550px; margin:0 auto;">Showcase your talent through online
+                competitions – essays, painting, quizzes, videos & more</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center mb-0" style="--bs-breadcrumb-divider:'›';">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">Competitions</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Competition Types -->
+    <section class="py-5 py-lg-6">
+        <div class="container">
+            <div class="text-center mb-5 reveal">
+                <div class="section-badge">Competition Types</div>
+                <h2 class="section-title">Choose Your <span class="accent">Competition</span></h2>
+                <div class="section-divider mx-auto"></div>
+                <p class="text-muted mt-3 small">Open to <strong>all students</strong> – whether or not you are an AISU
+                    member.
+                    <a href="student-membership.html" style="color:var(--primary);">Student Members</a> participate
+                    <strong>FREE</strong>. <a href="login.html" style="color:var(--primary);">Users</a> can
+                    register with a nominal fee.
+                </p>
+            </div>
+
+            <!-- Non-Member Registration Info Banner -->
+            <div class="reveal mb-5">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="p-4 rounded-3 h-100"
+                            style="background:linear-gradient(135deg,#0f2a1a,#1a3a2a); border:1px solid rgba(34,197,94,0.25);">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <div
+                                    style="width:42px;height:42px;border-radius:10px;background:rgba(34,197,94,0.2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                                    🎓</div>
+                                <div class="fw-700 text-white" style="font-family:'Saira',sans-serif;">Student Member
+                                </div>
+                            </div>
+                            <p class="small mb-2" style="color:rgba(255,255,255,0.7);line-height:1.7;">If you hold an
+                                AISU Student Membership, login with your unique Member ID and participate in <strong
+                                    style="color:#22c55e;">all competitions FREE</strong> of charge for the entire
+                                academic year.</p>
+                            <a href="login.html" class="btn-primary-custom"
+                                style="font-size:0.82rem;padding:8px 16px;background:linear-gradient(135deg,#22c55e,#16a34a);">
+                                <i class="bi bi-box-arrow-in-right"></i> Member Login
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-4 rounded-3 h-100"
+                            style="background:linear-gradient(135deg,#1a1a0a,#2a2a10); border:1px solid rgba(245,158,11,0.25);">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <div
+                                    style="width:42px;height:42px;border-radius:10px;background:rgba(245,158,11,0.2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                                    🌍</div>
+                                <div class="fw-700 text-white" style="font-family:'Saira',sans-serif;">User</div>
+                            </div>
+                            <p class="small mb-2" style="color:rgba(255,255,255,0.7);line-height:1.7;">Anyone can
+                                participate even without a membership! Register and pay a <strong
+                                    style="color:#f59e0b;">nominal registration fee</strong> per competition. No annual
+                                commitment needed.</p>
+                            <a href="login.html" class="btn-primary-custom"
+                                style="font-size:0.82rem;padding:8px 16px;background:linear-gradient(135deg,#f59e0b,#d97706);">
+                                <i class="bi bi-person-plus"></i> User Register
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-4 col-md-6 reveal">
+                    <div class="comp-type-card">
+                        <div class="comp-type-icon">✍️</div>
+                        <h5 class="fw-700 mb-2" style="font-family:'Saira',sans-serif;">Essay Writing</h5>
+                        <p class="text-muted small" style="line-height:1.7;">Write on given topics. Upload your essay
+                            document (PDF/DOC). Forwarded to selection committee for scoring.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal">
+                    <div class="comp-type-card">
+                        <div class="comp-type-icon">🎨</div>
+                        <h5 class="fw-700 mb-2" style="font-family:'Saira',sans-serif;">Painting / Art</h5>
+                        <p class="text-muted small" style="line-height:1.7;">Submit your original artwork as a
+                            high-resolution image. Evaluated by the designated art committee.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal">
+                    <div class="comp-type-card">
+                        <div class="comp-type-icon">📋</div>
+                        <h5 class="fw-700 mb-2" style="font-family:'Saira',sans-serif;">Poster Making</h5>
+                        <p class="text-muted small" style="line-height:1.7;">Design a poster on the given theme. Upload
+                            as image or PDF. Judged by the selection committee.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal">
+                    <div class="comp-type-card">
+                        <div class="comp-type-icon">🎬</div>
+                        <h5 class="fw-700 mb-2" style="font-family:'Saira',sans-serif;">Short Video</h5>
+                        <p class="text-muted small" style="line-height:1.7;">Create a short video on the given theme
+                            (max duration as specified). Upload to compete nationally.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal">
+                    <div class="comp-type-card">
+                        <div class="comp-type-icon">🧠</div>
+                        <h5 class="fw-700 mb-2" style="font-family:'Saira',sans-serif;">Group Quiz (Room-Based)</h5>
+                        <p class="text-muted small" style="line-height:1.7;">Join a virtual quiz room with your group.
+                            Real-time, moderator-controlled, replicating offline quiz environment.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal">
+                    <div class="comp-type-card">
+                        <div class="comp-type-icon">📝</div>
+                        <h5 class="fw-700 mb-2" style="font-family:'Saira',sans-serif;">Exam-Mode Online Quiz</h5>
+                        <p class="text-muted small" style="line-height:1.7;">Strict exam environment: time-bound,
+                            copy-paste disabled, auto-submit, full monitoring. Violations = disqualification.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Active Competitions -->
+    <section class="py-5" style="background:var(--light);">
+        <div class="container">
+            <div class="text-center mb-5 reveal">
+                <div class="section-badge">Currently Open</div>
+                <h2 class="section-title">Active <span class="accent">Competitions</span></h2>
+                <div class="section-divider mx-auto"></div>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6 reveal">
+                    <div class="comp-card">
+                        <div class="comp-img" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">
+                            <div class="d-flex align-items-center justify-content-center h-100" style="font-size:4rem;">
+                                ✍️</div>
+                            <span class="comp-tag">Essay</span>
+                        </div>
+                        <div class="comp-body">
+                            <span class="comp-status-open">● Open</span>
+                            <h5 class="mt-2">National Essay Competition 2024</h5>
+                            <div class="comp-meta">
+                                <span><i class="bi bi-calendar3"></i> Last date: Register to view</span>
+                                <span><i class="bi bi-people"></i> Open to all students</span>
+                            </div>
+                            <p class="small text-muted mb-3">Write an essay on "The Future of Education in India".
+                                Submit as PDF (max 2000 words).</p>
+                            <a href="login.html" class="btn-primary-custom"
+                                style="font-size:0.85rem; padding:9px 18px;">Register & Participate <i
+                                    class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal">
+                    <div class="comp-card">
+                        <div class="comp-img" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);">
+                            <div class="d-flex align-items-center justify-content-center h-100" style="font-size:4rem;">
+                                🧠</div>
+                            <span class="comp-tag">Quiz</span>
+                        </div>
+                        <div class="comp-body">
+                            <span class="comp-status-open">● Open</span>
+                            <h5 class="mt-2">National Knowledge Quiz 2024</h5>
+                            <div class="comp-meta">
+                                <span><i class="bi bi-clock"></i> 30 Minutes</span>
+                                <span><i class="bi bi-people"></i> Individual</span>
+                            </div>
+                            <p class="small text-muted mb-3">Exam-mode online quiz on general knowledge, current
+                                affairs, and Indian constitution. Time-bound with strict monitoring.</p>
+                            <a href="login.html" class="btn-primary-custom"
+                                style="font-size:0.85rem; padding:9px 18px;">Register & Participate <i
+                                    class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 reveal">
+                    <div class="comp-card">
+                        <div class="comp-img" style="background:linear-gradient(135deg,#d1fae5,#6ee7b7);">
+                            <div class="d-flex align-items-center justify-content-center h-100" style="font-size:4rem;">
+                                🎨</div>
+                            <span class="comp-tag">Art</span>
+                        </div>
+                        <div class="comp-body">
+                            <span class="comp-status-open">● Open</span>
+                            <h5 class="mt-2">National Art Competition 2024</h5>
+                            <div class="comp-meta">
+                                <span><i class="bi bi-palette"></i> Painting / Drawing</span>
+                                <span><i class="bi bi-upload"></i> Digital Upload</span>
+                            </div>
+                            <p class="small text-muted mb-3">Submit original artwork on "Unity in Diversity". Upload
+                                high-resolution image. Judged by national art committee.</p>
+                            <a href="login.html" class="btn-primary-custom"
+                                style="font-size:0.85rem; padding:9px 18px;">Register & Participate <i
+                                    class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificate Info -->
+    <section class="py-5 py-lg-6">
+        <div class="container">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-6 reveal">
+                    <div class="section-badge">Certificates</div>
+                    <h2 class="section-title">Auto-Generated <span class="accent">Certificates</span></h2>
+                    <div class="section-divider left"></div>
+                    <p class="text-muted mt-3" style="line-height:1.8;">After each competition, participants receive
+                        system-generated certificates with a unique certificate number using the specified prefix.
+                        Winners receive separate premium certificates through an independent award process.</p>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3" style="background:var(--light); border:1px solid #eef0f5;">
+                                <i class="bi bi-award-fill fs-3 mb-2 d-block" style="color:var(--primary)"></i>
+                                <div class="fw-600 small">Participation Certificate</div>
+                                <div class="small text-muted mt-1">Auto-generated for all eligible participants</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded-3" style="background:var(--light); border:1px solid #eef0f5;">
+                                <i class="bi bi-trophy-fill fs-3 mb-2 d-block" style="color:#f59e0b"></i>
+                                <div class="fw-600 small">Winner's Certificate</div>
+                                <div class="small text-muted mt-1">Separate certificate for competition winners</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert mt-3"
+                        style="background:#fef2f2; border:1px solid #fecaca; border-radius:10px; font-size:0.88rem; color:#991b1b;">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Note:</strong> Disqualified participants do not receive certificates. Any violation of
+                        quiz instructions results in immediate disqualification.
+                    </div>
+                </div>
+                <div class="col-lg-6 reveal">
+                    <div class="p-4 p-lg-5 rounded-4"
+                        style="background:linear-gradient(135deg,var(--dark),var(--dark2)); border:1px solid var(--glass-border);">
+                        <h5 class="text-white fw-700 mb-4" style="font-family:'Saira',sans-serif;"><i
+                                class="bi bi-shield-exclamation me-2" style="color:var(--primary)"></i>Exam-Mode Quiz
+                            Rules</h5>
+                        <div class="d-flex align-items-start gap-3 mb-3">
+                            <i class="bi bi-info-circle-fill mt-1" style="color:var(--primary); flex-shrink:0;"></i>
+                            <div class="small" style="color:rgba(255,255,255,0.75);">Detailed instructions displayed
+                                before the competition begins</div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3 mb-3">
+                            <i class="bi bi-clock-fill mt-1" style="color:#f59e0b; flex-shrink:0;"></i>
+                            <div class="small" style="color:rgba(255,255,255,0.75);">Fixed time limit – auto-submit when
+                                time expires</div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3 mb-3">
+                            <i class="bi bi-clipboard-x-fill mt-1" style="color:#ef4444; flex-shrink:0;"></i>
+                            <div class="small" style="color:rgba(255,255,255,0.75);">Copying, paste, and screen
+                                manipulation disabled</div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3 mb-3">
+                            <i class="bi bi-camera-video-fill mt-1" style="color:#8b5cf6; flex-shrink:0;"></i>
+                            <div class="small" style="color:rgba(255,255,255,0.75);">System monitors screen activity
+                                throughout the quiz</div>
+                        </div>
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-x-circle-fill mt-1" style="color:#ef4444; flex-shrink:0;"></i>
+                            <div class="small" style="color:rgba(255,255,255,0.75);">Violations result in immediate
+                                disqualification with real-time notification</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-4" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));">
+        <div class="container text-center reveal">
+            <h3 class="text-white fw-700 mb-3" style="font-family:'Saira',sans-serif;">Open to Everyone – Register &amp;
+                Participate!</h3>
+            <p class="text-white-50 mb-4 small">Student Members compete <strong style="color:#fff;">FREE</strong>. Users
+                without membership can register per competition with a <strong style="color:#fff;">nominal fee</strong>.
+            </p>
+            <a href="login.html" class="btn-hero-outline me-3"
+                style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;"><i
+                    class="bi bi-box-arrow-in-right"></i>Login / Register</a>
+            <a href="student-membership.html"
+                style="background:#fff; color:var(--primary); border:none; padding:12px 24px; border-radius:10px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:8px;"><i
+                    class="bi bi-mortarboard-fill"></i>Get Student Membership – It's FREE</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="aisu-footer">
+        <div class="container py-4">
+            <div class="row g-5">
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand mb-3"><span class="orange">AISU</span><span class="white">4India</span>
+                    </div>
+                    <p style="font-size:0.9rem; line-height:1.7;">An initiative of Federation of Indian Youth
+                        Association, registered under the Indian Trust Act, 1882.</p>
+                    <div class="footer-social mt-3">
+                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Quick Links</h5>
+                    <a href="index.html" class="footer-link">Home</a>
+                    <a href="about.html" class="footer-link">About Us</a>
+                    <a href="team.html" class="footer-link">Our Team</a>
+                    <a href="competition.html" class="footer-link">Competitions</a>
+                    <a href="contact.html" class="footer-link">Contact Us</a>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Initiatives</h5>
+                    <a href="primary-membership.html" class="footer-link">Primary Member</a>
+                    <a href="student-membership.html" class="footer-link">Student Member</a>
+                    <a href="internship.html" class="footer-link">Internship</a>
+                    <a href="innovations.html" class="footer-link">Innovation Cell</a>
+                    <a href="affiliation.html" class="footer-link">Affiliation</a>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Resources</h5>
+                    <a href="press.html" class="footer-link">Press &amp; Updates</a>
+                    <a href="gallery.html" class="footer-link">Gallery &amp; Results</a>
+                    <a href="cert-verify.html" class="footer-link">Verify Certificate</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Contact</h5>
+                    <p class="small mb-2"><i class="bi bi-geo-alt-fill me-2" style="color:var(--primary)"></i>Dubwaliya Yadavchapra, Chanpatia, Bihar – 845450</p>
+                    <p class="small mb-2"><i class="bi bi-telephone-fill me-2" style="color:var(--primary)"></i>+91 80748 53717</p>
+                    <p class="small mb-2"><i class="bi bi-telephone-fill me-2" style="color:var(--primary)"></i>aisu4india@gmail.com</p>
+                    <p class="small"><i class="bi bi-envelope-fill me-2" style="color:var(--primary)"></i>vicepresident.aisu@gmail.com</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start">&copy; 2026 <a href="index.html"
+                            style="color:var(--primary); text-decoration:none;">FIYA</a>. All Rights Reserved.
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">All India Students Union &ndash; Arise &bull; Awake &bull; Empower
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+    </footer>
+
+    <a href="#" class="scroll-top" id="scrollTop"><i class="bi bi-arrow-up"></i></a>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/aisu-main.js"></script>
+</body>
+
+</html>

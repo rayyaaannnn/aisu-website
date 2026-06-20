@@ -1,0 +1,76 @@
+# AISU Designation Management — Complete System
+
+## Answers to Your Questions
+
+### Is Dashboard and Admin the same?
+**Yes.** `admin.html` is the single admin dashboard/portal. It contains all panels (Primary Members, Role Management, Designations, Approvals, History, etc.) accessed via the sidebar.
+
+### Correct Flow Implemented
+
+```
+Primary Membership Form → Pending → Approved (Primary Member only, ID generated)
+                                         ↓
+                     Designations Panel → Appoint (assign designation)
+                                         ↓
+                     Privileges granted based on designation
+                                         ↓
+                     Our Team page auto-updated
+```
+
+---
+
+## What Changed
+
+### 1. Member Approval Flow (Fixed)
+- **Before:** Approval prompted for level + designation → wrong
+- **Now:** Approval → auto-assigns "Primary Member" at "member" level only
+- Member ID is generated when form is submitted (it was already correct)
+- Designation is assigned LATER via the **Designations** panel (Appoint action)
+
+### 2. All 10 Administrative Actions Now Available
+
+| Action | Endpoint | Description |
+|--------|----------|-------------|
+| **Promote** | `POST /rbac/promote/{id}` | Elevate member to higher designation |
+| **Demote** | `POST /rbac/demote/{id}` | Lower member's designation |
+| **Transfer** | `POST /rbac/transfer/{id}` | Move to different state/district |
+| **Add Additional Charge** | `POST /rbac/additional-role/{id}` | Give extra designation (max 3) |
+| **Remove Additional Charge** | `POST /rbac/remove-additional-role/{id}` | Strip an additional designation |
+| **Suspend** | `POST /rbac/suspend/{id}` | Suspend for N days (days required) |
+| **Dismiss** | `POST /rbac/dismiss/{id}` | Permanently remove from organization |
+| **Approve Resignation** | `POST /rbac/approve-resignation/{id}` | Accept member's resignation |
+| **Assign Designation** | `POST /rbac/assign-designation/{id}` | First appointment (auto) or additional (needs approval) |
+| **Approve/Reject Multi-Designation** | `POST /rbac/approve-designation/{id}` | Top-4 approve 2nd/3rd designations |
+
+### 3. Suspension Details
+- Admin must specify **number of days** when suspending
+- `suspended_until` date calculated automatically
+- Member's user account status → `suspended`
+- Member hidden from Our Team page during suspension
+
+### 4. Our Team Auto-Update
+The `team.html` page auto-excludes members with status:
+- `resigned`, `terminated`, `expired`, `suspended`, `dismissed`
+
+### 5. History/Audit Trail
+**All actions** are logged in `promotion_history` and visible under the **Promotion History** panel. Top-4 national officers can filter by any of these action types:
+- Membership Approved, Appointed, Promoted, Demoted, Transferred
+- Additional Charge, Charge Removed, Suspended, Dismissed, Resignation
+
+### 6. Student Membership & User Roles
+**Not touched** — Student membership and regular user flows remain unchanged.
+
+### 7. No Unnecessary Files
+All files in the backend are required. No files were removed.
+
+---
+
+## Files Modified
+
+| File | Changes |
+|------|---------|
+| [rbac.php](file:///c:/Users/Admin/Downloads/AISU-Website/backend-php/rbac.php) | Full designation catalog (100+), admin privilege checks, sidebar panels |
+| [routes/rbac.php](file:///c:/Users/Admin/Downloads/AISU-Website/backend-php/routes/rbac.php) | Added suspend, dismiss, approve-resignation, remove-additional-role + original designation endpoints |
+| [routes/members.php](file:///c:/Users/Admin/Downloads/AISU-Website/backend-php/routes/members.php) | Fixed approval to only assign Primary Member, public directory excludes suspended/dismissed |
+| [js/api.js](file:///c:/Users/Admin/Downloads/AISU-Website/js/api.js) | Added all new API client methods |
+| [admin.html](file:///c:/Users/Admin/Downloads/AISU-Website/admin.html) | Simplified approve handler, added 4 new actions to RBAC panel, suspension days field, new history colors |

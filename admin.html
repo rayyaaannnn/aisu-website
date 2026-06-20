@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin Portal | AISU4India</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Saira:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════════
+   AISU ADMIN PANEL — Premium Design (matches frontend website)
+   Color palette: #FF6F0F (orange), #0d1b2a (dark), #1a2d42 (dark2)
+   Typography: Inter + Saira
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+  --primary: #FF6F0F;
+  --primary-glow: rgba(255, 111, 15, 0.25);
+  --primary-light: #fff5ed;
+  --accent: #FFD700;
+  --dark: #0d1b2a;
+  --dark2: #1a2d42;
+  --dark3: #243447;
+  --surface: #f8f9fc;
+  --card-bg: #ffffff;
+  --text: #2d3748;
+  --text-muted: #6b7280;
+  --border: rgba(0, 0, 0, 0.06);
+  --sidebar: 260px;
+  --radius: 16px;
+  --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--surface);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ── Custom Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 111, 15, 0.3); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* ══════════════════════════════════════════════════════════════
+   SIDEBAR
+   ══════════════════════════════════════════════════════════════ */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar);
+  height: 100vh;
+  background: linear-gradient(180deg, var(--dark) 0%, var(--dark2) 50%, var(--dark3) 100%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
+}
+#sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+  z-index: 1;
+}
+.sidebar-brand {
+  padding: 24px 22px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+}
+.sidebar-brand::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 22px;
+  right: 22px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 111, 15, 0.3), transparent);
+}
+.sidebar-brand .name {
+  font-family: 'Saira', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+.sidebar-brand .name span { color: var(--primary); }
+.sidebar-brand small {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+.nav-section {
+  padding: 18px 22px 6px;
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 22px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all var(--transition);
+  border-left: 3px solid transparent;
+  position: relative;
+  margin: 1px 0;
+}
+.sidebar-link:hover {
+  color: #fff;
+  background: rgba(255, 111, 15, 0.08);
+  border-left-color: rgba(255, 111, 15, 0.5);
+}
+.sidebar-link.active {
+  color: #fff;
+  background: linear-gradient(90deg, rgba(255, 111, 15, 0.15), rgba(255, 111, 15, 0.03));
+  border-left-color: var(--primary);
+  font-weight: 600;
+}
+.sidebar-link.active::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: var(--primary);
+  border-radius: 3px 0 0 3px;
+}
+.sidebar-link i {
+  width: 20px;
+  text-align: center;
+  font-size: 0.95rem;
+  transition: transform var(--transition);
+}
+.sidebar-link:hover i { transform: scale(1.15); }
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 16px 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MAIN CONTENT AREA
+   ══════════════════════════════════════════════════════════════ */
+#main {
+  margin-left: var(--sidebar);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Top Bar ──────────────────────────────────────────────── */
+.top-bar {
+  background: var(--card-bg);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+}
+.top-bar::before {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+  opacity: 0.4;
+}
+.top-bar h5 {
+  font-family: 'Saira', sans-serif;
+  font-weight: 700;
+  margin: 0;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, var(--dark), var(--dark2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.top-bar .user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), #e05c00);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(255, 111, 15, 0.3);
+}
+
+/* ── Content Area ─────────────────────────────────────────── */
+.content {
+  padding: 28px 32px;
+  flex: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STAT CARDS
+   ══════════════════════════════════════════════════════════════ */
+.stat-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: all var(--transition);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(255, 111, 15, 0.15);
+}
+.stat-card:hover::before { opacity: 1; }
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  transition: transform var(--transition);
+}
+.stat-card:hover .stat-icon { transform: scale(1.1); }
+.stat-num {
+  font-family: 'Saira', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--dark), var(--dark2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TABLES
+   ══════════════════════════════════════════════════════════════ */
+.admin-table {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: box-shadow var(--transition);
+}
+.admin-table:hover { box-shadow: var(--shadow-md); }
+.admin-table table { width: 100%; border-collapse: collapse; }
+.admin-table th {
+  background: linear-gradient(135deg, var(--dark), var(--dark2));
+  color: #fff;
+  padding: 13px 18px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+.admin-table td {
+  padding: 13px 18px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  font-size: 0.875rem;
+  transition: background var(--transition);
+}
+.admin-table tr:last-child td { border: 0; }
+.admin-table tr:hover td { background: var(--primary-light); }
+.admin-table code {
+  background: rgba(255, 111, 15, 0.08);
+  color: var(--primary);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* ── Section Panel ────────────────────────────────────────── */
+.panel { display: none; }
+.panel.active { display: block; animation: panelFade 0.35s ease; }
+@keyframes panelFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BADGES
+   ══════════════════════════════════════════════════════════════ */
+.badge-status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  display: inline-block;
+}
+.s-active { background: #dcfce7; color: #166534; }
+.s-pending { background: #fef9c3; color: #854d0e; }
+.s-rejected { background: #fee2e2; color: #991b1b; }
+.s-review { background: #dbeafe; color: #1e40af; }
+
+/* ══════════════════════════════════════════════════════════════
+   FORM CARDS
+   ══════════════════════════════════════════════════════════════ */
+.form-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: box-shadow var(--transition);
+  position: relative;
+}
+.form-card:hover { box-shadow: var(--shadow-md); }
+.form-card h6 {
+  font-family: 'Saira', sans-serif;
+}
+
+/* ── Form Controls (matching frontend membership forms) ──── */
+.form-control, .form-select {
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  transition: all var(--transition);
+  background: #fff;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+  outline: none;
+}
+.form-label {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.82rem;
+}
+
+/* ── Buttons (matching frontend btn-hero-primary) ─────────── */
+.btn {
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s ease;
+}
+.btn:hover::before { left: 100%; }
+
+/* Primary action buttons */
+.btn[style*="background:var(--primary)"],
+.btn[style*="background:#16a34a"] {
+  box-shadow: 0 4px 15px rgba(255, 111, 15, 0.3);
+}
+.btn[style*="background:var(--primary)"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 111, 15, 0.4);
+}
+
+/* Small action buttons */
+.btn-xs, .btn-sm {
+  border-radius: 8px;
+  transition: all var(--transition);
+}
+.btn-xs:hover, .btn-sm:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+/* ── Admin Tabs ───────────────────────────────────────────── */
+.admin-tabs .nav-link {
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 12px 18px;
+  transition: all var(--transition);
+}
+.admin-tabs .nav-link:hover { color: var(--primary); }
+.admin-tabs .nav-link.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   UPLOAD ZONE
+   ══════════════════════════════════════════════════════════════ */
+.upload-zone {
+  border: 2px dashed #d1d5db;
+  border-radius: 14px;
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  background: var(--surface);
+  position: relative;
+}
+.upload-zone:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 111, 15, 0.1);
+}
+.upload-zone:hover i { transform: scale(1.2); color: var(--primary) !important; }
+.upload-zone i { transition: all var(--transition); }
+
+/* ══════════════════════════════════════════════════════════════
+   MODAL (frosted glass)
+   ══════════════════════════════════════════════════════════════ */
+.modal-content {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.modal-header {
+  background: linear-gradient(135deg, var(--dark), var(--dark2));
+  border: 0;
+  padding: 18px 24px;
+}
+.modal-header .modal-title {
+  color: #fff;
+  font-family: 'Saira', sans-serif;
+}
+.modal-header .btn-close {
+  filter: invert(1);
+  opacity: 0.7;
+}
+.modal-body { padding: 24px; }
+.modal-footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+}
+.modal-backdrop.show { backdrop-filter: blur(4px); }
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #sidebar {
+    transform: translateX(-100%);
+  }
+  #sidebar.open {
+    transform: translateX(0);
+  }
+  #main {
+    margin-left: 0;
+  }
+  .content {
+    padding: 16px;
+  }
+  .top-bar {
+    padding: 12px 16px;
+  }
+  .stat-card {
+    padding: 16px;
+  }
+  .form-card {
+    padding: 18px;
+  }
+}
+
+/* ── Utility Animations ───────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 var(--primary-glow); }
+  50% { box-shadow: 0 0 0 8px transparent; }
+}
+
+/* ── Row hover glow for tables ────────────────────────────── */
+.admin-table tbody tr {
+  transition: all var(--transition);
+}
+.admin-table tbody tr:hover {
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+/* ── Title headers in table panels ────────────────────────── */
+.admin-table > div[style*="border-bottom"] {
+  font-family: 'Saira', sans-serif !important;
+}
+
+/* ── Quick Stats card styling ─────────────────────────────── */
+#quick-stats-body .d-flex { transition: all var(--transition); padding: 4px 0; }
+#quick-stats-body .d-flex:hover { background: var(--primary-light); border-radius: 8px; padding-left: 8px; }
+
+/* Login overlay removed — auth handled via login.html */
+
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sidebar-brand">
+    <div class="name"><span>AISU</span>4India</div>
+    <small>Administration Panel v4.2</small>
+  </div>
+  <div style="overflow-y:auto;flex:1;">
+    <div class="nav-section">Overview</div>
+    <a href="#" class="sidebar-link active" data-panel="dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <div class="nav-section">Members</div>
+    <a href="#" class="sidebar-link" data-panel="primary-members"><i class="bi bi-person-badge"></i> Primary Members</a>
+    <a href="#" class="sidebar-link" data-panel="student-members"><i class="bi bi-mortarboard"></i> Student Members</a>
+    <div class="nav-section">Activities</div>
+    <a href="#" class="sidebar-link" data-panel="complaints"><i class="bi bi-shield-exclamation"></i> Complaints</a>
+    <a href="#" class="sidebar-link" data-panel="competitions"><i class="bi bi-trophy"></i> Competitions</a>
+    <a href="#" class="sidebar-link" data-panel="internships"><i class="bi bi-briefcase"></i> Internships</a>
+    <a href="#" class="sidebar-link" data-panel="icell"><i class="bi bi-lightbulb"></i> Innovation Cell</a>
+    <a href="#" class="sidebar-link" data-panel="affiliations"><i class="bi bi-building"></i> Affiliations</a>
+    <div class="nav-section">Certificates</div>
+    <a href="#" class="sidebar-link" data-panel="cert-templates"><i class="bi bi-file-earmark-richtext"></i> Templates</a>
+    <a href="#" class="sidebar-link" data-panel="cert-generate"><i class="bi bi-patch-check"></i> Generate / Issue</a>
+    <div class="nav-section">Quiz</div>
+    <a href="#" class="sidebar-link" data-panel="quiz-rooms"><i class="bi bi-controller"></i> Quiz Rooms</a>
+    <div class="nav-section">Content</div>
+    <a href="#" class="sidebar-link" data-panel="announcements"><i class="bi bi-megaphone"></i> Announcements</a>
+    <a href="#" class="sidebar-link" data-panel="press"><i class="bi bi-newspaper"></i> Press / Gallery</a>
+    <div class="nav-section">System</div>
+    <a href="#" class="sidebar-link" data-panel="users"><i class="bi bi-people"></i> Admin Users</a>
+    <div class="nav-section">RBAC</div>
+    <a href="#" class="sidebar-link" data-panel="rbac-management"><i class="bi bi-shield-lock"></i> Role Management</a>
+    <a href="#" class="sidebar-link" data-panel="team-management"><i class="bi bi-person-gear"></i> Team Management</a>
+    <a href="#" class="sidebar-link" data-panel="promotion-history"><i class="bi bi-clock-history"></i> Promotion History</a>
+    <a href="#" class="sidebar-link" data-panel="designation-management"><i class="bi bi-diagram-3"></i> Designations</a>
+    <a href="#" class="sidebar-link" data-panel="designation-approvals"><i class="bi bi-check2-square"></i> Approvals</a>
+  </div>
+  <div class="sidebar-bottom">
+    <a href="index.html" class="sidebar-link" style="padding:8px 0;"><i class="bi bi-house"></i> Back to Website</a>
+    <a href="#" id="logout-link" class="sidebar-link" style="padding:8px 0;color:rgba(255,80,80,.8);"><i class="bi bi-box-arrow-left"></i> Logout</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div class="top-bar">
+    <h5 id="page-title">Dashboard</h5>
+    <div class="user-info">
+      <div class="avatar" id="user-avatar">A</div>
+      <div><div style="font-weight:600;font-size:.875rem;" id="user-name">Admin</div><div style="font-size:.75rem;color:#6b7280;" id="user-role">National</div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="row g-3 mb-4" id="stat-cards">
+        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:#fff0e6;color:var(--primary);"><i class="bi bi-person-badge-fill"></i></div><div><div class="stat-num" id="cnt-primary">—</div><div class="stat-label">Primary Members</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:#eff6ff;color:#3b82f6;"><i class="bi bi-mortarboard-fill"></i></div><div><div class="stat-num" id="cnt-student">—</div><div class="stat-label">Student Members</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:#fef9c3;color:#ca8a04;"><i class="bi bi-exclamation-triangle-fill"></i></div><div><div class="stat-num" id="cnt-complaints">—</div><div class="stat-label">Complaints</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:#f0fdf4;color:#16a34a;"><i class="bi bi-patch-check-fill"></i></div><div><div class="stat-num" id="cnt-certs">—</div><div class="stat-label">Certificates Issued</div></div></div></div>
+      </div>
+      <div class="row g-3 mb-4" id="stat-cards-2">
+        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:#f0fdf4;color:#16a34a;"><i class="bi bi-server"></i></div><div><div class="stat-num" id="cnt-server-status" style="font-size:1.2rem;background:linear-gradient(135deg,#16a34a,#15803d);-webkit-background-clip:text;background-clip:text;">—</div><div class="stat-label">Server Status</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:#fefce8;color:#ca8a04;"><i class="bi bi-clock-history"></i></div><div><div class="stat-num" id="cnt-expiring">—</div><div class="stat-label">Expiring Soon</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:#f0fdf4;color:#059669;"><i class="bi bi-credit-card"></i></div><div><div class="stat-num" id="cnt-payments">—</div><div class="stat-label">Total Payments</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon" style="background:#f3e8ff;color:#9333ea;"><i class="bi bi-database"></i></div><div><div class="stat-num" id="cnt-db-status" style="font-size:1.2rem;background:linear-gradient(135deg,#7c3aed,#9333ea);-webkit-background-clip:text;background-clip:text;">—</div><div class="stat-label">Database</div></div></div></div>
+      </div>
+      <div class="row g-3">
+        <div class="col-lg-8"><div class="admin-table"><div style="padding:16px 20px;border-bottom:1px solid #f0f0f0;font-weight:600;font-size:.9rem;">Recent Applications</div><table><thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Status</th><th>Date</th><th>Action</th></tr></thead><tbody id="recent-apps"><tr><td colspan="6" class="text-center text-muted py-3">Loading...</td></tr></tbody></table></div></div>
+        <div class="col-lg-4"><div class="form-card"><div style="font-weight:600;font-size:.9rem;margin-bottom:14px;"><i class="bi bi-bar-chart-fill me-2" style="color:var(--primary);"></i>Quick Stats</div><div id="quick-stats-body"><p class="text-muted small">Loading...</p></div></div></div>
+      </div>
+    </div>
+
+    <!-- PRIMARY MEMBERS -->
+    <div class="panel" id="panel-primary-members">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-700 mb-0">Primary Members</h6>
+        <div class="d-flex gap-2">
+          <input type="text" class="form-control form-control-sm" id="pm-search" placeholder="Search name / ID..." style="width:220px;">
+          <select class="form-select form-select-sm" id="pm-status" style="width:130px;"><option value="">All Status</option><option>Active</option><option>Pending</option><option>Rejected</option></select>
+          <button class="btn btn-sm fw-600" style="background:#16a34a;color:#fff;border:0;" onclick="downloadCSV('members')"><i class="bi bi-download me-1"></i>CSV</button>
+        </div>
+      </div>
+      <div class="admin-table"><table><thead><tr><th>Member ID</th><th>Name</th><th>State</th><th>Designation</th><th>Payment</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="pm-body"><tr><td colspan="8" class="text-center py-3 text-muted">Loading...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- STUDENT MEMBERS -->
+    <div class="panel" id="panel-student-members">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-700 mb-0">Student Members</h6>
+        <div class="d-flex gap-2">
+          <input type="text" class="form-control form-control-sm" id="sm-search" placeholder="Search..." style="width:220px;">
+          <button class="btn btn-sm fw-600" style="background:#16a34a;color:#fff;border:0;" onclick="downloadCSV('students')"><i class="bi bi-download me-1"></i>CSV</button>
+        </div>
+      </div>
+      <div class="admin-table"><table><thead><tr><th>Student ID</th><th>Name</th><th>Institution</th><th>State</th><th>Payment</th><th>Status</th><th>Expires</th><th>Actions</th></tr></thead><tbody id="sm-body"><tr><td colspan="8" class="text-center py-3 text-muted">Loading...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- COMPLAINTS -->
+    <div class="panel" id="panel-complaints">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-700 mb-0">Complaint Portal</h6>
+        <select class="form-select form-select-sm" id="comp-status" style="width:150px;"><option value="">All Status</option><option>Pending</option><option>Under Review</option><option>Resolved</option><option>Closed</option></select>
+      </div>
+      <div class="admin-table"><table><thead><tr><th>Complaint ID</th><th>Category</th><th>Filed By</th><th>Status</th><th>Date</th><th>Action</th></tr></thead><tbody id="complaints-body"><tr><td colspan="6" class="text-center py-3 text-muted">Loading...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- COMPETITIONS -->
+    <div class="panel" id="panel-competitions">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-700 mb-0">Competitions</h6>
+        <button class="btn btn-sm btn-warning fw-600" style="background:var(--primary);border:0;color:#fff;" data-bs-toggle="modal" data-bs-target="#addCompModal"><i class="bi bi-plus-lg me-1"></i>New Competition</button>
+      </div>
+      <div class="admin-table"><table><thead><tr><th>Title</th><th>Category</th><th>Deadline</th><th>Registrations</th><th>Status</th><th>Actions</th></tr></thead><tbody id="comp-body"><tr><td colspan="6" class="text-center py-3 text-muted">Loading...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- INTERNSHIPS -->
+    <div class="panel" id="panel-internships">
+      <h6 class="fw-700 mb-3">Internship Applications</h6>
+      <div class="admin-table"><table><thead><tr><th>Applicant</th><th>Student ID</th><th>Domain</th><th>Status</th><th>Applied</th><th>Action</th></tr></thead><tbody id="intern-body"><tr><td colspan="6" class="text-center py-3 text-muted">Loading...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- INNOVATION CELL -->
+    <div class="panel" id="panel-icell">
+      <h6 class="fw-700 mb-3">Innovation Proposals</h6>
+      <div class="admin-table"><table><thead><tr><th>Proposal ID</th><th>Title</th><th>Category</th><th>Submitted By</th><th>Status</th><th>Action</th></tr></thead><tbody id="icell-body"><tr><td colspan="6" class="text-center py-3 text-muted">Loading...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- AFFILIATIONS -->
+    <div class="panel" id="panel-affiliations">
+      <h6 class="fw-700 mb-3">Organization Affiliations</h6>
+      <div class="admin-table"><table><thead><tr><th>Affiliation ID</th><th>Organization</th><th>State</th><th>Type</th><th>Status</th><th>Action</th></tr></thead><tbody id="aff-body"><tr><td colspan="6" class="text-center py-3 text-muted">Loading...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- CERT TEMPLATES -->
+    <div class="panel" id="panel-cert-templates">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-700 mb-0">Certificate Templates</h6>
+        <button class="btn btn-sm" style="background:var(--primary);color:#fff;border:0;" onclick="document.getElementById('tpl-upload-section').scrollIntoView({behavior:'smooth'})"><i class="bi bi-upload me-1"></i>Upload Template</button>
+      </div>
+      <div class="row g-3 mb-4" id="tpl-list"><div class="col-12 text-muted">Loading templates...</div></div>
+      <div class="form-card" id="tpl-upload-section">
+        <h6 class="fw-700 mb-3"><i class="bi bi-cloud-upload me-2" style="color:var(--primary);"></i>Upload New Template</h6>
+        <div class="row g-3">
+          <div class="col-md-4"><label class="form-label small fw-600">Template Name *</label><input type="text" class="form-control" id="tpl-name" placeholder="e.g. Essay Competition 2026"></div>
+          <div class="col-md-3"><label class="form-label small fw-600">Program Code *</label><input type="text" class="form-control" id="tpl-code" placeholder="ESSAY" style="text-transform:uppercase;"></div>
+          <div class="col-md-5"><label class="form-label small fw-600">Description</label><input type="text" class="form-control" id="tpl-desc" placeholder="Optional description"></div>
+          <div class="col-12">
+            <label class="form-label small fw-600">Template File (DOCX, PDF, PNG, JPG) *</label>
+            <div class="upload-zone" id="tpl-drop-zone" onclick="document.getElementById('tpl-file-input').click()">
+              <i class="bi bi-file-earmark-richtext" style="font-size:2rem;color:#9ca3af;"></i>
+              <div class="mt-2 fw-600 small">Click to browse or drag & drop</div>
+              <div class="text-muted" style="font-size:.8rem;">Supported: .docx .pdf .pptx .png .jpg<br>Use {{CertificateNo}} {{ParticipantName}} {{Program}} {{Date}} as placeholders</div>
+              <div id="tpl-file-name" class="mt-2 small text-success fw-600"></div>
+            </div>
+            <input type="file" id="tpl-file-input" accept=".docx,.pdf,.pptx,.png,.jpg,.jpeg" style="display:none;">
+          </div>
+          <div class="col-12"><button class="btn fw-600" style="background:var(--primary);color:#fff;border:0;" id="tpl-upload-btn">Upload Template</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GENERATE CERTIFICATES -->
+    <div class="panel" id="panel-cert-generate">
+      <div class="form-card mb-4">
+        <h6 class="fw-700 mb-3"><i class="bi bi-patch-check me-2" style="color:var(--primary);"></i>Generate Certificates</h6>
+        <div class="row g-3">
+          <div class="col-md-4"><label class="form-label small fw-600">Select Template</label><select class="form-select" id="gen-tpl-id"><option value="">-- Choose Template --</option></select></div>
+          <div class="col-md-3"><label class="form-label small fw-600">Program Code</label><input type="text" class="form-control" id="gen-prog-code" placeholder="ESSAY"></div>
+          <div class="col-md-5"><label class="form-label small fw-600">Mode</label><select class="form-select" id="gen-mode"><option value="manual">Manual — Enter participants below</option><option value="excel">Excel Import</option></select></div>
+        </div>
+        <div id="gen-manual-section" class="mt-3">
+          <label class="form-label small fw-600">Participants (one per line: Name, Email, Program)</label>
+          <textarea class="form-control" id="gen-participants" rows="5" placeholder="Ravi Kumar, ravi@email.com, Essay Competition 2026&#10;Priya Singh, priya@email.com, Essay Competition 2026"></textarea>
+        </div>
+        <div id="gen-excel-section" class="mt-3 d-none">
+          <div class="upload-zone" onclick="document.getElementById('gen-excel-input').click()">
+            <i class="bi bi-file-earmark-spreadsheet" style="font-size:2rem;color:#16a34a;"></i>
+            <div class="mt-2 fw-600 small">Click to upload Excel (.xlsx)</div>
+            <div class="text-muted" style="font-size:.8rem;">Columns: Name, Email, Program</div>
+            <div id="gen-excel-name" class="mt-2 small text-success fw-600"></div>
+          </div>
+          <input type="file" id="gen-excel-input" accept=".xlsx,.xls,.csv" style="display:none;">
+          <div class="mt-2 d-none" id="gen-preview-wrap"><h6 class="small fw-600 mt-3">Preview <span id="gen-preview-count"></span> participants</h6><div class="admin-table"><table><thead><tr id="gen-preview-head"></tr></thead><tbody id="gen-preview-body"></tbody></table></div></div>
+        </div>
+        <div class="mt-3 d-flex gap-2">
+          <button class="btn fw-600" style="background:var(--primary);color:#fff;border:0;" id="gen-certs-btn">Generate Certificates</button>
+          <div id="gen-result" class="small align-self-center text-success fw-600"></div>
+        </div>
+      </div>
+      <div class="admin-table"><div style="padding:16px 20px;border-bottom:1px solid #f0f0f0;font-weight:600;font-size:.9rem;">Issued Certificates</div><table><thead><tr><th>Cert No.</th><th>Name</th><th>Program</th><th>Issued On</th><th>Download</th></tr></thead><tbody id="certs-body"><tr><td colspan="5" class="text-center py-3 text-muted">Loading...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- QUIZ ROOMS -->
+    <div class="panel" id="panel-quiz-rooms">
+      <div class="row g-3">
+        <div class="col-lg-5">
+          <div class="form-card">
+            <h6 class="fw-700 mb-3"><i class="bi bi-controller me-2" style="color:var(--primary);"></i>Create Quiz Room</h6>
+            <div class="mb-2"><label class="form-label small fw-600">Room Name</label><input type="text" class="form-control" id="qr-name" placeholder="e.g. GK Quiz Round 1"></div>
+            <div class="mb-2"><label class="form-label small fw-600">Max Teams</label><input type="number" class="form-control" id="qr-teams" value="10" min="2" max="50"></div>
+            <div class="mb-2"><label class="form-label small fw-600">Time Limit (minutes)</label><input type="number" class="form-control" id="qr-time" value="30"></div>
+            <div class="mb-3">
+              <label class="form-label small fw-600">Questions (JSON Array)</label>
+              <textarea class="form-control" id="qr-questions" rows="6" placeholder='[{"text":"Q1?","options":["A","B","C","D"],"correct_answer":"A","points":10,"time_limit":30}]'></textarea>
+            </div>
+            <button class="btn fw-600 w-100" style="background:var(--primary);color:#fff;border:0;" id="create-room-btn">Create Room</button>
+            <div id="room-created-info" class="mt-3 d-none" style="background:#f0fdf4;border-radius:8px;padding:14px;">
+              <div class="small fw-600 text-success mb-1">Room Created!</div>
+              <div>Room Code: <strong id="room-code-display" style="font-size:1.4rem;letter-spacing:.1em;color:var(--primary);"></strong></div>
+              <a id="room-join-link" href="#" target="_blank" class="btn btn-sm mt-2" style="background:var(--dark);color:#fff;border:0;">Open Room &rarr;</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="admin-table">
+            <div style="padding:16px 20px;border-bottom:1px solid #f0f0f0;font-weight:600;font-size:.9rem;">Active Rooms</div>
+            <table><thead><tr><th>Code</th><th>Name</th><th>Status</th><th>Participants</th><th>Action</th></tr></thead><tbody id="rooms-body"><tr><td colspan="5" class="text-center py-3 text-muted">No active rooms</td></tr></tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS -->
+    <div class="panel" id="panel-announcements">
+      <div class="form-card mb-4">
+        <h6 class="fw-700 mb-3"><i class="bi bi-megaphone me-2" style="color:var(--primary);"></i>Post Announcement</h6>
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label small fw-600">Title *</label><input type="text" class="form-control" id="ann-title" placeholder="Announcement title"></div>
+          <div class="col-md-3"><label class="form-label small fw-600">Type</label><select class="form-select" id="ann-type"><option>General</option><option>Competition</option><option>Membership</option><option>Event</option><option>Important</option></select></div>
+          <div class="col-md-3"><label class="form-label small fw-600">Link (optional)</label><input type="text" class="form-control" id="ann-link" placeholder="https://..."></div>
+          <div class="col-12"><label class="form-label small fw-600">Content *</label><textarea class="form-control" id="ann-content" rows="3" placeholder="Announcement details..."></textarea></div>
+          <div class="col-12"><button class="btn fw-600" style="background:var(--primary);color:#fff;border:0;" id="ann-post-btn">Post Announcement</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRESS / GALLERY -->
+    <div class="panel" id="panel-press">
+      <div class="form-card">
+        <h6 class="fw-700 mb-3"><i class="bi bi-newspaper me-2" style="color:var(--primary);"></i>Add Press Release / Gallery Item</h6>
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label small fw-600">Title *</label><input type="text" class="form-control" id="press-title" placeholder="Press release title"></div>
+          <div class="col-md-3"><label class="form-label small fw-600">Type</label><select class="form-select" id="press-type"><option>Press Release</option><option>Gallery</option><option>Competition Result</option><option>Event</option></select></div>
+          <div class="col-md-3"><label class="form-label small fw-600">Source</label><input type="text" class="form-control" id="press-source" placeholder="NewTapWorld.in"></div>
+          <div class="col-12"><label class="form-label small fw-600">Content</label><textarea class="form-control" id="press-content" rows="3"></textarea></div>
+          <div class="col-12"><button class="btn fw-600" style="background:var(--primary);color:#fff;border:0;" id="press-post-btn">Publish</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS (Admin accounts) -->
+    <div class="panel" id="panel-users">
+      <div class="form-card mb-4">
+        <h6 class="fw-700 mb-3"><i class="bi bi-person-plus me-2" style="color:var(--primary);"></i>Add Admin User</h6>
+        <div class="row g-3">
+          <div class="col-md-4"><label class="form-label small fw-600">Full Name *</label><input type="text" class="form-control" id="new-user-name" placeholder="Full Name"></div>
+          <div class="col-md-4"><label class="form-label small fw-600">Email *</label><input type="email" class="form-control" id="new-user-email" placeholder="email@domain.com"></div>
+          <div class="col-md-4"><label class="form-label small fw-600">Role</label><select class="form-select" id="new-user-role"><option value="national">National</option><option value="vp">Vice President</option><option value="secretary">Secretary</option><option value="treasurer">Treasurer</option><option value="state">State</option><option value="district">District</option><option value="mandal">Mandal</option><option value="institutional">Institutional</option><option value="member">Member</option></select></div>
+          <div class="col-md-4"><label class="form-label small fw-600">Password *</label><input type="password" class="form-control" id="new-user-pass" placeholder="Min 8 chars"></div>
+          <div class="col-12"><button class="btn fw-600" style="background:var(--primary);color:#fff;border:0;" id="add-user-btn">Create Admin User</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RBAC MANAGEMENT -->
+    <div class="panel" id="panel-rbac-management">
+      <div class="form-card mb-4">
+        <h6 class="fw-700 mb-3"><i class="bi bi-shield-lock me-2" style="color:var(--primary);"></i>Promote / Demote / Transfer Member</h6>
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label small fw-600">Member ID or Internal ID *</label><input type="text" class="form-control" id="rbac-member-id" placeholder="e.g. AISUBR260001 or UUID"></div>
+          <div class="col-md-6"><label class="form-label small fw-600">Action *</label><select class="form-select" id="rbac-action"><option value="promote">Promote</option><option value="demote">Demote</option><option value="transfer">Transfer</option><option value="additional">Add Additional Charge</option><option value="suspend">Suspend</option><option value="dismiss">Dismiss</option><option value="approve-resignation">Approve Resignation</option><option value="remove-additional">Remove Additional Charge</option></select></div>
+          <div class="col-md-4"><label class="form-label small fw-600">New Role / Level *</label><select class="form-select" id="rbac-new-role"><option value="national">National</option><option value="vp">Vice President</option><option value="secretary">Secretary</option><option value="treasurer">Treasurer</option><option value="state">State</option><option value="district">District</option><option value="mandal">Mandal</option><option value="institutional">Institutional</option><option value="member">Member</option></select></div>
+          <div class="col-md-4"><label class="form-label small fw-600">New Designation *</label><select class="form-select" id="rbac-designation"><option>Loading...</option></select></div>
+          <div class="col-md-4"><label class="form-label small fw-600">Effective Date</label><input type="date" class="form-control" id="rbac-date"></div>
+          <div class="col-md-6" id="rbac-state-wrap" style="display:none;"><label class="form-label small fw-600">Transfer to State</label><input type="text" class="form-control" id="rbac-new-state" placeholder="New state"></div>
+          <div class="col-md-6" id="rbac-district-wrap" style="display:none;"><label class="form-label small fw-600">Transfer to District</label><input type="text" class="form-control" id="rbac-new-district" placeholder="New district"></div>
+          <div class="col-md-4" id="rbac-days-wrap" style="display:none;"><label class="form-label small fw-600">Suspension Days *</label><input type="number" class="form-control" id="rbac-suspend-days" min="1" placeholder="Number of days"></div>
+          <div class="col-md-4" id="rbac-remove-desig-wrap" style="display:none;"><label class="form-label small fw-600">Designation to Remove *</label><input type="text" class="form-control" id="rbac-remove-desig" placeholder="Exact designation title"></div>
+          <div class="col-12"><label class="form-label small fw-600">Note (optional)</label><input type="text" class="form-control" id="rbac-note" placeholder="Reason for change"></div>
+          <div class="col-12"><button class="btn fw-600" style="background:var(--primary);color:#fff;border:0;" id="rbac-submit-btn"><i class="bi bi-check-circle me-1"></i>Submit Role Change</button> <span id="rbac-result" class="ms-2 small fw-600"></span></div>
+        </div>
+      </div>
+      <div class="form-card">
+        <h6 class="fw-700 mb-3"><i class="bi bi-info-circle me-2" style="color:#3b82f6;"></i>Role Hierarchy</h6>
+        <div class="d-flex flex-wrap gap-2" id="role-hierarchy-badges"></div>
+      </div>
+    </div>
+
+    <!-- TEAM MANAGEMENT -->
+    <div class="panel" id="panel-team-management">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-700 mb-0">Active Team Members (Public Directory)</h6>
+        <button class="btn btn-sm fw-600" style="background:var(--primary);color:#fff;border:0;" id="sync-team-btn"><i class="bi bi-arrow-repeat me-1"></i>Sync All</button>
+      </div>
+      <div class="admin-table"><table><thead><tr><th>ID</th><th>Name</th><th>Designation</th><th>Level</th><th>State</th><th>Status</th></tr></thead><tbody id="team-mgmt-body"><tr><td colspan="6" class="text-center py-3 text-muted">Loading...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- PROMOTION HISTORY -->
+    <div class="panel" id="panel-promotion-history">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-700 mb-0">Promotion / Role Change History</h6>
+        <select class="form-select form-select-sm" id="history-filter" style="width:200px;"><option value="">All Actions</option><option value="membership_approved">Membership Approved</option><option value="appointed">Appointed</option><option value="promoted">Promoted</option><option value="demoted">Demoted</option><option value="transferred">Transferred</option><option value="additional_responsibility">Additional Charge</option><option value="additional_charge_removed">Charge Removed</option><option value="suspended">Suspended</option><option value="dismissed">Dismissed</option><option value="resignation_approved">Resignation</option></select>
+      </div>
+      <div class="admin-table"><table><thead><tr><th>Date</th><th>Member</th><th>Action</th><th>From</th><th>To</th><th>By</th><th>Note</th></tr></thead><tbody id="history-body"><tr><td colspan="7" class="text-center py-3 text-muted">Loading...</td></tr></tbody></table></div>
+    </div>
+
+    <!-- DESIGNATION MANAGEMENT -->
+    <div class="panel" id="panel-designation-management">
+      <!-- Assign Designation to Member -->
+      <div class="form-card mb-4">
+        <h6 class="fw-700 mb-3"><i class="bi bi-person-check me-2" style="color:var(--primary);"></i>Assign Designation to Member</h6>
+        <div class="row g-3">
+          <div class="col-md-4"><label class="form-label small fw-600">Member ID *</label><input type="text" class="form-control" id="desig-member-id" placeholder="e.g. AISUBR260001 or UUID"></div>
+          <div class="col-md-4"><label class="form-label small fw-600">Level *</label>
+            <select class="form-select" id="desig-level">
+              <option value="national">National</option><option value="state">State</option>
+              <option value="district">District</option><option value="mandal">Mandal</option>
+              <option value="institutional">Institutional</option><option value="member">Member</option>
+            </select>
+          </div>
+          <div class="col-md-4"><label class="form-label small fw-600">Designation *</label><select class="form-select" id="desig-title-select"><option>Loading...</option></select></div>
+          <div class="col-md-8"><label class="form-label small fw-600">Note (optional)</label><input type="text" class="form-control" id="desig-note" placeholder="Reason for assignment"></div>
+          <div class="col-md-4 d-flex align-items-end"><button class="btn fw-600 w-100" style="background:var(--primary);color:#fff;border:0;" id="desig-assign-btn"><i class="bi bi-check-circle me-1"></i>Assign</button></div>
+          <div class="col-12"><span id="desig-assign-result" class="small fw-600"></span></div>
+        </div>
+        <div class="mt-3 p-3" style="background:#fffbeb;border-radius:10px;border:1px solid #fde68a;">
+          <div class="small"><i class="bi bi-info-circle me-1" style="color:#ca8a04;"></i><strong>Rules:</strong> Max <strong>3 designations</strong> per person. First designation is auto-assigned. 2nd/3rd require approval from National President, Vice-President, General Secretary, or Joint Secretary.</div>
+        </div>
+      </div>
+
+      <!-- Designation Catalog -->
+      <div class="form-card mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h6 class="fw-700 mb-0"><i class="bi bi-diagram-3 me-2" style="color:#3b82f6;"></i>Designation Catalog</h6>
+          <select class="form-select form-select-sm" id="catalog-level-filter" style="width:160px;">
+            <option value="national">National</option><option value="state">State</option>
+            <option value="district">District</option><option value="mandal">Mandal</option>
+            <option value="institutional">Institutional</option><option value="member">Member</option>
+          </select>
+        </div>
+        <div id="catalog-list" class="admin-table"><table><thead><tr><th>#</th><th>Designation Title</th><th style="width:100px;">Action</th></tr></thead><tbody id="catalog-body"><tr><td colspan="3" class="text-center py-3 text-muted">Select a level</td></tr></tbody></table></div>
+      </div>
+
+      <!-- Add New Designation -->
+      <div class="form-card">
+        <h6 class="fw-700 mb-3"><i class="bi bi-plus-circle me-2" style="color:#16a34a;"></i>Add New Designation</h6>
+        <div class="row g-3">
+          <div class="col-md-4"><label class="form-label small fw-600">Level *</label>
+            <select class="form-select" id="new-desig-level">
+              <option value="national">National</option><option value="state">State</option>
+              <option value="district">District</option><option value="mandal">Mandal</option>
+              <option value="institutional">Institutional</option><option value="member">Member</option>
+            </select>
+          </div>
+          <div class="col-md-5"><label class="form-label small fw-600">Designation Title *</label><input type="text" class="form-control" id="new-desig-title" placeholder="e.g. National Media Advisor"></div>
+          <div class="col-md-3 d-flex align-items-end"><button class="btn fw-600 w-100" style="background:#16a34a;color:#fff;border:0;" id="add-desig-btn"><i class="bi bi-plus-lg me-1"></i>Add</button></div>
+          <div class="col-12"><span id="add-desig-result" class="small fw-600"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESIGNATION APPROVALS -->
+    <div class="panel" id="panel-designation-approvals">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-700 mb-0"><i class="bi bi-check2-square me-2" style="color:var(--primary);"></i>Multi-Designation Approval Queue</h6>
+        <button class="btn btn-sm fw-600" style="background:var(--primary);color:#fff;border:0;" onclick="loadApprovals()"><i class="bi bi-arrow-clockwise me-1"></i>Refresh</button>
+      </div>
+      <div class="admin-table"><table><thead><tr><th>Member</th><th>Current Designations</th><th>Requested</th><th>#</th><th>Requested By</th><th>Date</th><th>Actions</th></tr></thead><tbody id="approvals-body"><tr><td colspan="7" class="text-center py-3 text-muted">Loading...</td></tr></tbody></table></div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Add Competition Modal -->
+<div class="modal fade" id="addCompModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title fw-700">New Competition</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label small fw-600">Title *</label><input type="text" class="form-control" id="nc-title" placeholder="Competition title"></div>
+          <div class="col-md-3"><label class="form-label small fw-600">Category</label><select class="form-select" id="nc-category"><option>Essay Writing</option><option>Painting</option><option>Poster Design</option><option>Video</option><option>Quiz</option><option>General</option></select></div>
+          <div class="col-md-3"><label class="form-label small fw-600">Last Date</label><input type="date" class="form-control" id="nc-deadline"></div>
+          <div class="col-12"><label class="form-label small fw-600">Description *</label><textarea class="form-control" id="nc-desc" rows="3"></textarea></div>
+          <div class="col-md-4"><label class="form-label small fw-600">1st Prize</label><input type="text" class="form-control" id="nc-p1" placeholder="₹5,000 + Certificate"></div>
+          <div class="col-md-4"><label class="form-label small fw-600">2nd Prize</label><input type="text" class="form-control" id="nc-p2" placeholder="₹3,000 + Certificate"></div>
+          <div class="col-md-4"><label class="form-label small fw-600">3rd Prize</label><input type="text" class="form-control" id="nc-p3" placeholder="₹1,000 + Certificate"></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button><button class="btn btn-sm fw-600" style="background:var(--primary);color:#fff;border:0;" id="nc-submit-btn">Create Competition</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- View Complaint Modal -->
+<div class="modal fade" id="viewComplaintModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title fw-700">Complaint Details</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Complaint ID</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;border-left:3px solid var(--primary);" id="view-complaint-id">—</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Category</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;" id="view-complaint-category">—</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Filed By</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;" id="view-complaint-filed-by">—</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Status</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;" id="view-complaint-status">—</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Assigned To</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;" id="view-complaint-assigned-to">Not Assigned</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Email</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;font-size:.85rem;" id="view-complaint-email">—</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Mobile</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;" id="view-complaint-mobile">—</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">State</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;" id="view-complaint-state">—</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">District</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;" id="view-complaint-district">—</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Institution</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;font-size:.85rem;" id="view-complaint-institution">—</div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-600">Date</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;font-size:.85rem;" id="view-complaint-date">—</div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-600">Time</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;font-size:.85rem;" id="view-complaint-time">—</div>
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-600">Description</label>
+            <div class="p-3" style="background:#f3f4f6;border-radius:6px;min-height:80px;line-height:1.5;" id="view-complaint-description">—</div>
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-600">Resolution / Notes</label>
+            <div class="p-3" style="background:#f3f4f6;border-radius:6px;min-height:60px;line-height:1.5;" id="view-complaint-resolution">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Update Complaint Modal -->
+<div class="modal fade" id="updateComplaintModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title fw-700">Update Complaint</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Complaint ID</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;border-left:3px solid var(--primary);" id="update-complaint-id">—</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Category</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;" id="update-complaint-category">—</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Filed By</label>
+            <div class="p-2" style="background:#f3f4f6;border-radius:6px;" id="update-complaint-filed-by">—</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Status *</label>
+            <select class="form-select" id="update-complaint-status">
+              <option value="open">Open</option>
+              <option value="in_progress">In Progress</option>
+              <option value="resolved">Resolved</option>
+              <option value="disposed">Disposed</option>
+              <option value="invalid">Invalid</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-600">Assign To (State/District Personnel)</label>
+            <select class="form-select" id="update-complaint-assigned-to">
+              <option value="">-- Not Assigned --</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-600">Action / Notes *</label>
+            <textarea class="form-control" id="update-complaint-action" rows="3" placeholder="Add your action/update here..."></textarea>
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-600">Resolution (if status is Resolved/Disposed)</label>
+            <textarea class="form-control" id="update-complaint-resolution" rows="2" placeholder="Resolution details..."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button><button class="btn btn-sm fw-600" style="background:var(--primary);color:#fff;border:0;" id="update-complaint-btn">Submit Update</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8000/api' : '/backend-php/api';
+// Use same key as login.html stores the token
+let token = localStorage.getItem('aisu_token') || '';
+
+// ── AUTH ──────────────────────────────────────────────────────
+function apiFetch(path, opts={}){
+  opts.headers = Object.assign({'Content-Type':'application/json','Authorization':'Bearer '+token}, opts.headers||{});
+  return fetch(API+path, opts).then(r=>r.json());
+}
+
+
+// Logout — clear token and go back to login page
+document.getElementById('logout-link').onclick = e => {
+  e.preventDefault();
+  localStorage.removeItem('aisu_token');
+  localStorage.removeItem('aisu_user');
+  window.location.href = 'login.html';
+};
+
+// ── AUTH GUARD — RBAC-aware ──────────────────────────────────
+const storedUser = JSON.parse(localStorage.getItem('aisu_user') || 'null');
+const allAdminRoles = ['national','vp','secretary','treasurer','state','district','mandal','institutional','member'];
+if (!token && !storedUser) {
+  window.location.href = 'login.html';
+} else {
+  if (!token && storedUser) token = localStorage.getItem('aisu_token') || '';
+  if (token) {
+    apiFetch('/auth/me').then(d => {
+      if (d.success && allAdminRoles.includes(d.data.role)) {
+        const u = d.data;
+        document.getElementById('user-name').textContent = u.name || u.email;
+        document.getElementById('user-role').textContent = (u.designation || u.role).substring(0,28);
+        document.getElementById('user-avatar').textContent = (u.name || 'A')[0].toUpperCase();
+        // RBAC: hide sidebar links the user cannot access
+        const allowedPanels = (storedUser && storedUser.panels) || [];
+        if (allowedPanels.length) {
+          document.querySelectorAll('.sidebar-link[data-panel]').forEach(link => {
+            if (!allowedPanels.includes(link.dataset.panel)) link.style.display = 'none';
+          });
+        }
+        loadDashboard();
+      } else {
+        alert('Access denied. Admin privileges required.');
+        window.location.href = 'login.html';
+      }
+    }).catch(() => { window.location.href = 'login.html'; });
+  } else { window.location.href = 'login.html'; }
+}
+
+// ── SIDEBAR NAV ──────────────────────────────────────────────
+document.querySelectorAll('.sidebar-link[data-panel]').forEach(link=>{
+  link.addEventListener('click',e=>{
+    e.preventDefault();
+    document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    link.classList.add('active');
+    const panelId = 'panel-'+link.dataset.panel;
+    document.getElementById(panelId)?.classList.add('active');
+    document.getElementById('page-title').textContent = link.textContent.trim();
+    loadPanel(link.dataset.panel);
+  });
+});
+
+// ── LOAD DASHBOARD ───────────────────────────────────────────
+async function loadDashboard(){
+  // ── Stat Cards ──
+  try {
+    const h = await apiFetch('/health');
+    const c = h.collections||{};
+    const b = h.breakdown||{};
+    const sv = h.server||{};
+    const db = h.database||{};
+    const st = h.storage||{};
+    const s  = h.payments||{};
+    const sy = h.system||{};
+
+    // Animate count-up for stat cards
+    animateCount('cnt-primary', c.primary_members??0);
+    animateCount('cnt-student', c.student_members??0);
+    animateCount('cnt-complaints', c.complaints??0);
+    animateCount('cnt-certs', c.certificates??0);
+    animateCount('cnt-expiring', sy.expiring_memberships??0);
+    animateCount('cnt-payments', s.total_payments??0);
+
+    // Server status — show green dot + PHP version
+    const statusEl = document.getElementById('cnt-server-status');
+    if (statusEl) {
+      const isOnline = sv.status === 'online';
+      statusEl.innerHTML = `<span style="display:flex;align-items:center;gap:6px;font-size:.85rem;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${isOnline?'#16a34a':'#dc2626'};${isOnline?'box-shadow:0 0 8px rgba(22,163,74,0.6)':''}"></span> ${isOnline?'Online':'Offline'}</span>`;
+      statusEl.style.fontSize = '1rem';
+      statusEl.style.background = 'none';
+      statusEl.style.webkitTextFillColor = 'initial';
+      statusEl.style.color = isOnline ? '#16a34a' : '#dc2626';
+    }
+
+    // DB status
+    const dbEl = document.getElementById('cnt-db-status');
+    if (dbEl) {
+      const isConnected = db.status === 'connected';
+      dbEl.innerHTML = `<span style="display:flex;align-items:center;gap:6px;font-size:.85rem;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${isConnected?'#7c3aed':'#dc2626'};${isConnected?'box-shadow:0 0 8px rgba(124,58,237,0.6)':''}"></span> ${isConnected?'Connected':'Error'}</span>`;
+      dbEl.style.fontSize = '1rem';
+      dbEl.style.background = 'none';
+      dbEl.style.webkitTextFillColor = 'initial';
+      dbEl.style.color = isConnected ? '#7c3aed' : '#dc2626';
+    }
+
+    // Quick Stats panel — detailed breakdown
+    document.getElementById('quick-stats-body').innerHTML=`
+      <div class="mb-3" style="font-size:.78rem;font-weight:600;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;">Members</div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Primary — Pending</span><strong style="color:#ca8a04;">${b.pm_pending??0}</strong></div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Primary — Approved</span><strong style="color:#16a34a;">${b.pm_approved??0}</strong></div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Primary — Rejected</span><strong style="color:#dc2626;">${b.pm_rejected??0}</strong></div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Students — Pending</span><strong style="color:#ca8a04;">${b.sm_pending??0}</strong></div>
+      <div class="d-flex justify-content-between mb-3 small"><span>Students — Approved</span><strong style="color:#16a34a;">${b.sm_approved??0}</strong></div>
+      <div class="mb-3" style="font-size:.78rem;font-weight:600;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;">Activities</div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Competitions</span><strong>${c.competitions??0}</strong></div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Internships</span><strong>${c.internships??0}</strong></div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Innovations</span><strong>${c.innovations??0}</strong></div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Affiliations</span><strong>${c.affiliations??0}</strong></div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Complaints — Open</span><strong style="color:#ca8a04;">${b.cmp_pending??0}</strong></div>
+      <div class="d-flex justify-content-between mb-3 small"><span>Complaints — Resolved</span><strong style="color:#16a34a;">${b.cmp_resolved??0}</strong></div>
+      <div class="mb-3" style="font-size:.78rem;font-weight:600;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;">Certificates</div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Templates</span><strong>${c.cert_templates??0}</strong></div>
+      <div class="d-flex justify-content-between small"><span>Issued</span><strong>${c.certificates??0}</strong></div>
+      <div class="mb-3" style="font-size:.78rem;font-weight:600;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;">Payments</div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Razorpay</span><strong style="color:#16a34a;">${s.razorpay_count??0}</strong></div>
+      <div class="d-flex justify-content-between mb-2 small"><span>QR / Proof</span><strong style="color:#ca8a04;">${s.qr_count??0}</strong></div>
+      <div class="d-flex justify-content-between mb-3 small"><span>Total Revenue</span><strong style="color:var(--primary);">₹${s.estimated_revenue??0}</strong></div>
+      <div class="mb-3" style="font-size:.78rem;font-weight:600;color:var(--primary);text-transform:uppercase;letter-spacing:.05em;">System</div>
+      <div class="d-flex justify-content-between mb-2 small"><span>PHP Version</span><strong>${sv.php_version??'—'}</strong></div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Admin Users</span><strong>${sy.admin_users??0}</strong></div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Data Collections</span><strong>${db.collections??0}</strong></div>
+      <div class="d-flex justify-content-between mb-2 small"><span>Data Size</span><strong>${db.data_size_kb??0} KB</strong></div>
+      <div class="d-flex justify-content-between small"><span>Disk Usage</span><strong>${st.disk_used_pct??0}%</strong></div>`;
+  } catch(e){ console.warn('Dashboard stats error:', e); }
+
+  // ── Recent Applications Table ──
+  try {
+    const [pm, sm] = await Promise.all([
+      apiFetch('/members'),
+      apiFetch('/students')
+    ]);
+    let all = [];
+    (pm.data||[]).forEach(m => all.push({
+      id: m.member_id || m._id,
+      name: m.fullname || m.full_name || m.name || '—',
+      type: 'Primary Member',
+      status: m.status || 'pending',
+      date: m.created_at || m.applied_at || '',
+      _id: m._id,
+      col: 'primary_members'
+    }));
+    (sm.data||[]).forEach(s => all.push({
+      id: s.student_id || s._id,
+      name: s.fullname || s.full_name || s.name || '—',
+      type: 'Student Member',
+      status: s.status || 'pending',
+      date: s.created_at || s.applied_at || '',
+      _id: s._id,
+      col: 'student_members'
+    }));
+    // Sort by date (most recent first) and take 10
+    all.sort((a,b) => (b.date||'').localeCompare(a.date||''));
+    all = all.slice(0, 10);
+
+    let rows = '';
+    all.forEach(r => {
+      rows += `<tr>
+        <td><code>${escHtml(r.id)}</code></td>
+        <td>${escHtml(r.name)}</td>
+        <td>${r.type}</td>
+        <td><span class="badge-status ${statusClass(r.status)}">${r.status}</span></td>
+        <td>${fmtDate(r.date)}</td>
+        <td>${r.status==='pending' ? actionBtns(r._id,'/'+r.col) : '<span class="text-muted small">—</span>'}</td>
+      </tr>`;
+    });
+    document.getElementById('recent-apps').innerHTML = rows || '<tr><td colspan="6" class="text-center text-muted py-3">No applications yet</td></tr>';
+  } catch(e){ console.warn('Recent apps error:', e); }
+}
+
+// ── Count-up animation ──
+function animateCount(elId, target) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  target = parseInt(target) || 0;
+  if (target === 0) { el.textContent = '0'; return; }
+  const duration = 800;
+  const start = performance.now();
+  function step(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    el.textContent = Math.round(eased * target);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function loadPanel(id){
+  if(id==='dashboard') return loadDashboard();
+  if(id==='primary-members') return loadTable('/members','pm-body',['member_id','fullname','state','designation','_payment','status','created_at'],8,['Approve','Reject']);
+  if(id==='student-members') return loadTable('/students','sm-body',['student_id','fullname','institution','state','_payment','status','expiry_date'],8,['Approve','Reject']);
+  if(id==='complaints') return loadTable('/complaints','complaints-body',['complaint_id','category','name','status','created_at'],6,['View','Update']);
+  if(id==='competitions') return loadTable('/competitions','comp-body',['title','category','last_date','_registrations','status'],6,['Edit','Delete']);
+  if(id==='internships') return loadTable('/internship','intern-body',['name','student_id','domain','status','applied_at'],6,['Approve','Reject']);
+  if(id==='icell') return loadTable('/icell','icell-body',['proposal_id','title','category','submitted_by','status'],6,['Review','Approve']);
+  if(id==='affiliations') return loadTable('/affiliation','aff-body',['affiliation_id','org_name','state','type','status'],6,['Approve','Reject']);
+  if(id==='cert-templates') return loadTemplates();
+  if(id==='cert-generate') return loadCertsSection();
+  if(id==='quiz-rooms') return loadQuizRooms();
+  if(id==='rbac-management') return loadRbacPanel();
+  if(id==='team-management') return loadTeamMgmt();
+  if(id==='promotion-history') return loadHistory();
+  if(id==='designation-management') return loadDesignationPanel();
+  if(id==='designation-approvals') return loadApprovals();
+}
+
+async function loadTable(endpoint, tbodyId, fields, colspan, actions=[]){
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+  tbody.innerHTML='<tr><td colspan="'+colspan+'" class="text-center py-3 text-muted">Loading...</td></tr>';
+  try{
+    const res = await apiFetch(endpoint);
+    const rows = res.data||res.members||res.students||res.complaints||[];
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="'+colspan+'" class="text-center py-3 text-muted">No records found</td></tr>';return;}
+    tbody.innerHTML = rows.map(r=>{
+      const cells = fields.map(f=>{
+        let cellValue = r[f]||'—';
+        if(f==='status') return `<td><span class="badge-status ${statusClass(r[f])}">${r[f]||'—'}</span></td>`;
+        if(f==='created_at'||f==='applied_at'||f==='expiry_date') return `<td>${fmtDate(cellValue)}</td>`;
+        if(f==='_payment') {
+          if(r.razorpay_payment_id) return `<td><span class="badge-status s-active" style="background:#f0fdf4;color:#166534;"><i class="bi bi-credit-card me-1"></i>Razorpay</span></td>`;
+          if(r.payment_proof) return `<td><span class="badge-status s-pending" style="background:#fef9c3;color:#854d0e;"><i class="bi bi-receipt me-1"></i>QR</span></td>`;
+          return `<td><span class="text-muted small">—</span></td>`;
+        }
+        return `<td>${escHtml(String(cellValue))}</td>`;
+      }).join('');
+      const actCells = actions.map(a=>{
+        let btnStyle='#374151';
+        if(a==='Approve') btnStyle='#16a34a';
+        else if(a==='Reject') btnStyle='#dc2626';
+        else if(a==='View') btnStyle='#3b82f6';
+        else if(a==='Update') btnStyle='#f59e0b';
+        return `<button class="btn btn-xs" style="font-size:.72rem;padding:3px 9px;background:${btnStyle};color:#fff;border:0;border-radius:5px;" onclick="doAction('${a}','${r._id}','${endpoint}')">${a}</button>`;
+      }).join(' ');
+      return `<tr>${cells}<td>${actCells}</td></tr>`;
+    }).join('');
+  }catch(e){tbody.innerHTML='<tr><td colspan="'+colspan+'" class="text-center text-danger py-3">Failed to load</td></tr>';}
+}
+
+async function loadTemplates(){
+  try{
+    const res = await apiFetch('/cert-templates/templates');
+    const list = document.getElementById('tpl-list');
+    const templates = res.data||[];
+    if(!templates.length){list.innerHTML='<div class="col-12 text-muted small">No templates uploaded yet.</div>';return;}
+    list.innerHTML = templates.map(t=>`
+      <div class="col-md-4"><div class="form-card" style="border-top:3px solid var(--primary);">
+        <div class="fw-600">${escHtml(t.name)}</div>
+        <div class="small text-muted mb-1">Code: <code>${t.prog_code}</code> &bull; ${t.ext}</div>
+        <div class="small text-muted mb-2">Placeholders: ${(t.placeholders||[]).map(p=>`<code>{{${p}}}</code>`).join(', ')||'None detected'}</div>
+        <button class="btn btn-sm" onclick="deleteTpl('${t._id}')" style="background:#fee2e2;color:#dc2626;border:0;font-size:.75rem;">Delete</button>
+      </div></div>`).join('');
+    // Also populate generator dropdown
+    const sel = document.getElementById('gen-tpl-id');
+    if(sel){sel.innerHTML='<option value="">-- Choose Template --</option>'+templates.map(t=>`<option value="${t._id}">${escHtml(t.name)} (${t.prog_code})</option>`).join('');}
+  }catch(e){}
+}
+
+async function loadCertsSection(){
+  loadTemplates();
+  try{
+    const res = await apiFetch('/cert-templates/templates');
+    const sel = document.getElementById('gen-tpl-id');
+    if(sel){const ts=res.data||[];sel.innerHTML='<option value="">-- Choose Template --</option>'+ts.map(t=>`<option value="${t._id}">${escHtml(t.name)}</option>`).join('');}
+  }catch(e){}
+  try{
+    const res = await apiFetch('/certs');
+    const rows = res.data||[];
+    document.getElementById('certs-body').innerHTML = rows.length
+      ? rows.map(c=>`<tr><td><code>${c.cert_number||c._id}</code></td><td>${escHtml(c.participant_name||'—')}</td><td>${escHtml(c.program||'—')}</td><td>${fmtDate(c.issued_at||c.created_at)}</td><td><a href="${API}/cert-templates/download/${c._id}?token=${token}" class="btn btn-sm" style="background:var(--dark);color:#fff;border:0;font-size:.75rem;" target="_blank">Download</a></td></tr>`).join('')
+      : '<tr><td colspan="5" class="text-center text-muted py-3">No certificates issued yet</td></tr>';
+  }catch(e){}
+}
+
+async function loadQuizRooms(){
+  try{
+    const res = await apiFetch('/quiz/rooms');
+    const rooms = res.data||[];
+    document.getElementById('rooms-body').innerHTML = rooms.length
+      ? rooms.map(r=>`<tr><td><strong style="letter-spacing:.1em;color:var(--primary);">${r.code}</strong></td><td>${escHtml(r.room_name)}</td><td><span class="badge-status ${r.status==='active'?'s-active':r.status==='ended'?'s-rejected':'s-pending'}">${r.status}</span></td><td>${r.participants}</td><td><a href="quiz-room.html?code=${r.code}&mod=1" class="btn btn-sm" style="background:var(--dark);color:#fff;border:0;font-size:.75rem;" target="_blank">Open</a></td></tr>`).join('')
+      : '<tr><td colspan="5" class="text-center text-muted py-3">No active rooms</td></tr>';
+  }catch(e){}
+}
+
+// ── ACTIONS ──────────────────────────────────────────────────
+async function doAction(action, id, endpoint){
+  // Primary Member approval — auto-assigns as Primary Member
+  if (action === 'Approve' && (endpoint === '/members' || endpoint === '/primary_members')) {
+    if (!confirm('Approve this member as Primary Member?')) return;
+    try {
+      const res = await apiFetch('/members/' + id + '/approve', { method: 'POST' });
+      if (res.success) {
+        alert('✅ ' + (res.message || 'Approved as Primary Member. Assign designation via Designations panel.'));
+        loadPanel('primary-members');
+      } else {
+        alert('❌ ' + (res.message || 'Approval failed'));
+      }
+    } catch(e) { alert('Approval failed.'); }
+    return;
+  }
+
+  // Special handling for reject with reason
+  if (action === 'Reject' && (endpoint === '/members' || endpoint === '/primary_members')) {
+    const reason = prompt('Rejection reason (optional):','');
+    try {
+      await apiFetch('/members/' + id + '/reject', {
+        method: 'POST',
+        body: JSON.stringify({ reason: reason || '' })
+      });
+      alert('Member rejected.');
+      loadPanel('primary-members');
+    } catch(e) { alert('Rejection failed.'); }
+    return;
+  }
+
+  // Student member approve/reject
+  if (action === 'Approve' && (endpoint === '/students' || endpoint === '/student_members')) {
+    try {
+      await apiFetch('/students/' + id + '/approve', { method: 'POST' });
+      alert('Student approved.');
+      loadPanel('student-members');
+    } catch(e) { alert('Failed.'); }
+    return;
+  }
+  if (action === 'Reject' && (endpoint === '/students' || endpoint === '/student_members')) {
+    const reason = prompt('Rejection reason:','');
+    try {
+      await apiFetch('/students/' + id + '/reject', { method: 'POST', body: JSON.stringify({ reason }) });
+      alert('Student rejected.');
+      loadPanel('student-members');
+    } catch(e) { alert('Failed.'); }
+    return;
+  }
+
+  // Complaint View action
+  if (action === 'View' && endpoint === '/complaints') {
+    try {
+      const res = await apiFetch('/complaints');
+      const complaints = res.data || [];
+      const complaint = complaints.find(c => c._id === id);
+      if (!complaint) { alert('Complaint not found'); return; }
+      
+      // Populate modal with complaint details
+      document.getElementById('view-complaint-id').textContent = complaint.complaint_id || '—';
+      document.getElementById('view-complaint-category').textContent = complaint.category || '—';
+      document.getElementById('view-complaint-filed-by').textContent = complaint.name || '—';
+      document.getElementById('view-complaint-email').textContent = complaint.email || '—';
+      document.getElementById('view-complaint-mobile').textContent = complaint.mobile || '—';
+      document.getElementById('view-complaint-institution').textContent = complaint.institution || '—';
+      document.getElementById('view-complaint-state').textContent = complaint.state || '—';
+      document.getElementById('view-complaint-district').textContent = complaint.district || '—';
+      document.getElementById('view-complaint-date').textContent = fmtDate(complaint.created_at) || '—';
+      document.getElementById('view-complaint-time').textContent = complaint.created_at ? new Date(complaint.created_at).toLocaleTimeString() : '—';
+      document.getElementById('view-complaint-status').textContent = complaint.status || '—';
+      document.getElementById('view-complaint-assigned-to').textContent = complaint.assigned_to || 'Not Assigned';
+      document.getElementById('view-complaint-description').textContent = complaint.description || '—';
+      document.getElementById('view-complaint-resolution').textContent = complaint.resolution || 'Pending...';
+      
+      // Store current complaint ID for update action
+      window.currentComplaintId = id;
+      window.currentComplaintData = complaint;
+      
+      // Show modal
+      const modal = new bootstrap.Modal(document.getElementById('viewComplaintModal'));
+      modal.show();
+    } catch(e) { alert('Failed to load complaint details.'); }
+    return;
+  }
+
+  // Complaint Update action
+  if (action === 'Update' && endpoint === '/complaints') {
+    try {
+      const res = await apiFetch('/complaints');
+      const complaints = res.data || [];
+      const complaint = complaints.find(c => c._id === id);
+      if (!complaint) { alert('Complaint not found'); return; }
+      
+      window.currentComplaintId = id;
+      window.currentComplaintData = complaint;
+      
+      // Populate update modal
+      document.getElementById('update-complaint-id').textContent = complaint.complaint_id || '—';
+      document.getElementById('update-complaint-category').textContent = complaint.category || '—';
+      document.getElementById('update-complaint-filed-by').textContent = complaint.name || '—';
+      document.getElementById('update-complaint-status').value = complaint.status || 'open';
+      document.getElementById('update-complaint-action').value = '';
+      document.getElementById('update-complaint-resolution').value = complaint.resolution || '';
+      document.getElementById('update-complaint-assigned-to').value = complaint.assigned_to || '';
+      
+      // Load state personnel for assignment dropdown
+      try {
+        const membersRes = await apiFetch('/members');
+        const members = membersRes.data || [];
+        // Filter for state/district level members
+        const statePersonnel = members.filter(m => 
+          ['state','district','mandal','institutional'].includes(m.role || m.designation?.split('_')[0])
+        );
+        
+        const assignSelect = document.getElementById('update-complaint-assigned-to');
+        const currentValue = assignSelect.value;
+        assignSelect.innerHTML = '<option value="">-- Not Assigned --</option>';
+        statePersonnel.forEach(p => {
+          const option = document.createElement('option');
+          option.value = p.fullname || p.name || '';
+          option.textContent = (p.fullname || p.name || '') + ' (' + (p.designation || p.role || 'Member') + ')';
+          assignSelect.appendChild(option);
+        });
+        assignSelect.value = currentValue;
+      } catch(e) {
+        console.warn('Failed to load members:', e);
+        // Still allow manual entry
+        document.getElementById('update-complaint-assigned-to').value = complaint.assigned_to || '';
+      }
+      
+      // Show modal
+      const modal = new bootstrap.Modal(document.getElementById('updateComplaintModal'));
+      modal.show();
+    } catch(e) { alert('Failed to load complaint.'); }
+    return;
+  }
+
+  // Generic fallback for other actions
+  const statusMap={Approve:'active',Reject:'rejected',Review:'under_review'};
+  const status = statusMap[action];
+  if(!status) return;
+  if(!window.confirm(`${action} this record?`)) return;
+  try{
+    await apiFetch(endpoint+'/'+id+'/status',{method:'PATCH',body:JSON.stringify({status})});
+    alert('Status updated.');
+  }catch(e){alert('Update failed.');}
+}
+
+async function deleteTpl(id){
+  if(!confirm('Delete this template?')) return;
+  await apiFetch('/cert-templates/templates/'+id,{method:'DELETE'});
+  loadTemplates();
+}
+
+// ── TEMPLATE UPLOAD ────────────────────────────────────────────
+document.getElementById('tpl-file-input').onchange = function(){
+  document.getElementById('tpl-file-name').textContent = this.files[0]?.name||'';
+};
+document.getElementById('tpl-upload-btn').onclick = async()=>{
+  const name  = document.getElementById('tpl-name').value.trim();
+  const code  = document.getElementById('tpl-code').value.trim().toUpperCase();
+  const file  = document.getElementById('tpl-file-input').files[0];
+  const desc  = document.getElementById('tpl-desc').value;
+  if(!name||!code||!file){alert('Name, code and file are required.');return;}
+  const fd = new FormData();
+  fd.append('name',name);fd.append('prog_code',code);fd.append('description',desc);fd.append('template_file',file);
+  const res = await fetch(API+'/cert-templates/templates',{method:'POST',headers:{Authorization:'Bearer '+token},body:fd});
+  const data = await res.json();
+  if(data.success){alert('Template uploaded! Placeholders found: '+(data.data?.placeholders||[]).join(', ')||'None');loadTemplates();}
+  else alert(data.message||'Upload failed');
+};
+
+// ── CERTIFICATE GENERATION ─────────────────────────────────────
+document.getElementById('gen-mode')?.addEventListener('change',function(){
+  document.getElementById('gen-manual-section').classList.toggle('d-none', this.value==='excel');
+  document.getElementById('gen-excel-section').classList.toggle('d-none', this.value==='manual');
+});
+document.getElementById('gen-excel-input')?.addEventListener('change', async function(){
+  const file=this.files[0];
+  if(!file) return;
+  document.getElementById('gen-excel-name').textContent=file.name;
+  const fd=new FormData();fd.append('excel_file',file);
+  const res=await fetch(API+'/cert-templates/participants/upload',{method:'POST',headers:{Authorization:'Bearer '+token},body:fd});
+  const data=await res.json();
+  if(data.success){
+    const p=data.data;
+    document.getElementById('gen-preview-count').textContent=p.count;
+    document.getElementById('gen-preview-head').innerHTML=p.headers.map(h=>`<th>${h}</th>`).join('');
+    document.getElementById('gen-preview-body').innerHTML=p.participants.slice(0,10).map(r=>`<tr>${p.headers.map(h=>`<td>${r[h]||''}</td>`).join('')}</tr>`).join('');
+    document.getElementById('gen-preview-wrap').classList.remove('d-none');
+  }
+});
+document.getElementById('gen-certs-btn')?.addEventListener('click', async()=>{
+  const tid  = document.getElementById('gen-tpl-id').value;
+  const code = document.getElementById('gen-prog-code').value.trim().toUpperCase()||'COMP';
+  const mode = document.getElementById('gen-mode').value;
+  let participants=[];
+  if(mode==='manual'){
+    const lines=(document.getElementById('gen-participants').value||'').split('\n').filter(l=>l.trim());
+    participants=lines.map(l=>{const[name,email,program]=l.split(',').map(s=>s.trim());return{name,email,program};});
+  }
+  if(!participants.length&&mode==='manual'){alert('Enter at least one participant.');return;}
+  document.getElementById('gen-result').textContent='Generating...';
+  const res=await apiFetch('/cert-templates/generate',{method:'POST',body:JSON.stringify({template_id:tid,prog_code:code,mode:'manual',participants})});
+  if(res.success){document.getElementById('gen-result').textContent=res.message;loadCertsSection();}
+  else document.getElementById('gen-result').textContent=res.message||'Failed';
+});
+
+// ── QUIZ ROOM CREATION ────────────────────────────────────────
+document.getElementById('create-room-btn').onclick = async()=>{
+  const name    = document.getElementById('qr-name').value||'Quiz Room';
+  const teams   = document.getElementById('qr-teams').value||10;
+  const time    = document.getElementById('qr-time').value||30;
+  let questions = [];
+  try{ questions=JSON.parse(document.getElementById('qr-questions').value||'[]'); }catch(e){alert('Invalid JSON in questions.');return;}
+  const res = await apiFetch('/quiz/rooms',{method:'POST',body:JSON.stringify({room_name:name,max_teams:teams,time_limit_minutes:time,questions})});
+  if(res.success){
+    const code=res.data.room_code;
+    document.getElementById('room-code-display').textContent=code;
+    document.getElementById('room-join-link').href=`quiz-room.html?code=${code}&mod=1`;
+    document.getElementById('room-created-info').classList.remove('d-none');
+    loadQuizRooms();
+  } else alert(res.message||'Failed to create room');
+};
+
+// ── ANNOUNCEMENTS ────────────────────────────────────────────
+document.getElementById('ann-post-btn').onclick = async()=>{
+  const title=document.getElementById('ann-title').value.trim();
+  const content=document.getElementById('ann-content').value.trim();
+  const type=document.getElementById('ann-type').value;
+  const link=document.getElementById('ann-link').value.trim();
+  if(!title||!content){alert('Title and content required.');return;}
+  const res=await apiFetch('/admin/announcements',{method:'POST',body:JSON.stringify({title,content,type,link})});
+  if(res.success){alert('Announcement posted!');document.getElementById('ann-title').value='';document.getElementById('ann-content').value='';}
+  else alert(res.message||'Failed');
+};
+
+// ── PRESS ────────────────────────────────────────────────────
+document.getElementById('press-post-btn').onclick = async()=>{
+  const title=document.getElementById('press-title').value.trim();
+  const content=document.getElementById('press-content').value.trim();
+  const type=document.getElementById('press-type').value;
+  const source=document.getElementById('press-source').value.trim();
+  if(!title){alert('Title required.');return;}
+  const res=await apiFetch('/admin/press',{method:'POST',body:JSON.stringify({title,content,type,source})});
+  if(res.success){alert('Published!');}
+  else alert(res.message||'Failed');
+};
+
+// ── ADD COMPETITION ────────────────────────────────────────────
+document.getElementById('nc-submit-btn')?.addEventListener('click', async()=>{
+  const body={title:document.getElementById('nc-title').value.trim(),category:document.getElementById('nc-category').value,description:document.getElementById('nc-desc').value.trim(),last_date:document.getElementById('nc-deadline').value,prizes:{first:document.getElementById('nc-p1').value,second:document.getElementById('nc-p2').value,third:document.getElementById('nc-p3').value}};
+  if(!body.title){alert('Title required');return;}
+  const res=await apiFetch('/competitions',{method:'POST',body:JSON.stringify(body)});
+  if(res.success){bootstrap.Modal.getInstance(document.getElementById('addCompModal'))?.hide();alert('Competition created!');loadPanel('competitions');}
+  else alert(res.message||'Failed');
+});
+
+// ── UPDATE COMPLAINT ────────────────────────────────────────────
+document.getElementById('update-complaint-btn')?.addEventListener('click', async()=>{
+  const complaintId = window.currentComplaintId;
+  const status = document.getElementById('update-complaint-status').value;
+  const action = document.getElementById('update-complaint-action').value.trim();
+  const resolution = document.getElementById('update-complaint-resolution').value.trim();
+  const assignedTo = document.getElementById('update-complaint-assigned-to').value.trim();
+  
+  if (!complaintId) { alert('Error: Complaint ID not set'); return; }
+  if (!action) { alert('Action/Notes field is required'); return; }
+  
+  const fd = new FormData();
+  fd.append('status', status);
+  fd.append('action', action);
+  if (resolution) fd.append('resolution', resolution);
+  if (assignedTo) fd.append('assigned_to', assignedTo);
+  
+  try {
+    // Use fetch directly to send form data with correct content-type
+    const res = await fetch(API + '/complaints/' + complaintId + '/update', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: fd
+    });
+    
+    const data = await res.json();
+    
+    if (data.success) {
+      // Hide modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById('updateComplaintModal'));
+      if (modal) modal.hide();
+      
+      // Wait a moment for modal to close
+      setTimeout(() => {
+        alert('✅ Complaint updated successfully!');
+        // Reload the complaints table
+        loadPanel('complaints');
+      }, 300);
+    } else {
+      alert('❌ ' + (data.message || 'Update failed'));
+    }
+  } catch(e) {
+    console.error('Update error:', e);
+    alert('Error updating complaint: ' + e.message);
+  }
+});
+
+
+// ── HELPERS ──────────────────────────────────────────────────
+function statusClass(s=''){const m={'active':'s-active','approved':'s-active','pending':'s-pending','under review':'s-review','under_review':'s-review','rejected':'s-rejected','closed':'s-rejected'};return m[(s||'').toLowerCase()]||'s-pending';}
+function fmtDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}catch{return d;}}
+function escHtml(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
+function actionBtns(id,col){return `<button class="btn btn-xs" style="font-size:.7rem;padding:2px 8px;background:#16a34a;color:#fff;border:0;border-radius:4px;" onclick="doAction('Approve','${id}','/${col}')">Approve</button> <button class="btn btn-xs" style="font-size:.7rem;padding:2px 8px;background:#dc2626;color:#fff;border:0;border-radius:4px;" onclick="doAction('Reject','${id}','/${col}')">Reject</button>`;}
+
+// ── CSV Download ──────────────────────────────────────────────
+function downloadCSV(type) {
+  const url = API + '/' + type + '/export/csv?token=' + encodeURIComponent(token);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = type + '_members_' + new Date().toISOString().split('T')[0] + '.csv';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  RBAC PANEL FUNCTIONS
+// ══════════════════════════════════════════════════════════════
+
+// ── RBAC Management Panel ────────────────────────────────────
+async function loadRbacPanel() {
+  // Load role hierarchy badges
+  try {
+    const res = await apiFetch('/rbac/roles');
+    if (res.success) {
+      const h = res.data.hierarchy || {};
+      const colors = {national:'#FF6F0F',vp:'#e85d04',secretary:'#dc2626',treasurer:'#ca8a04',state:'#3b82f6',district:'#8b5cf6',mandal:'#f59e0b',institutional:'#22c55e',member:'#64748b',user:'#9ca3af'};
+      document.getElementById('role-hierarchy-badges').innerHTML =
+        Object.entries(h).sort((a,b)=>b[1]-a[1]).map(([r,v])=>
+          `<span style="background:${colors[r]||'#666'};color:#fff;padding:5px 14px;border-radius:20px;font-size:.78rem;font-weight:600;">${r.toUpperCase()} (${v})</span>`
+        ).join('');
+    }
+  } catch(e){}
+  // Load designations for selected role
+  loadDesignations();
+  document.getElementById('rbac-date').value = new Date().toISOString().split('T')[0];
+}
+
+// Designation dropdown updates when role changes
+document.getElementById('rbac-new-role')?.addEventListener('change', loadDesignations);
+async function loadDesignations() {
+  const role = document.getElementById('rbac-new-role').value;
+  try {
+    const res = await apiFetch('/rbac/designations/' + role);
+    const sel = document.getElementById('rbac-designation');
+    const desigs = res.data || ['Primary Member'];
+    sel.innerHTML = desigs.map(d => `<option>${d}</option>`).join('');
+  } catch(e){}
+}
+
+// Show/hide conditional fields based on action
+document.getElementById('rbac-action')?.addEventListener('change', function(){
+  const v = this.value;
+  document.getElementById('rbac-state-wrap').style.display = v === 'transfer' ? '' : 'none';
+  document.getElementById('rbac-district-wrap').style.display = v === 'transfer' ? '' : 'none';
+  document.getElementById('rbac-days-wrap').style.display = v === 'suspend' ? '' : 'none';
+  document.getElementById('rbac-remove-desig-wrap').style.display = v === 'remove-additional' ? '' : 'none';
+});
+
+// Submit role change
+document.getElementById('rbac-submit-btn')?.addEventListener('click', async () => {
+  const memberId = document.getElementById('rbac-member-id').value.trim();
+  const action   = document.getElementById('rbac-action').value;
+  const newRole  = document.getElementById('rbac-new-role').value;
+  const desig    = document.getElementById('rbac-designation').value;
+  const date     = document.getElementById('rbac-date').value;
+  const note     = document.getElementById('rbac-note').value;
+  const resultEl = document.getElementById('rbac-result');
+
+  if (!memberId) { resultEl.textContent = '❌ Member ID required'; resultEl.style.color = '#dc2626'; return; }
+  resultEl.textContent = '⏳ Processing...'; resultEl.style.color = '#6b7280';
+
+  let endpoint = '/rbac/' + action + '/' + memberId;
+  let body = { new_role: newRole, new_level: newRole, new_designation: desig, effective_date: date, note };
+
+  if (action === 'transfer') {
+    body.new_state = document.getElementById('rbac-new-state').value;
+    body.new_district = document.getElementById('rbac-new-district').value;
+  }
+  if (action === 'additional') {
+    endpoint = '/rbac/additional-role/' + memberId;
+    body = { additional_designation: desig, effective_date: date, note };
+  }
+  if (action === 'suspend') {
+    const days = document.getElementById('rbac-suspend-days').value;
+    if (!days || days <= 0) { resultEl.textContent = '❌ Enter suspension days'; resultEl.style.color = '#dc2626'; return; }
+    endpoint = '/rbac/suspend/' + memberId;
+    body = { days: parseInt(days), note };
+  }
+  if (action === 'dismiss') {
+    if (!confirm('Are you sure you want to DISMISS this member? This cannot be undone.')) return;
+    endpoint = '/rbac/dismiss/' + memberId;
+    body = { note };
+  }
+  if (action === 'approve-resignation') {
+    if (!confirm('Approve this member\'s resignation?')) return;
+    endpoint = '/rbac/approve-resignation/' + memberId;
+    body = { note };
+  }
+  if (action === 'remove-additional') {
+    const removeDesig = document.getElementById('rbac-remove-desig').value.trim();
+    if (!removeDesig) { resultEl.textContent = '❌ Enter designation to remove'; resultEl.style.color = '#dc2626'; return; }
+    endpoint = '/rbac/remove-additional-role/' + memberId;
+    body = { designation: removeDesig };
+  }
+
+  const res = await apiFetch(endpoint, { method: 'POST', body: JSON.stringify(body) });
+  if (res.success) {
+    resultEl.textContent = '✅ ' + (res.message || 'Done');
+    resultEl.style.color = '#16a34a';
+  } else {
+    resultEl.textContent = '❌ ' + (res.message || 'Failed');
+    resultEl.style.color = '#dc2626';
+  }
+});
+
+// ── Team Management Panel ────────────────────────────────────
+async function loadTeamMgmt() {
+  const tbody = document.getElementById('team-mgmt-body');
+  tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-muted">Loading...</td></tr>';
+  try {
+    const res = await apiFetch('/rbac/team-directory');
+    const team = res.data || [];
+    if (!team.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-3 text-muted">No active members</td></tr>'; return; }
+    tbody.innerHTML = team.map(m => `<tr>
+      <td><code>${escHtml(m.member_id||'—')}</code></td>
+      <td>${escHtml(m.name)}</td>
+      <td>${escHtml(m.designation||'—')}</td>
+      <td><span class="badge-status s-active">${escHtml(m.level||'member')}</span></td>
+      <td>${escHtml(m.state||'—')}</td>
+      <td><span class="badge-status s-active">${escHtml(m.role_status||'active')}</span></td>
+    </tr>`).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-3">Failed to load</td></tr>'; }
+}
+
+document.getElementById('sync-team-btn')?.addEventListener('click', async () => {
+  const btn = document.getElementById('sync-team-btn');
+  btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Syncing...'; btn.disabled = true;
+  const res = await apiFetch('/rbac/sync-team', { method: 'POST' });
+  alert(res.message || 'Sync complete');
+  btn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Sync All'; btn.disabled = false;
+  loadTeamMgmt();
+});
+
+// ── Promotion History Panel ──────────────────────────────────
+async function loadHistory() {
+  const tbody = document.getElementById('history-body');
+  const filter = document.getElementById('history-filter').value;
+  tbody.innerHTML = '<tr><td colspan="7" class="text-center py-3 text-muted">Loading...</td></tr>';
+  try {
+    const q = filter ? '?action=' + filter : '';
+    const res = await apiFetch('/rbac/history' + q);
+    const history = res.data || [];
+    if (!history.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-3 text-muted">No records</td></tr>'; return; }
+    const actionColors = {membership_approved:'#0ea5e9',appointed:'#16a34a',promoted:'#3b82f6',demoted:'#dc2626',transferred:'#8b5cf6',additional_responsibility:'#f59e0b',additional_charge_removed:'#78716c',suspended:'#ea580c',dismissed:'#991b1b',resignation_approved:'#64748b'};
+    tbody.innerHTML = history.map(h => `<tr>
+      <td>${fmtDate(h.effective_date||h.created_at)}</td>
+      <td><strong>${escHtml(h.member_name||'—')}</strong><br><code style="font-size:.7rem;">${escHtml(h.member_id||'')}</code></td>
+      <td><span style="background:${actionColors[h.action]||'#666'};color:#fff;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:600;">${(h.action||'').replace('_',' ').toUpperCase()}</span></td>
+      <td>${escHtml(h.old_designation||'—')}<br><span class="text-muted" style="font-size:.72rem;">${escHtml(h.old_level||'')}</span></td>
+      <td><strong>${escHtml(h.new_designation||'—')}</strong><br><span style="color:var(--primary);font-size:.72rem;">${escHtml(h.new_level||'')}</span></td>
+      <td>${escHtml(h.promoted_by_name||'System')}</td>
+      <td class="text-muted" style="font-size:.8rem;">${escHtml(h.note||'—')}</td>
+    </tr>`).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-3">Failed to load</td></tr>'; }
+}
+
+document.getElementById('history-filter')?.addEventListener('change', loadHistory);
+
+// ══════════════════════════════════════════════════════════════
+//  DESIGNATION MANAGEMENT
+// ══════════════════════════════════════════════════════════════
+let _desigCatalog = {};
+
+async function loadDesignationPanel() {
+  // Load catalog
+  try {
+    const res = await apiFetch('/rbac/designations-catalog');
+    if (res.success) _desigCatalog = res.data || {};
+  } catch(e){}
+  loadCatalogTable();
+  loadDesigDropdown();
+}
+
+// Catalog table
+function loadCatalogTable() {
+  const level = document.getElementById('catalog-level-filter').value;
+  const desigs = _desigCatalog[level] || [];
+  const tbody = document.getElementById('catalog-body');
+  if (!desigs.length) { tbody.innerHTML = '<tr><td colspan="3" class="text-center py-3 text-muted">No designations at this level</td></tr>'; return; }
+  tbody.innerHTML = desigs.map((d, i) => `<tr>
+    <td>${i + 1}</td>
+    <td>${escHtml(d)}</td>
+    <td><button class="btn btn-xs" style="font-size:.7rem;padding:2px 8px;background:#dc2626;color:#fff;border:0;border-radius:4px;" onclick="deleteDesig('${level}','${escHtml(d).replace(/'/g,"\\'")}')">Delete</button></td>
+  </tr>`).join('');
+}
+document.getElementById('catalog-level-filter')?.addEventListener('change', loadCatalogTable);
+
+// Designation dropdown for assignment
+function loadDesigDropdown() {
+  const level = document.getElementById('desig-level').value;
+  // Map level to role key
+  const roleMap = {national:'national',state:'state',district:'district',mandal:'mandal',institutional:'institutional',member:'member'};
+  const desigs = _desigCatalog[roleMap[level] || level] || ['Primary Member'];
+  document.getElementById('desig-title-select').innerHTML = desigs.map(d => `<option>${d}</option>`).join('');
+}
+document.getElementById('desig-level')?.addEventListener('change', loadDesigDropdown);
+
+// Add new designation
+document.getElementById('add-desig-btn')?.addEventListener('click', async () => {
+  const level = document.getElementById('new-desig-level').value;
+  const title = document.getElementById('new-desig-title').value.trim();
+  const el = document.getElementById('add-desig-result');
+  if (!title) { el.textContent = '❌ Title required'; el.style.color = '#dc2626'; return; }
+  el.textContent = '⏳ Adding...'; el.style.color = '#6b7280';
+  const res = await apiFetch('/rbac/designations', { method: 'POST', body: JSON.stringify({ level, title }) });
+  if (res.success) {
+    el.textContent = '✅ ' + (res.message || 'Added'); el.style.color = '#16a34a';
+    document.getElementById('new-desig-title').value = '';
+    loadDesignationPanel();
+  } else {
+    el.textContent = '❌ ' + (res.message || 'Failed'); el.style.color = '#dc2626';
+  }
+});
+
+// Delete designation
+async function deleteDesig(level, title) {
+  if (!confirm('Delete designation "' + title + '" from ' + level + ' level?')) return;
+  const res = await apiFetch('/rbac/designations', { method: 'DELETE', body: JSON.stringify({ level, title }) });
+  if (res.success) { alert('Deleted'); loadDesignationPanel(); }
+  else alert(res.message || 'Failed');
+}
+
+// Assign designation to member
+document.getElementById('desig-assign-btn')?.addEventListener('click', async () => {
+  const memberId = document.getElementById('desig-member-id').value.trim();
+  const level = document.getElementById('desig-level').value;
+  const designation = document.getElementById('desig-title-select').value;
+  const note = document.getElementById('desig-note').value;
+  const el = document.getElementById('desig-assign-result');
+  if (!memberId) { el.textContent = '❌ Member ID required'; el.style.color = '#dc2626'; return; }
+  if (!designation) { el.textContent = '❌ Designation required'; el.style.color = '#dc2626'; return; }
+  el.textContent = '⏳ Processing...'; el.style.color = '#6b7280';
+  const res = await apiFetch('/rbac/assign-designation/' + memberId, {
+    method: 'POST',
+    body: JSON.stringify({ designation, level, note })
+  });
+  if (res.success) {
+    el.textContent = '✅ ' + (res.message || 'Done'); el.style.color = '#16a34a';
+  } else {
+    el.textContent = '❌ ' + (res.message || 'Failed'); el.style.color = '#dc2626';
+  }
+});
+
+// ══════════════════════════════════════════════════════════════
+//  DESIGNATION APPROVALS
+// ══════════════════════════════════════════════════════════════
+async function loadApprovals() {
+  const tbody = document.getElementById('approvals-body');
+  tbody.innerHTML = '<tr><td colspan="7" class="text-center py-3 text-muted">Loading...</td></tr>';
+  try {
+    const res = await apiFetch('/rbac/pending-approvals');
+    const items = res.data || [];
+    if (!items.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-3 text-muted">No pending approvals</td></tr>'; return; }
+    tbody.innerHTML = items.map(a => `<tr>
+      <td><strong>${escHtml(a.member_name || '—')}</strong><br><code style="font-size:.7rem;">${escHtml(a.member_id || '')}</code></td>
+      <td>${(a.current_designations || []).map(d => `<span class="badge-status s-active" style="display:inline-block;margin:2px;">${escHtml(d)}</span>`).join('') || '—'}</td>
+      <td><strong style="color:var(--primary);">${escHtml(a.designation)}</strong><br><span class="text-muted" style="font-size:.72rem;">${escHtml(a.level || '')}</span></td>
+      <td><span style="background:#3b82f6;color:#fff;padding:2px 8px;border-radius:10px;font-size:.75rem;font-weight:700;">#${a.designation_number || '?'}</span></td>
+      <td>${escHtml(a.requested_by_name || '—')}</td>
+      <td>${fmtDate(a.created_at)}</td>
+      <td>
+        <button class="btn btn-xs" style="font-size:.7rem;padding:3px 9px;background:#16a34a;color:#fff;border:0;border-radius:4px;" onclick="approveDesig('${a._id}')">Approve</button>
+        <button class="btn btn-xs" style="font-size:.7rem;padding:3px 9px;background:#dc2626;color:#fff;border:0;border-radius:4px;" onclick="rejectDesig('${a._id}')">Reject</button>
+      </td>
+    </tr>`).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-3">Failed to load</td></tr>'; }
+}
+
+async function approveDesig(id) {
+  if (!confirm('Approve this designation assignment?')) return;
+  const res = await apiFetch('/rbac/approve-designation/' + id, { method: 'POST' });
+  if (res.success) { alert('✅ ' + (res.message || 'Approved')); loadApprovals(); }
+  else alert('❌ ' + (res.message || 'Failed'));
+}
+
+async function rejectDesig(id) {
+  const reason = prompt('Rejection reason (optional):','');
+  if (reason === null) return;
+  const res = await apiFetch('/rbac/reject-designation/' + id, { method: 'POST', body: JSON.stringify({ reason }) });
+  if (res.success) { alert('Rejected'); loadApprovals(); }
+  else alert(res.message || 'Failed');
+}
+
+</script>
+</body>
+</html>

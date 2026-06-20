@@ -1,0 +1,6 @@
+name,designation,level,state,district,photo,mobile,email,status
+National President,National President,national,ALL,,national-president.jpg,+91-XXXXXXXXXX,national@example.com,active
+State President Bihar,State President,state,Bihar,,state-bihar-president.jpg,+91-XXXXXXXXXX,state@example.com,active
+"Test Mandal President","Mandal President",mandal,Bihar,West Champaran,mandal-test.jpg,+91-XXXXXXXXXX,mandal@example.com,active
+FIYA National Coordinator,National Coordinator,national,ALL,,fiya-coordinator.jpg,+91-XXXXXXXXXX,fiya@example.com,active
+

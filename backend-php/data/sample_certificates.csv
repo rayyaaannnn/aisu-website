@@ -1,0 +1,5 @@
+cert_number,participant_name,participant_email,participant_mobile,participant_id,program,prog_code,cert_type,issued_at,status,file
+AISUCERTCOMP202600001,Ananya Singh,ananya.singh@example.com,9876543210,STU-001,National Essay Competition,COMP,Participation,2026-04-15T10:00:00Z,valid,
+AISUCERTINTERN202600002,Rahul Verma,rahul.verma@example.com,9123456780,STU-002,National Internship Program,INTERN,Completion,2026-04-20T12:30:00Z,valid,
+AISUCERTINNOV202600003,Shruti Patel,shruti.patel@example.com,9988776655,STU-003,Innovation Challenge,INNOV,Winner,2026-04-28T09:15:00Z,revoked,
+AISUCS20260001,Babur,babur@example.com,9898989898,STU-1001,AISU Computer Science Certificate,CS,Participation,2026-05-04T12:00:00Z,valid,
