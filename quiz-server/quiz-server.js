@@ -73,6 +73,15 @@ io.on('connection', (socket) => {
             room.moderator_sid = socket.id;
         }
 
+        // Initialize proctoring data for this participant
+        if (!room.proctor_data) room.proctor_data = {};
+        room.proctor_data[socket.id] = {
+            name: name,
+            violations: [],
+            violation_count: 0,
+            disqualified: false
+        };
+
         socket.join(code);
         socket.data.room_code = code;
         socket.data.name = name;
@@ -94,6 +103,15 @@ io.on('connection', (socket) => {
             team: participant.team,
             total: room.participants.length
         });
+
+        // Notify moderator of proctoring status change
+        if (room.moderator_sid) {
+            io.to(room.moderator_sid).emit('proctor_participant_joined', {
+                sid: socket.id,
+                name: name,
+                team: participant.team
+            });
+        }
 
         console.log(`[JOIN] ${name} → Room ${code} (${room.participants.length} participants)`);
     });
@@ -407,6 +425,166 @@ io.on('connection', (socket) => {
         console.log(`[SCORES] Finalized in ${code}:`, sortedTeams);
     });
 
+    // ── PROCTOR: VIOLATION ────────────────────────────────────
+    socket.on('proctor_violation', (data) => {
+        const code = data.room_code?.toUpperCase();
+        const room = getRoom(code);
+        if (!room) return;
+
+        const sid = socket.id;
+        if (!room.proctor_data) room.proctor_data = {};
+        if (!room.proctor_data[sid]) {
+            room.proctor_data[sid] = { name: socket.data.name || 'Unknown', violations: [], violation_count: 0, disqualified: false };
+        }
+
+        const pd = room.proctor_data[sid];
+        const violation = {
+            type: data.violation_type || 'unknown',
+            message: data.message || 'Violation',
+            count: data.count || (pd.violation_count + 1),
+            max_allowed: data.max_allowed || 3,
+            timestamp: new Date().toISOString()
+        };
+        pd.violations.push(violation);
+        pd.violation_count = pd.violations.length;
+
+        console.log(`[PROCTOR] ${pd.name} violated: ${violation.type} (${pd.violation_count}/${violation.max_allowed})`);
+
+        // Broadcast violation to moderator
+        if (room.moderator_sid) {
+            io.to(room.moderator_sid).emit('proctor_violation', {
+                participant_sid: sid,
+                participant_name: pd.name,
+                violation_type: violation.type,
+                message: violation.message,
+                count: pd.violation_count,
+                max_allowed: violation.max_allowed,
+                timestamp: violation.timestamp
+            });
+        }
+
+        // If max violations reached — auto-disqualify
+        if (pd.violation_count >= (data.max_allowed || 3) && !pd.disqualified) {
+            pd.disqualified = true;
+            console.log(`[PROCTOR] ${pd.name} DISQUALIFIED from room ${code}`);
+
+            io.to(sid).emit('proctor_disqualified', {
+                reason: 'Exceeded maximum allowed violations (' + (data.max_allowed || 3) + ')'
+            });
+
+            // Notify moderator
+            if (room.moderator_sid) {
+                io.to(room.moderator_sid).emit('proctor_disqualified', {
+                    participant_sid: sid,
+                    participant_name: pd.name,
+                    reason: 'Exceeded maximum allowed violations'
+                });
+            }
+
+            // Remove participant from room
+            const idx = room.participants.findIndex(p => p.sid === sid);
+            if (idx >= 0) {
+                const left = room.participants[idx];
+                room.participants.splice(idx, 1);
+                io.to(code).emit('participant_left', { name: left.name, total: room.participants.length });
+                if (room.teams[left.team]) {
+                    room.teams[left.team].members = room.teams[left.team].members.filter(m => m !== left.name);
+                    if (room.teams[left.team].members.length === 0) {
+                        delete room.teams[left.team];
+                    }
+                }
+            }
+        }
+    });
+
+    // ── PROCTOR: DISQUALIFIED (self-report from client) ──────
+    socket.on('proctor_disqualified', (data) => {
+        const code = data.room_code?.toUpperCase();
+        const room = getRoom(code);
+        if (!room) return;
+
+        const sid = socket.id;
+        if (room.proctor_data && room.proctor_data[sid]) {
+            room.proctor_data[sid].disqualified = true;
+        }
+
+        if (room.moderator_sid) {
+            io.to(room.moderator_sid).emit('proctor_disqualified', {
+                participant_sid: sid,
+                participant_name: socket.data.name || 'Unknown',
+                reason: data.reason || 'Manual disqualification'
+            });
+        }
+    });
+
+    // ── PROCTOR: ADMIN REQUEST STATUS ──────────────────────────
+    socket.on('proctor_request_status', (data) => {
+        const code = data.room_code?.toUpperCase();
+        const room = getRoom(code);
+        if (!room || socket.id !== room.moderator_sid) return;
+
+        const proctorStatus = [];
+        if (room.proctor_data) {
+            Object.entries(room.proctor_data).forEach(([sid, pd]) => {
+                const participant = room.participants.find(p => p.sid === sid);
+                proctorStatus.push({
+                    sid: sid,
+                    name: pd.name,
+                    team: participant?.team || 'Solo',
+                    violation_count: pd.violation_count,
+                    violations: pd.violations.slice(-10), // last 10
+                    disqualified: pd.disqualified,
+                    camera_on: true // set by client
+                });
+            });
+        }
+
+        socket.emit('proctor_status_list', { participants: proctorStatus });
+    });
+
+    // ── PROCTOR: ADMIN DISQUALIFY PARTICIPANT ─────────────────
+    socket.on('proctor_admin_disqualify', (data) => {
+        const code = data.room_code?.toUpperCase();
+        const room = getRoom(code);
+        if (!room || socket.id !== room.moderator_sid) return;
+
+        const targetSid = data.target_sid;
+        if (!targetSid) return;
+
+        if (room.proctor_data && room.proctor_data[targetSid]) {
+            room.proctor_data[targetSid].disqualified = true;
+        }
+
+        // Notify target
+        io.to(targetSid).emit('proctor_disqualified', {
+            reason: data.reason || 'Disqualified by administrator'
+        });
+
+        // Remove from room
+        const idx = room.participants.findIndex(p => p.sid === targetSid);
+        if (idx >= 0) {
+            const left = room.participants[idx];
+            room.participants.splice(idx, 1);
+            io.to(code).emit('participant_left', { name: left.name, total: room.participants.length });
+        }
+
+        console.log(`[PROCTOR] Admin disqualified ${room.proctor_data[targetSid]?.name || targetSid} from ${code}`);
+    });
+
+    // ── PROCTOR: ADMIN WARN PARTICIPANT ────────────────────────
+    socket.on('proctor_admin_warn', (data) => {
+        const code = data.room_code?.toUpperCase();
+        if (!code) return;
+
+        const targetSid = data.target_sid;
+        if (targetSid) {
+            io.to(targetSid).emit('proctor_warning', {
+                message: data.message || 'Warning from administrator',
+                issued_by: socket.data.name || 'Admin'
+            });
+        }
+    });
+
     // ── DISCONNECT ───────────────────────────────────────────
     socket.on('disconnect', () => {
         const code = socket.data.room_code;
@@ -426,6 +604,10 @@ io.on('connection', (socket) => {
                             delete room.teams[left.team];
                         }
                     }
+                }
+                // Clean up proctor data for disconnected participant
+                if (room.proctor_data) {
+                    delete room.proctor_data[socket.id];
                 }
                 // Clean up empty rooms
                 if (room.participants.length === 0) {

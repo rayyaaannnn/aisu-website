@@ -156,11 +156,13 @@ if ($path === '/me' && $method === 'GET') {
     ok($user);
 }
 
-// ── FORGOT PASSWORD — Send OTP ──────────────────────────────
+// ── FORGOT PASSWORD — Send OTP (Email or SMS) ───────────────
 if ($path === '/forgot-password' && $method === 'POST') {
     require_once __DIR__ . '/../email_service.php';
+    require_once __DIR__ . '/../sms_service.php';
     $data = get_request_data();
     $identifier = strtolower(trim($data['identifier'] ?? ''));
+    $via        = strtolower(trim($data['via'] ?? 'email')); // 'email' or 'sms'
     if (!$identifier) err('Please provide your registered email or mobile number.');
 
     // Find user by email or mobile
@@ -176,6 +178,24 @@ if ($path === '/forgot-password' && $method === 'POST') {
     }
     if (!$user) err('No account found with this email or mobile number.', 404);
 
+    // Auto-detect 'via' if not explicitly provided
+    if ($via === 'auto') {
+        $hasDigits = preg_replace('/\D/', '', $identifier);
+        if (strlen($hasDigits) >= 10 && filter_var($identifier, FILTER_VALIDATE_EMAIL) === false) {
+            $via = 'sms';
+        } else {
+            $via = 'email';
+        }
+    }
+
+    // Ensure the user has the required contact info for the chosen delivery method
+    if ($via === 'sms' && empty($user['mobile'] ?? '')) {
+        $via = 'email'; // Fallback to email if no mobile on record
+    }
+    if ($via === 'email' && empty($user['email'] ?? '')) {
+        err('No email address registered for this account.', 400);
+    }
+
     // Generate 6-digit OTP
     $otp = str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
     $expiresAt = gmdate('Y-m-d\TH:i:s\Z', time() + 120); // 2 minutes
@@ -186,25 +206,63 @@ if ($path === '/forgot-password' && $method === 'POST') {
     $otpData[] = [
         '_id'        => DB::makeId(),
         'user_id'    => $user['_id'],
-        'email'      => $user['email'],
+        'email'      => $user['email'] ?? '',
+        'mobile'     => $user['mobile'] ?? '',
         'otp'        => $otp,
+        'via'        => $via,
         'expires_at' => $expiresAt,
         'verified'   => false,
         'created_at' => gmdate('Y-m-d\TH:i:s\Z'),
     ];
     DB::saveCollection('password_otps', $otpData);
 
-    // Send email
-    try {
-        send_forgot_password_otp($user['email'], $user['name'] ?? 'User', $otp);
-    } catch (Exception $e) {}
+    $sentVia = [];
 
-    // Mask email for response
-    $masked = preg_replace_callback('/^(.)(.*)(@.*)$/', function($m) {
-        return $m[1] . str_repeat('*', strlen($m[2])) . $m[3];
-    }, $user['email']);
+    if ($via === 'sms') {
+        // Send OTP via SMS
+        $smsSent = send_sms_otp($user['mobile'], $user['name'] ?? 'User', $otp);
+        if ($smsSent) {
+            $sentVia[] = 'SMS';
+        }
+        // If SMS fails and we have an email, send via email as backup
+        if (!$smsSent && !empty($user['email'])) {
+            try {
+                send_forgot_password_otp($user['email'], $user['name'] ?? 'User', $otp);
+                $sentVia[] = 'email (SMS unavailable)';
+            } catch (Exception $e) {}
+        }
+    } else {
+        // Send OTP via Email
+        try {
+            send_forgot_password_otp($user['email'], $user['name'] ?? 'User', $otp);
+            $sentVia[] = 'email';
+        } catch (Exception $e) {}
+        // If Twilio is configured and user has mobile, also send via SMS as convenience
+        if (!empty($user['mobile']) && TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN) {
+            $smsSent = send_sms_otp($user['mobile'], $user['name'] ?? 'User', $otp);
+            if ($smsSent) $sentVia[] = 'SMS';
+        }
+    }
 
-    ok(['masked_email' => $masked], 'OTP sent to your registered email address.');
+    if (empty($sentVia)) {
+        err('Failed to send OTP. Please try again later or contact support.', 500);
+    }
+
+    // Build response with masked contact info
+    $response = [];
+    if ($via === 'sms') {
+        $response['masked_mobile'] = mask_phone($user['mobile']);
+        $response['message'] = 'OTP sent to your registered mobile number: ' . mask_phone($user['mobile']);
+    } else {
+        $masked = preg_replace_callback('/^(.)(.*)(@.*)$/', function($m) {
+            return $m[1] . str_repeat('*', strlen($m[2])) . $m[3];
+        }, $user['email']);
+        $response['masked_email'] = $masked;
+        $response['message'] = 'OTP sent to your registered email address: ' . $masked;
+    }
+    $response['via'] = implode(' & ', $sentVia);
+
+    ok($response, 'OTP sent successfully.');
 }
 
 // ── FORGOT PASSWORD — Verify OTP ────────────────────────────

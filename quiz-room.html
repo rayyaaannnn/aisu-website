@@ -7,7 +7,8 @@
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Saira:wght@700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+<script src="js/socket.io.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js" onerror="console.warn('[FACE] face-api CDN unavailable, face detection will use fallback')"></script>
 <script src="js/quiz-webrtc.js" defer></script>
 <style>
 :root{--primary:#FF6F0F;--dark:#0d1b2a;--dark2:#1a2d42;}
@@ -77,6 +78,12 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--dark
 /* Moderator Controls */
 #mod-controls{background:rgba(255,111,15,.1);border:1px solid rgba(255,111,15,.3);border-radius:12px;padding:16px;margin-bottom:16px;}
 
+/* Proctoring */
+#proctor-bar{animation:proctorSlideUp .4s ease;}
+@keyframes proctorSlideUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+#proctor-bar .blink{animation:proctorBlink 1.5s ease infinite;}
+@keyframes proctorBlink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
 /* Status overlay */
 #status-toast{position:fixed;top:20px;right:20px;background:var(--primary);color:#fff;padding:10px 18px;border-radius:10px;font-weight:600;font-size:.875rem;z-index:999;display:none;box-shadow:0 4px 20px rgba(255,111,15,.4);}
 
@@ -93,9 +100,32 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--dark
 #conn-banner.connecting .cdot{animation:cpulse 1s ease infinite;}
 @keyframes cpulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 </style>
-<div id="conn-banner" class="connecting">
+<div id="conn-banner" class="connecting" style="pointer-events:all;">
   <span class="cdot"></span>
-  <span id="conn-text">Connecting to server…</span>
+  <span id="conn-text">Ready to join — enter your name and click Join Room</span>
+</div>
+
+<!-- Proctoring Status Bar -->
+<div id="proctor-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(90deg,rgba(5,150,105,0.95),rgba(22,163,74,0.95));padding:5px 16px;align-items:center;justify-content:space-between;font-size:.78rem;font-weight:600;color:#fff;backdrop-filter:blur(8px);">
+  <div><i class="bi bi-shield-check me-1"></i><span id="proctor-status-text">Proctoring Active</span></div>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <span id="proctor-face-status"><i class="bi bi-person"></i> Face: <span style="color:#86efac;">Detected</span></span>
+    <span id="proctor-face-count" style="display:none;"><i class="bi bi-people"></i> Faces: <span id="proctor-face-count-num" style="color:#86efac;">1</span></span>
+    <span id="proctor-gaze-status" style="display:none;"><i class="bi bi-eye"></i> Gaze: <span id="proctor-gaze-dir" style="color:#86efac;">Center</span></span>
+    <span id="proctor-tab-status"><i class="bi bi-window"></i> Tab: <span style="color:#86efac;">Focused</span></span>
+    <span id="proctor-violations" style="color:#fbbf24;"><i class="bi bi-exclamation-triangle"></i> Violations: 0</span>
+  </div>
+</div>
+
+<!-- Violation Warning Modal -->
+<div id="violation-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:10001;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+  <div style="background:rgba(30,30,30,0.95);border:1px solid rgba(239,68,68,0.4);border-radius:16px;padding:32px 40px;max-width:420px;text-align:center;">
+    <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
+    <h4 style="font-family:'Saira',sans-serif;font-weight:800;color:#fff;margin-bottom:8px;">Proctoring Violation</h4>
+    <p style="color:rgba(255,255,255,0.65);font-size:.9rem;margin-bottom:20px;line-height:1.6;" id="violation-modal-msg">You switched tabs during the exam. This is being recorded.</p>
+    <div style="font-size:.82rem;color:rgba(255,255,255,0.5);margin-bottom:16px;">Violation <span id="violation-modal-count">1</span>/<span id="violation-modal-max">3</span></div>
+    <button onclick="closeViolationModal()" style="background:var(--primary);color:#fff;border:0;padding:10px 28px;border-radius:8px;font-weight:600;cursor:pointer;">I Understand</button>
+  </div>
 </div>
 
 <div id="status-toast"></div>
@@ -213,7 +243,8 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--dark
 </div>
 
 <script>
-const SOCKET_URL = 'http://localhost:3001';
+// SOCKET_URL: Configurable via localStorage('aisu_socket_url') or env var. Falls back to localhost:3001.
+const SOCKET_URL = localStorage.getItem('aisu_socket_url') || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3001' : (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.hostname + ':3001');
 let socket, roomCode, myName, myTeam, isModerator=false;
 let timerInterval, timeLeft=30;
 
@@ -221,6 +252,32 @@ let timerInterval, timeLeft=30;
 const params = new URLSearchParams(location.search);
 if(params.get('code')){ document.getElementById('inp-code').value = params.get('code').toUpperCase(); }
 if(params.get('mod')==='1'){ isModerator = true; }
+
+// Auto-join if room code provided and mod=1 (moderator link)
+if (params.get('code') && params.get('mod') === '1') {
+  // Pre-fill moderator name and auto-join after a short delay
+  document.getElementById('inp-name').value = 'Moderator';
+  document.getElementById('inp-team').value = 'Admin';
+  setTimeout(() => {
+    document.getElementById('join-btn').click();
+  }, 500);
+}
+
+// Auto-join if room code provided but NOT moderator (use a prompt for name, or default)
+if (params.get('code') && !params.get('mod')) {
+  // If name is provided via URL, use it; otherwise focus name field
+  if (params.get('name')) {
+    document.getElementById('inp-name').value = params.get('name');
+    setTimeout(() => {
+      document.getElementById('join-btn').click();
+    }, 500);
+  } else {
+    // Focus the name field for quick entry
+    setTimeout(() => {
+      document.getElementById('inp-name').focus();
+    }, 300);
+  }
+}
 
 // ── JOIN ──────────────────────────────────────────────────────
 document.getElementById('join-btn').onclick = ()=>{
@@ -236,6 +293,7 @@ function setBanner(state, msg, retry) {
   const b = document.getElementById('conn-banner');
   const t = document.getElementById('conn-text');
   b.className = state;
+  b.style.pointerEvents = (state === 'offline') ? 'all' : 'none';
   t.innerHTML = msg + (retry ? ' &nbsp;<button onclick="connectSocket()" style="background:#fff;color:#dc2626;border:0;border-radius:6px;padding:2px 10px;font-size:0.78rem;font-weight:700;cursor:pointer;">Retry</button>' : '');
   b.style.display = 'flex';
   if (state === 'connected') {
@@ -276,7 +334,453 @@ function connectSocket(){
   socket.on('audio_enabled', handleAudioEnabled);
   socket.on('recording_started', handleRecordingStarted);
   socket.on('recording_stopped', handleRecordingStopped);
-  socket.on('final_results', handleFinalResults);
+  // Proctoring Events
+  socket.on('proctor_violation', handleProctorViolation);
+  socket.on('proctor_disqualified', handleProctorDisqualified);
+  socket.on('proctor_status', handleProctorStatus);
+  socket.on('proctor_warning', handleProctorWarning);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  PROCTORING SYSTEM
+// ══════════════════════════════════════════════════════════════
+
+let proctorActive = false;
+let proctorViolations = 0;
+const MAX_VIOLATIONS = 3;
+let proctorFaceInterval = null;
+let proctorTabFocused = true;
+let proctorFaceDetected = true;
+let proctorFaceCount = 0;
+let proctorGazeDir = 'center';
+let proctorFaceAPILoaded = false;
+let proctorGazeAwayStart = null;
+let proctorDetecting = false;  // guard against overlapping async detections
+let proctorCanvas = null;       // cached canvas for fallback detection
+
+async function loadFaceAPIModels() {
+  try {
+    const MODEL_URL = 'models';
+    await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+    await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+    proctorFaceAPILoaded = true;
+    console.log('[FACE] face-api.js models loaded successfully');
+    document.getElementById('proctor-face-status').innerHTML = '<i class="bi bi-person"></i> Face: <span style="color:#86efac;">AI Ready</span>';
+    return true;
+  } catch (err) {
+    console.warn('[FACE] face-api.js model load failed, falling back to basic detection:', err.message);
+    proctorFaceAPILoaded = false;
+    return false;
+  }
+}
+
+function startProctoring() {
+  if (isModerator) return; // moderator doesn't get proctored
+  proctorActive = true;
+  proctorViolations = 0;
+  
+  // Show proctor bar
+  const bar = document.getElementById('proctor-bar');
+  bar.style.display = 'flex';
+  bar.style.animation = 'none';
+  bar.offsetHeight; // reflow
+  bar.style.animation = 'proctorSlideUp .4s ease';
+  updateProctorUI();
+  
+  // Enable full-screen
+  enableFullScreen();
+  
+  // Tab switch detection
+  document.addEventListener('visibilitychange', onVisibilityChange);
+  window.addEventListener('blur', onWindowBlur);
+  window.addEventListener('focus', onWindowFocus);
+  
+  // Copy/paste prevention
+  document.addEventListener('copy', preventCheat);
+  document.addEventListener('paste', preventCheat);
+  document.addEventListener('cut', preventCheat);
+  document.addEventListener('contextmenu', preventCheat);
+  document.addEventListener('keydown', preventKeyCheats);
+  
+  // Load face-api models then start face detection
+  loadFaceAPIModels().then(() => {
+    startFaceDetection();
+  });
+  
+  showToast('🔒 Proctoring enabled — camera, screen, and activity are being monitored');
+}
+
+function stopProctoring() {
+  proctorActive = false;
+  document.getElementById('proctor-bar').style.display = 'none';
+  
+  document.removeEventListener('visibilitychange', onVisibilityChange);
+  window.removeEventListener('blur', onWindowBlur);
+  window.removeEventListener('focus', onWindowFocus);
+  document.removeEventListener('copy', preventCheat);
+  document.removeEventListener('paste', preventCheat);
+  document.removeEventListener('cut', preventCheat);
+  document.removeEventListener('contextmenu', preventCheat);
+  document.removeEventListener('keydown', preventKeyCheats);
+  
+  if (proctorFaceInterval) {
+    clearInterval(proctorFaceInterval);
+    proctorFaceInterval = null;
+  }
+  
+  document.exitFullscreen().catch(()=>{});
+}
+
+function enableFullScreen() {
+  const el = document.documentElement;
+  if (el.requestFullscreen) {
+    el.requestFullscreen().catch(() => {
+      // Some browsers require user gesture
+      showToast('⚠️ Please enable full-screen for proctored exam');
+    });
+  }
+}
+
+function onVisibilityChange() {
+  if (!proctorActive) return;
+  if (document.hidden) {
+    reportViolation('tab_switch', 'Switched to another tab during exam');
+    proctorTabFocused = false;
+    updateProctorUI();
+  } else {
+    proctorTabFocused = true;
+    updateProctorUI();
+    // Re-enable full screen on return
+    enableFullScreen();
+  }
+}
+
+function onWindowBlur() {
+  if (!proctorActive) return;
+  setTimeout(() => {
+    if (!document.hasFocus() && proctorActive) {
+      reportViolation('window_blur', 'Moved away from exam window');
+      proctorTabFocused = false;
+      updateProctorUI();
+    }
+  }, 300);
+}
+
+function onWindowFocus() {
+  if (!proctorActive) return;
+  proctorTabFocused = true;
+  updateProctorUI();
+  enableFullScreen();
+  
+  // Check fullscreen
+  if (!document.fullscreenElement) {
+    reportViolation('fullscreen_exit', 'Exited full-screen mode');
+  }
+}
+
+// Full-screen exit detection
+document.addEventListener('fullscreenchange', () => {
+  if (!proctorActive) return;
+  if (!document.fullscreenElement) {
+    reportViolation('fullscreen_exit', 'Exited full-screen mode');
+    // Try to re-enter
+    setTimeout(enableFullScreen, 500);
+  }
+});
+
+function preventCheat(e) {
+  if (!proctorActive) return;
+  e.preventDefault();
+  if (e.type === 'copy' || e.type === 'cut') {
+    reportViolation('copy_attempt', 'Attempted to copy text');
+  } else if (e.type === 'paste') {
+    reportViolation('paste_attempt', 'Attempted to paste text');
+  } else if (e.type === 'contextmenu') {
+    reportViolation('right_click', 'Attempted right-click');
+  }
+  return false;
+}
+
+function preventKeyCheats(e) {
+  if (!proctorActive) return;
+  // Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+Shift+I, F12, Alt+Tab tracking
+  if ((e.ctrlKey && ['c','v','x','u','s','p','a'].includes(e.key.toLowerCase())) ||
+      e.key === 'F12' ||
+      (e.ctrlKey && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase()))) {
+    e.preventDefault();
+    reportViolation('keyboard_cheat', 'Attempted prohibited keyboard shortcut (' + e.key + ')');
+    return false;
+  }
+}
+
+function getGazeDirection(landmarks) {
+  // Estimates gaze from 68-point face landmarks
+  // Left eye indices: 36-41, Right eye indices: 42-47
+  // Thresholds (0.35/0.65) calibrated for typical laptop webcam
+  if (!landmarks || !landmarks.positions) return 'unknown';
+  const positions = landmarks.positions;
+  if (positions.length < 48) return 'unknown';
+
+  // Approximate iris position from upper/lower eyelid points
+  const leftIrisX = (positions[37].x + positions[38].x + positions[40].x + positions[41].x) / 4;
+  const rightIrisX = (positions[43].x + positions[44].x + positions[46].x + positions[47].x) / 4;
+
+  const leftRatio = (leftIrisX - positions[36].x) / (positions[39].x - positions[36].x);
+  const rightRatio = (rightIrisX - positions[42].x) / (positions[45].x - positions[42].x);
+  const avgRatio = (leftRatio + rightRatio) / 2;
+
+  if (avgRatio < 0.35) return 'left';
+  if (avgRatio > 0.65) return 'right';
+  return 'center';
+}
+
+function startFaceDetection() {
+  if (!webrtc || !webrtc.localStream) return;
+
+  // Interval: 3 seconds for AI detection, fallback to brightness
+  proctorFaceInterval = setInterval(async () => {
+    if (!proctorActive || !webrtc || !webrtc.localStream) return;
+    if (proctorDetecting) return; // guard against overlapping async detections
+
+    const videoTrack = webrtc.localStream.getVideoTracks()[0];
+    if (!videoTrack || !videoTrack.enabled) {
+      if (!webrtc.videoEnabled) {
+        reportViolation('camera_off', 'Camera was turned off during exam');
+      }
+      return;
+    }
+
+    const video = document.getElementById('local-video');
+    if (!video || !video.videoWidth) return;
+
+    proctorDetecting = true;
+
+    try {
+      if (proctorFaceAPILoaded && typeof faceapi !== 'undefined') {
+        const detections = await faceapi
+          .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 256, scoreThreshold: 0.5 }))
+          .withFaceLandmarks();
+
+        const wasDetected = proctorFaceDetected;
+        const prevFaceCount = proctorFaceCount;
+        proctorFaceCount = detections.length;
+
+        if (detections.length === 0) {
+          proctorFaceDetected = false;
+          if (wasDetected) {
+            reportViolation('face_not_detected', 'No face detected in camera');
+          }
+        } else {
+          proctorFaceDetected = true;
+          if (detections.length > 1 && prevFaceCount <= 1) {
+            reportViolation('multiple_faces', detections.length + ' faces detected in camera (possible cheating)');
+          }
+          // Gaze tracking
+          if (detections[0].landmarks) {
+            const gaze = getGazeDirection(detections[0].landmarks);
+            proctorGazeDir = gaze;
+            if (gaze !== 'center') {
+              if (!proctorGazeAwayStart) proctorGazeAwayStart = Date.now();
+              else if (Date.now() - proctorGazeAwayStart > 8000) {
+                reportViolation('looking_away', 'Looking away from screen for extended period');
+                proctorGazeAwayStart = Date.now();
+              }
+            } else {
+              proctorGazeAwayStart = null;
+            }
+          }
+        }
+      } else {
+        fallbackFaceDetection(video);
+      }
+    } catch (err) {
+      console.warn('[FACE] Detection error:', err.message);
+      fallbackFaceDetection(video);
+    }
+
+    proctorDetecting = false;
+    updateProctorUI();
+  }, 3000);
+}
+
+function fallbackFaceDetection(video) {
+  // Cached canvas to avoid per-call allocation
+  if (!proctorCanvas) {
+    proctorCanvas = document.createElement('canvas');
+    proctorCanvas.width = 80;
+    proctorCanvas.height = 60;
+  }
+  const ctx = proctorCanvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, 80, 60);
+  try {
+    const imageData = ctx.getImageData(0, 0, 80, 60);
+    let total = 0, count = 0;
+    for (let i = 0; i < imageData.data.length; i += 16) {
+      total += (imageData.data[i] + imageData.data[i+1] + imageData.data[i+2]) / 3;
+      count++;
+    }
+    const avg = total / count;
+    const wasDetected = proctorFaceDetected;
+    proctorFaceDetected = avg > 15 && avg < 240;
+    if (wasDetected && !proctorFaceDetected) {
+      reportViolation('face_not_detected', 'No face detected (fallback mode)');
+    }
+  } catch (e) {}
+}
+
+// Debounce map — prevent reporting same violation type within 2 seconds
+const proctorDebounce = {};
+
+function reportViolation(type, msg) {
+  if (!proctorActive) return;
+  // Debounce: ignore if same violation type was reported in last 2 seconds
+  const now = Date.now();
+  if (proctorDebounce[type] && (now - proctorDebounce[type]) < 2000) return;
+  proctorDebounce[type] = now;
+  proctorViolations++;
+  
+  // Send to server
+  if (socket && socket.connected) {
+    socket.emit('proctor_violation', {
+      room_code: roomCode,
+      violation_type: type,
+      message: msg,
+      count: proctorViolations,
+      max_allowed: MAX_VIOLATIONS
+    });
+  }
+  
+  // Update UI
+  updateProctorUI();
+  
+  // Show modal warning
+  showViolationModal(type, msg);
+  
+  // If max violations reached
+  if (proctorViolations >= MAX_VIOLATIONS) {
+    proctorActive = false;
+    showToast('🚫 Disqualified! Too many violations.');
+    if (socket && socket.connected) {
+      socket.emit('proctor_disqualified', {
+        room_code: roomCode,
+        reason: 'Exceeded maximum allowed violations (' + MAX_VIOLATIONS + ')'
+      });
+    }
+    // Auto-submit current answers? - handled by server
+    stopProctoring();
+  }
+}
+
+function showViolationModal(type, msg) {
+  const modal = document.getElementById('violation-modal');
+  document.getElementById('violation-modal-msg').textContent = msg;
+  document.getElementById('violation-modal-count').textContent = proctorViolations;
+  document.getElementById('violation-modal-max').textContent = MAX_VIOLATIONS;
+  modal.style.display = 'flex';
+}
+
+function closeViolationModal() {
+  document.getElementById('violation-modal').style.display = 'none';
+}
+
+function updateProctorUI() {
+  const bar = document.getElementById('proctor-bar');
+  if (!bar || bar.style.display === 'none') return;
+  
+  document.getElementById('proctor-violations').textContent = '⚠️ Violations: ' + proctorViolations + '/' + MAX_VIOLATIONS;
+  
+  const tabEl = document.getElementById('proctor-tab-status');
+  if (proctorTabFocused) {
+    tabEl.innerHTML = '<i class="bi bi-window"></i> Tab: <span style="color:#86efac;">Focused</span>';
+  } else {
+    tabEl.innerHTML = '<i class="bi bi-window"></i> Tab: <span style="color:#f87171;">Away</span>';
+    tabEl.classList.add('blink');
+  }
+  
+  const faceEl = document.getElementById('proctor-face-status');
+  if (proctorFaceDetected) {
+    faceEl.innerHTML = '<i class="bi bi-person"></i> Face: <span style="color:#86efac;">' + (proctorFaceAPILoaded ? 'Detected' : 'Basic') + '</span>';
+  } else {
+    faceEl.innerHTML = '<i class="bi bi-person"></i> Face: <span style="color:#f87171;">Not Visible</span>';
+    faceEl.classList.add('blink');
+  }
+  
+  // Multiple faces count indicator
+  const faceCountEl = document.getElementById('proctor-face-count');
+  if (proctorFaceAPILoaded && proctorFaceCount > 1) {
+    faceCountEl.style.display = 'inline';
+    document.getElementById('proctor-face-count-num').textContent = proctorFaceCount;
+    document.getElementById('proctor-face-count-num').style.color = '#f87171';
+  } else if (proctorFaceAPILoaded && proctorFaceCount === 1) {
+    faceCountEl.style.display = 'inline';
+    document.getElementById('proctor-face-count-num').textContent = '1';
+    document.getElementById('proctor-face-count-num').style.color = '#86efac';
+  } else {
+    faceCountEl.style.display = 'none';
+  }
+  
+  // Gaze direction indicator
+  const gazeEl = document.getElementById('proctor-gaze-status');
+  if (proctorFaceAPILoaded && proctorFaceDetected) {
+    gazeEl.style.display = 'inline';
+    const gazeColors = { center: '#86efac', left: '#fbbf24', right: '#fbbf24', unknown: '#6b7280' };
+    document.getElementById('proctor-gaze-dir').textContent = proctorGazeDir.charAt(0).toUpperCase() + proctorGazeDir.slice(1);
+    document.getElementById('proctor-gaze-dir').style.color = gazeColors[proctorGazeDir] || '#86efac';
+  } else {
+    gazeEl.style.display = 'none';
+  }
+  
+  // Change bar color based on violations
+  if (proctorViolations === 0) {
+    bar.style.background = 'linear-gradient(90deg,rgba(5,150,105,0.95),rgba(22,163,74,0.95))';
+  } else if (proctorViolations === 1) {
+    bar.style.background = 'linear-gradient(90deg,rgba(245,158,11,0.95),rgba(217,119,6,0.95))';
+  } else {
+    bar.style.background = 'linear-gradient(90deg,rgba(220,38,38,0.95),rgba(185,28,28,0.95))';
+  }
+}
+
+function handleProctorViolation(d) {
+  showToast('⚠️ ' + d.message);
+  if (d.count >= d.max_allowed) {
+    showToast('🚫 ' + d.participant_name + ' disqualified!');
+  }
+}
+
+function handleProctorDisqualified(d) {
+  showToast('🚫 ' + (d.reason || 'You have been disqualified'));
+  proctorActive = false;
+  stopProctoring();
+  // Show disqualification screen
+  document.getElementById('question-area').style.display = 'none';
+  document.getElementById('waiting-area').style.display = 'none';
+  document.getElementById('leaderboard-area').style.display = 'none';
+  document.getElementById('waiting-area').innerHTML = `
+    <div style="text-align:center;padding:40px;">
+      <div style="font-size:4rem;margin-bottom:16px;">🚫</div>
+      <h3 style="font-family:'Saira',sans-serif;font-weight:800;color:#f87171;margin-bottom:8px;">Disqualified</h3>
+      <p style="color:rgba(255,255,255,0.55);">${esc(d.reason || 'You have been disqualified from this exam')}</p>
+    </div>`;
+  document.getElementById('waiting-area').style.display = 'flex';
+}
+
+function handleProctorStatus(d) {
+  // Update proctor status from server
+  if (d.violations !== undefined) {
+    proctorViolations = d.violations;
+    updateProctorUI();
+  }
+}
+
+function handleProctorWarning(d) {
+  // Show prominent warning from administrator
+  showToast('⚠️ ' + (d.message || 'Warning from administrator'));
+  // Also show a modal warning for admin-issued warnings
+  const modal = document.getElementById('violation-modal');
+  document.getElementById('violation-modal-msg').textContent = d.message || 'Warning from administrator';
+  document.getElementById('violation-modal-count').textContent = proctorViolations;
+  document.getElementById('violation-modal-max').textContent = MAX_VIOLATIONS;
+  modal.style.display = 'flex';
 }
 
 function onRoomState(d){
@@ -312,6 +816,8 @@ function onQuizStarted(){
   document.getElementById('mod-start-btn').disabled=true;
   document.getElementById('mod-next-btn').disabled=false;
   document.getElementById('waiting-area').style.display='none';
+  // Start proctoring when quiz starts
+  startProctoring();
 }
 
 function onQuestion(q){
@@ -387,6 +893,8 @@ function onQuizEnded(d){
       <div style="font-weight:600;">${esc(r.team)}</div>
       <div class="lb-score">${r.score} pts</div>
     </div>`).join('');
+  // Stop proctoring when quiz ends
+  stopProctoring();
 }
 
 function onChatMessage(d){

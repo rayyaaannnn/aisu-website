@@ -1,10 +1,25 @@
-# Node.js
+# ═══════════════════════════════════════════════════════════════
+#  AISU Website — .gitignore (Production Ready)
+# ═══════════════════════════════════════════════════════════════
+
+# ── Node.js ───────────────────────────────────────────────────
 node_modules/
 npm-debug.log
 yarn-error.log
 
-# PHP backend data & uploads (do not commit user data)
+# ── PHP Backend ───────────────────────────────────────────────
+backend-php/vendor/
+backend-php/composer.lock
+
+# ── Environment & Config (Sensitive) ─────────────────────────
+backend-php/.env
+.env
+
+# ── SQLite Database (contains real user data) ────────────────
+backend-php/data/aisu.sqlite
 backend-php/data/*.json
+
+# ── User Uploads (do not commit user data) ───────────────────
 backend-php/uploads/govtid/*
 backend-php/uploads/payment/*
 backend-php/uploads/photo/*
@@ -22,14 +37,27 @@ backend-php/uploads/gallery/*
 !backend-php/uploads/**/.gitkeep
 !backend-php/data/.gitkeep
 
-# Sensitive config (contains SMTP credentials)
-backend-php/config.php
-
-# PHPMailer vendor
-backend-php/vendor/
-backend-php/composer.lock
-
-# Logs and OS files
+# ── Logs & OS Files ──────────────────────────────────────────
 *.log
+php-server.log
+quiz-server.log
 .DS_Store
 Thumbs.db
+
+# ── Temporary / Dev Files ────────────────────────────────────
+nul
+TurboVPN_setup.exe
+php.phar
+
+# ── IDE / Editor ─────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── OS Temporary ─────────────────────────────────────────────
+# Windows shortcuts
+*.lnk
+# macOS attributes
+.DS_Store?

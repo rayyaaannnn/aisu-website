@@ -1,0 +1,46 @@
+# ==============================================================
+#  AISU Website - Apache .htaccess (cPanel / Shared Hosting)
+#  Routes API calls to the PHP backend while serving static files
+# ==============================================================
+
+RewriteEngine On
+RewriteBase /
+
+# --- Force HTTPS (uncomment for production) ---
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}/ [R=301,L]
+
+# --- API Requests ---
+RewriteCond %{REQUEST_URI} ^/api/ [OR]
+RewriteCond %{REQUEST_URI} ^/api$
+RewriteRule ^(.*)$ backend-php/index.php [QSA,L]
+
+# --- Static Files ---
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# --- SEO-friendly URLs ---
+RewriteCond %{REQUEST_URI} !\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|docx|zip)$ [NC]
+RewriteRule ^([^/.]+)$ .html [QSA,L]
+
+# --- Security Headers ---
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# --- Block Sensitive Files ---
+<FilesMatch "\.(env|sqlite|md|log|bat|exe|cfg)$">
+    Require all denied
+</FilesMatch>
+
+# --- Disable Directory Listing ---
+Options -Indexes
+
+# --- CORS Headers ---
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+</IfModule>

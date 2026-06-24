@@ -2,6 +2,7 @@
     "name": "aisu/backend",
     "description": "AISU Backend - All India Students Union",
     "require": {
-        "phpmailer/phpmailer": "^6.9"
+        "phpmailer/phpmailer": "^6.9",
+        "twilio/sdk": "^8.11"
     }
 }

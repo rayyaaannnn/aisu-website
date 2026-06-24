@@ -508,15 +508,48 @@ if ($path === '/team-directory' && $method === 'GET') {
         $visible = array_filter($visible, fn($m) => ($m['state'] ?? '') === $state);
     }
 
-    // Sort by rank (national first), resigned/terminated at end
-    usort($visible, function($a, $b) {
+    /**
+     * Rank a designation title by importance within its level.
+     * Higher number = appears first.
+     */
+    $designationRank = function(string $designation): int {
+        $d = strtoupper($designation);
+        if (preg_match('/\bPRESIDENT\b/', $d) && !preg_match('/VICE|VICE\s*PRESIDENT/i', $d)) return 100;
+        if (preg_match('/\bVICE\s*-?\s*PRESIDENT\b/i', $d)) return 95;
+        if (preg_match('/\bGENERAL\s+SECRETARY\b/', $d)) return 90;
+        if (preg_match('/\bTREASURER\b/', $d)) return 85;
+        if (preg_match('/\bSECRETARY\b/', $d) && !preg_match('/GENERAL|JOINT|ADDITIONAL|ORGANIZING|SPOKE/i', $d)) return 80;
+        if (preg_match('/\bSPOKE\s*(PERSON|SPERSON)?\b/i', $d)) return 78;
+        if (preg_match('/\bJOINT\s+SECRETARY\b/', $d)) return 75;
+        if (preg_match('/\bADDITIONAL\s+(JOINT|ORGANIZING)?\s*SECRETARY\b/', $d)) return 70;
+        if (preg_match('/\b(CONVENOR|CO\s*-?\s*CONVENOR)\b/i', $d)) return 65;
+        if (preg_match('/\bCOORDINATOR\b/', $d) && !preg_match('/ADDITIONAL|JOINT|ORGANIZING/i', $d)) return 60;
+        if (preg_match('/\bADDITIONAL\s+COORDINATOR\b/', $d)) return 55;
+        if (preg_match('/\bORGANIZING\s+SECRETARY\b/', $d)) return 50;
+        if (preg_match('/\bINCHARGE\b/i', $d)) return 45;
+        if (preg_match('/\b(?:COLLEGE|CAMPUS|INSTITUTE|SCHOOL|DEPT|DIVISIONAL)?\s*(HEAD|DIRECTOR)\b/i', $d)) return 40;
+        if (preg_match('/\bAMBASSADOR\b/i', $d)) return 35;
+        if (preg_match('/\bMEMBER\b/', $d)) return 20;
+        return 10;
+    };
+
+    // Sort by hierarchy: level first (national → member), then designation importance within each level
+    usort($visible, function($a, $b) use ($designationRank) {
+        // 1. Active members before resigned/terminated
         $statusOrder = ['active'=>0,'promoted'=>0,'additional_responsibility'=>0,'resigned'=>1,'terminated'=>2];
         $sa = $statusOrder[$a['role_status'] ?? 'active'] ?? 0;
         $sb = $statusOrder[$b['role_status'] ?? 'active'] ?? 0;
         if ($sa !== $sb) return $sa - $sb;
+
+        // 2. Sort by level (national = highest priority)
         $rankA = ROLE_HIERARCHY[$a['level'] ?? 'member'] ?? 0;
         $rankB = ROLE_HIERARCHY[$b['level'] ?? 'member'] ?? 0;
-        return $rankB - $rankA;
+        if ($rankA !== $rankB) return $rankB - $rankA;
+
+        // 3. Within same level, sort by designation importance
+        $da = $designationRank($a['designation'] ?? '');
+        $db = $designationRank($b['designation'] ?? '');
+        return $db - $da;
     });
 
     // Designations that get full contact info (mobile + email)

@@ -346,7 +346,6 @@
 
             let contactHtml = '';
             if (!isInactive) {
-                if (m.mobile) contactHtml += `<div class="tc-contacts"><a href="tel:${esc(m.mobile)}"><i class="bi bi-telephone-fill"></i> ${esc(m.mobile)}</a></div>`;
                 if (m.email) contactHtml += `<div class="tc-contacts"><a href="mailto:${esc(m.email)}"><i class="bi bi-envelope-fill"></i> ${esc(m.email)}</a></div>`;
             }
 

@@ -458,7 +458,7 @@
         <div class="aisu-modal-box" style="max-width:440px;">
             <button class="aisu-modal-close" onclick="closeForgotModal()" title="Close">&times;</button>
 
-            <!-- Step 1: Choose delivery method -->
+            <!-- Step 1: Enter identifier & choose delivery method -->
             <div id="forgot-step1">
                 <div style="text-align:center; margin-bottom:20px;">
                     <div style="font-size:2.5rem; margin-bottom:10px;">🔐</div>
@@ -469,7 +469,23 @@
                     <label class="form-label fw-600">Registered Email or Mobile Number</label>
                     <input type="text" class="form-control" id="fp-identifier" placeholder="Enter your email or +91 mobile number">
                 </div>
-                <div class="mb-1" style="font-size:0.78rem; color:var(--text-muted);"><i class="bi bi-info-circle me-1"></i>OTP will be sent to your registered email address.</div>
+                <!-- Delivery method toggle -->
+                <div class="mb-3">
+                    <label class="form-label fw-600 small">Send OTP via</label>
+                    <div style="display:flex; gap:12px;">
+                        <label class="fp-via-option" data-via="email" style="flex:1; cursor:pointer; border:2px solid var(--primary); border-radius:10px; padding:12px; text-align:center; background:#fff7f0; transition:all 0.2s;">
+                            <input type="radio" name="fp-via" value="email" checked style="display:none;">
+                            <i class="bi bi-envelope-fill" style="font-size:1.3rem; color:var(--primary);"></i>
+                            <div style="font-size:0.8rem; font-weight:600; color:var(--dark); margin-top:4px;">Email</div>
+                        </label>
+                        <label class="fp-via-option" data-via="sms" style="flex:1; cursor:pointer; border:2px solid #e2e8f0; border-radius:10px; padding:12px; text-align:center; background:var(--light); transition:all 0.2s;">
+                            <input type="radio" name="fp-via" value="sms" style="display:none;">
+                            <i class="bi bi-phone-fill" style="font-size:1.3rem; color:#6b7280;"></i>
+                            <div style="font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-top:4px;">SMS</div>
+                        </label>
+                    </div>
+                </div>
+                <div id="fp-via-note" class="mb-1" style="font-size:0.78rem; color:var(--text-muted);"><i class="bi bi-info-circle me-1"></i>OTP will be sent via <strong>Email</strong> to your registered address.</div>
                 <div id="fp-step1-error" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:10px 14px; font-size:0.85rem; color:#991b1b; margin-bottom:12px;"></div>
                 <button type="button" class="btn-primary-custom w-100 justify-content-center py-3" onclick="fpSendOtp()">
                     <i class="bi bi-send-fill"></i> Send OTP
@@ -482,6 +498,7 @@
                     <div style="font-size:2.5rem; margin-bottom:10px;">📨</div>
                     <div style="font-family:'Saira',sans-serif; font-size:1.4rem; font-weight:800; color:var(--dark);">Verify OTP</div>
                     <div id="fp-sent-to-msg" style="font-size:0.82rem; color:var(--text-muted); margin-top:6px;"></div>
+                    <div id="fp-via-confirm" style="font-size:0.75rem; color:rgba(0,0,0,0.4); margin-top:2px;"></div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-600">Enter 6-digit OTP</label>
@@ -537,7 +554,38 @@
     <script>
         /* ============= Forgot Password OTP Logic ============= */
         let fpTimerInterval = null;
-        let fpOtpCode = null;   // In production this is server-validated; here simulated
+        let fpOtpCode = null;
+
+        // ── Delivery method toggle ──
+        document.addEventListener('click', function(e) {
+            const option = e.target.closest('.fp-via-option');
+            if (!option) return;
+            const via = option.dataset.via;
+            document.querySelectorAll('.fp-via-option').forEach(el => {
+                el.style.borderColor = '#e2e8f0';
+                el.style.background = 'var(--light)';
+                el.querySelector('i').style.color = '#6b7280';
+                el.querySelector('div').style.color = 'var(--text-muted)';
+                el.querySelector('input').checked = false;
+            });
+            option.style.borderColor = 'var(--primary)';
+            option.style.background = '#fff7f0';
+            option.querySelector('i').style.color = 'var(--primary)';
+            option.querySelector('div').style.color = 'var(--dark)';
+            option.querySelector('input').checked = true;
+
+            const note = document.getElementById('fp-via-note');
+            if (via === 'sms') {
+                note.innerHTML = '<i class="bi bi-info-circle me-1"></i>OTP will be sent via <strong>SMS</strong> to your registered mobile number.';
+            } else {
+                note.innerHTML = '<i class="bi bi-info-circle me-1"></i>OTP will be sent via <strong>Email</strong> to your registered address.';
+            }
+        });
+
+        function getSelectedVia() {
+            const selected = document.querySelector('input[name="fp-via"]:checked');
+            return selected ? selected.value : 'email';
+        }
 
         function openForgotModal() {
             // Reset to step 1
@@ -545,7 +593,20 @@
                 document.getElementById(id).style.display = id === 'forgot-step1' ? 'block' : 'none';
             });
             document.getElementById('fp-identifier').value = '';
+            document.getElementById('fp-otp').value = '';
             document.getElementById('fp-step1-error').style.display = 'none';
+            document.getElementById('fp-step2-error').style.display = 'none';
+            document.getElementById('fp-step3-error').style.display = 'none';
+            // Reset to Email by default
+            document.querySelector('input[name="fp-via"][value="email"]').checked = true;
+            document.querySelectorAll('.fp-via-option').forEach(el => {
+                const isEmail = el.dataset.via === 'email';
+                el.style.borderColor = isEmail ? 'var(--primary)' : '#e2e8f0';
+                el.style.background = isEmail ? '#fff7f0' : 'var(--light)';
+                el.querySelector('i').style.color = isEmail ? 'var(--primary)' : '#6b7280';
+                el.querySelector('div').style.color = isEmail ? 'var(--dark)' : 'var(--text-muted)';
+            });
+            document.getElementById('fp-via-note').innerHTML = '<i class="bi bi-info-circle me-1"></i>OTP will be sent via <strong>Email</strong> to your registered address.';
             document.getElementById('forgot-modal').classList.add('show');
             document.body.style.overflow = 'hidden';
         }
@@ -562,6 +623,7 @@
 
         function fpSendOtp() {
             const identifier = document.getElementById('fp-identifier').value.trim();
+            const via = getSelectedVia();
             const errDiv = document.getElementById('fp-step1-error');
 
             if (!identifier) {
@@ -576,16 +638,18 @@
             fetch(`${authApi}/auth/forgot-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ identifier })
+                body: JSON.stringify({ identifier, via })
             })
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
                     document.getElementById('forgot-step1').style.display = 'none';
                     document.getElementById('forgot-step2').style.display = 'block';
-                    const maskedEmail = data.data?.masked_email || identifier;
+                    const maskedContact = data.data?.masked_mobile || data.data?.masked_email || identifier;
+                    const viaMethod = data.data?.via || via;
                     document.getElementById('fp-sent-to-msg').innerHTML =
-                        'An OTP has been sent to your email: <strong>' + maskedEmail + '</strong>';
+                        'An OTP has been sent to: <strong>' + maskedContact + '</strong>';
+                    document.getElementById('fp-via-confirm').textContent = 'Delivered via: ' + viaMethod.charAt(0).toUpperCase() + viaMethod.slice(1);
                     fpStartTimer(120);
                 } else {
                     errDiv.textContent = data.message || 'Account not found.';
@@ -600,17 +664,31 @@
 
         function fpResendOtp() {
             if (fpTimerInterval) clearInterval(fpTimerInterval);
-            document.getElementById('fp-step2-error').style.display = 'none';
+            const errDiv = document.getElementById('fp-step2-error');
+            errDiv.style.display = 'none';
             document.getElementById('fp-otp').value = '';
             const identifier = document.getElementById('fp-identifier').value.trim();
+            const via = getSelectedVia();
             const authApi = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8000/api' : '/backend-php/api';
             fetch(`${authApi}/auth/forgot-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ identifier })
+                body: JSON.stringify({ identifier, via })
             }).then(r => r.json()).then(data => {
-                if (data.success) fpStartTimer(120);
-            }).catch(() => {});
+                if (data.success) {
+                    const maskedContact = data.data?.masked_mobile || data.data?.masked_email || identifier;
+                    document.getElementById('fp-sent-to-msg').innerHTML =
+                        'An OTP has been sent to: <strong>' + maskedContact + '</strong>';
+                    document.getElementById('fp-via-confirm').textContent = '';
+                    fpStartTimer(120);
+                } else {
+                    errDiv.textContent = data.message || 'Failed to resend OTP. Please try again.';
+                    errDiv.style.display = 'block';
+                }
+            }).catch(() => {
+                errDiv.textContent = 'Unable to connect to server. Please try again.';
+                errDiv.style.display = 'block';
+            });
         }
 
         function fpStartTimer(seconds) {
